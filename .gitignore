@@ -1,0 +1,52 @@
+ directories produced from IDE tools
+.idea/
+.pylint.d/
+
+# logging symlinks
+latest_log_dir
+latest_log_file
+optimization/latest_log_file
+optimization/latest_log_dir
+
+# files left my Design Compiler
+**/extracted_model_constr.pt
+**/TOP.mr
+**/command.log
+**/default.svf
+**/filenames*log
+**/pt_shell_command.log
+**/top-verilog*
+**/Synopsys*
+**/crte*
+**/.nfs*
+
+# unecessary folders
+**/__pycache__/
+**/alib-52/
+**/sim/
+**/work/
+**/work_gate/
+**/hdl/
+**/gate/
+**/reports/
+**/logs/
+**/allreports/
+**/allrtl/
+**/allrtls/
+**/allnetlists/
+
+# libraries / library interm objects
+libs/*.so
+libs/*.o
+
+# circuits
+circuits/*/*approx*
+circuits/*/*.o
+circuits/*/*.so
+circuits/*/*ctypes*
+circuits/*/*vcd*
+circuits/*/*.c
+
+# test intermediate files
+test/**/*.sv
+
