@@ -17,7 +17,7 @@ circdir="$maindir/circuits/$circuit"
 top_design="top"
 tunit="ns"
 
-enable_safety_bits="1"
+enable_safety_bits="0"
 safety_bits="1"
 
 mkdir -p $maindir/hdl
@@ -30,12 +30,14 @@ cp $circdir/top.v hdl/
 if [[ ! "$inputs_exist" == "True" ]]; then
     bits_num=$(($#-1))
 
-    if [[ "$enable_safety_bits" == "1" ]]; then
-        safety_bits_array=()
-        for ((i=0; i<$bits_num; i++)); do
+    safety_bits_array=()
+    for ((i=0; i<$bits_num; i++)); do
+        if [[ "$enable_safety_bits" == "1" ]]; then
             safety_bits_array+=($safety_bits)
-        done
-    fi
+        else
+            safety_bits_array+=("0")
+        fi
+    done
 
     # size of input dataset
     num_inputs_optim="100000"

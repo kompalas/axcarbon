@@ -153,11 +153,12 @@ class Evolution:
 
         # font ans latex parameters
         rcParams['font.size'] = "14"
-        rcParams.update({
-            "text.usetex": True,
-            "font.family": "serif",
-            "font.serif": ["Computer Modern Roman"]
-        })
+        # NOTE: Disabling latex for now, as it requires a working latex installation
+        # rcParams.update({
+        #     "text.usetex": True,
+        #     "font.family": "serif",
+        #     "font.serif": ["Computer Modern Roman"]
+        # })
         fig, axis = plt.subplots(figsize=(5, 3))
 
         axis.plot(grouped_objectives[0], grouped_objectives[1], 'bx--')

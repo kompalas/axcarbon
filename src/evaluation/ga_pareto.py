@@ -13,7 +13,7 @@ from src.utils import get_gates_dict, get_cancel_dict
 from src.utils import translate_netlist_to_gates_and_wires, gates_to_nodes, wires_to_edges
 from src.netlist import Netlist
 from src.graph import DAG
-from src.nsga2.utils import get_candidates, error_metric_arg, str_to_error_metric_map
+from src.nsga2.utils import get_candidates, error_metric_arg
 from src.nsga2.objectives import calc_fitness
 
 logger = logging.getLogger(__name__)
@@ -33,15 +33,15 @@ def open_population_file(experiment_dir, generation=-1):
     if generation == -1:
         if os.path.exists(experiment_dir + 'final_population.pkl'):
             popfile = 'final_population.pkl'
-            gen = 'the final generation'
+            gen_str = 'the final generation'
         else:
             popfile = f'population{max_gen}.pkl'
-            gen = f'generation {max_gen}'
+            gen_str = f'generation {max_gen}'
     else:
         popfile = f'population{generation}.pkl'
-        gen = f'generation {generation}'
+        gen_str = f'generation {generation}'
 
-    logger.info(f"Evaluating the pareto front from {gen} of experiment {exper}...\n")
+    logger.info(f"Evaluating the pareto front from {gen_str} of experiment {exper}...\n")
     logger.info(f'Opening file: {experiment_dir + popfile}')
     slash = '/' if experiment_dir[-1] != '/' else ''
     with open(experiment_dir + slash + popfile, 'rb') as f:
@@ -94,10 +94,11 @@ def prepare(circuit, libfile):
     gates, wires = translate_netlist_to_gates_and_wires(netlist)
     nodes = gates_to_nodes(gates)
     edges = wires_to_edges(wires)
-    graph = DAG(name=netlist.circuit, nodes=nodes, edges=edges)
+    graph = DAG(name=netlist.circuit, nodes=nodes, edges=edges,
+                output_wires=netlist.netlist_data['outputs'])
+    netlist.build_cfile(graph)
     candidates, variables_range = get_candidates(netlist, graph, candidate_type=None, reduced=False)
     cancel_dict = get_cancel_dict(gates_dict)
-    netlist.build_cfile(graph)
     return netlist, graph, candidates, cancel_dict, variables_range
 
 

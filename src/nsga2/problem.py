@@ -1,5 +1,7 @@
 import random
 import logging
+import pandas as pd
+import numpy as np
 from functools import partial
 from src.nsga2.individual import Individual
 from src.nsga2.utils import GeneType
@@ -129,21 +131,13 @@ class Problem:
 
     def get_baseline_data(self):
         """Get information of baseline circuit"""
-        # NOTE: this function is case specific
         if self.baseline_file is None:
             raise FileNotFoundError
 
-        # get column names of the baseline results file
-        with open(self.baseline_file, "r") as f:
-            data = f.read()
-        names = data.split()[:data.split().index('count')]
-        if 'Error' not in names:
-            names[names.index('MED')] = 'Error'
-
-        # return the summarized baseline mc file as dataframe
-        baseline_df = pd.read_csv(
-            self.baseline_file, sep='[\s\t]+', engine='python', skiprows=1, index_col=0, names=names
-        )
+        # read the baseline file
+        baseline_df = pd.read_csv(self.baseline_file, sep='\s', engine='python')
+        if 'MED' in baseline_df.columns:
+            baseline_df.rename(columns={'MED': 'Error'}, inplace=True)
         return baseline_df
 
     def get_variable_weights(self):

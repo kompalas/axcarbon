@@ -40,7 +40,7 @@ fi
 mkdir -p $testdir/results
 mkdir -p $testdir/results/baseline
 resfile=$testdir/results/baseline/${circuit}.txt
-echo -e "Area\tDelay\tMED\tPower" > $resfile
+echo -e "Area\tDelay\tError\tPower" > $resfile
 
 # prepare testbench, inputs and true outputs for simulation
 cp $circdir/top.v ./hdl/top.v

@@ -9,10 +9,10 @@ import functools
 import os
 import sys
 import subprocess
-import time
 import numpy as np
 import pandas as pd
 import argparse
+from datetime import datetime
 from copy import deepcopy
 from glob import glob
 from natsort import natsorted
@@ -88,7 +88,7 @@ def logging_cfg(args):
         os.makedirs(os.path.join(project_dir, 'logs'))
 
     # set the name of the log file and directory
-    timestr = time.strftime("%Y.%m.%d-%H:%M:%S")
+    timestr = datetime.now().strftime("%Y.%m.%d-%H.%M.%S.%f")[:-3]
     exp_full_name = timestr if args.name is None else args.name + '___' + timestr
     logdir = os.path.join(project_dir, 'logs', exp_full_name)
     if not os.path.exists(logdir):

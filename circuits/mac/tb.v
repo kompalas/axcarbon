@@ -5,15 +5,15 @@ parameter PERIOD=0.6;
 parameter NUM_INPUTS=100000;
 
 parameter BIT_WIDTH=8;
-parameter ACCUM_BITS=32;
+parameter OUT_WIDTH=32;
 
 // DUT I/O ports
 reg     [BIT_WIDTH  -1  :0] weight, inp;
-reg     [ACCUM_BITS -1	:0] partial_sum_in;
-wire    [ACCUM_BITS -1  :0] partial_sum_out;
+reg     [OUT_WIDTH -1	:0] partial_sum_in;
+wire    [OUT_WIDTH -1  :0] partial_sum_out;
 
 // variables for input loading
-reg  [(BIT_WIDTH*2 + ACCUM_BITS) -1:0] inputs [0:NUM_INPUTS-1];
+reg  [(BIT_WIDTH*2 + OUT_WIDTH) -1:0] inputs [0:NUM_INPUTS-1];
 integer i, f;
 
 initial begin
@@ -42,7 +42,7 @@ end
 top
 // #(
 //     .width       (BIT_WIDTH),
-//     .accwidth    (ACCUM_BITS)
+//     .accwidth    (OUT_WIDTH)
 // )
 DUT
 (   .weight             (weight),

@@ -44,8 +44,10 @@ def setup_circuit(circuit_name, libfile):
 
 def main():
     args = env_cfg()
-    netlist, graph = setup_circuit(args.circuit, args.libfile)
+    with open(os.path.join(logger.logdir, 'args.pkl'), 'wb') as f:
+        pickle.dump(args, f)
 
+    netlist, graph = setup_circuit(args.circuit, args.libfile)
     if handle_subapps(args, netlist, graph):
         return
 

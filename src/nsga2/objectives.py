@@ -110,14 +110,15 @@ def calc_fitness(chromosome, candidates, variables_range, cancel_dict, error_met
     )
     error = errors.get(error_metric)
 
-    # mandatory constraint: if error exceeds the maximum error, return worst fitness
-    if 'baseline_data' in kwargs and error > kwargs['baseline_data']['Error']['max']:
-        return MAX_ERROR, MAX_DELAY, MAX_STDEV
+    # TODO: Find a better way to constrain the error, this only works with a baseline file that contains min/max values
+    # # mandatory constraint: if error exceeds the maximum error, return worst fitness
+    # if 'baseline_data' in kwargs and error > kwargs['baseline_data']['Error']['max']:
+    #     return MAX_ERROR, MAX_DELAY, MAX_STDEV
 
-    # apply threshold on error: if violated, return worst values for all metrics
-    if 'constrained' in kwargs and 'baseline_data' in kwargs:
-        if error > kwargs['baseline_data']['Error']['max'] / kwargs['constrained']:
-            return MAX_ERROR, MAX_DELAY, MAX_STDEV
+    # # apply threshold on error: if violated, return worst values for all metrics
+    # if 'constrained' in kwargs and 'baseline_data' in kwargs:
+    #     if error > kwargs['baseline_data']['Error']['max'] / kwargs['constrained']:
+    #         return MAX_ERROR, MAX_DELAY, MAX_STDEV
 
     delay = MAX_DELAY
     if 'single_objective' not in kwargs or not kwargs['single_objective']:
