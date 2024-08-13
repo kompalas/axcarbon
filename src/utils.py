@@ -3,25 +3,19 @@ import logging
 import logging.config
 import pickle
 import re
-import math
 import ctypes
 import itertools
 import functools
 import os
-import shutil
 import sys
 import subprocess
-import warnings
 import time
 import numpy as np
 import pandas as pd
 import argparse
 from copy import deepcopy
-from datetime import datetime
 from glob import glob
-from textwrap import wrap
 from natsort import natsorted
-from multiprocessing import cpu_count
 from src import project_dir, ALL_CIRCUITS
 from src.wire import Wire
 from src.edge import Edge
@@ -648,7 +642,7 @@ def build_c_netlist_text_main_structure(netlist, graph):
     return netl_c
 
 
-def build_c_netlist_text(netlist, main_netlist_structure):
+def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='_'):
     """Create the text structure outline of the C-netlist file"""
     unique_io = netlist.netlist_data['unique_inputs'] + netlist.netlist_data['unique_outputs']
     io_pointers = ', '.join(natsorted('int* ' + io for io in unique_io))
@@ -699,9 +693,9 @@ def build_c_netlist_text(netlist, main_netlist_structure):
     dec2bin_and_call += f'\tint {outp_bin}[outsize];'
 
     # text going into fscanf: first the format and then the inputs as pointers
-    fscanf_1 = '"' + r'\t'.join([
+    fscanf_1 = '"' + input_file_separator.join([
         f'%{inp_u_format}' for _ in range(len(netlist.netlist_data['unique_inputs']))
-    ]) + rf'\t%{outp_u_format}"'
+    ]) + rf'{input_file_separator}%{outp_u_format}"'
     fscanf_2 = ', '.join('&' + inp for inp in netlist.netlist_data['unique_inputs'])
 
     data = f"""#include <stdlib.h>
@@ -864,7 +858,7 @@ void filetest(int ax_values[], double *error) {{
         i++;
         
         res = top_{netlist.circuit}(ax_values, {', '.join(netlist.netlist_data['unique_inputs'])}, signed_inputs, signed_outputs);
-    //    fprintf(fo, {fscanf_1[:-1]}\\n", {', '.join(netlist.netlist_data['unique_inputs'])}, res);
+        //fprintf(fo, {fscanf_1[:-1]}\\n", {', '.join(netlist.netlist_data['unique_inputs'])}, res);
         if(res != y_true) {{
             if (res>y_true) {{
                 nabs = res-y_true;
@@ -885,6 +879,9 @@ void filetest(int ax_values[], double *error) {{
             }}
             med += nabs;
         }}
+        else {{
+			min_error=0;
+		}}
     }}
 
     // total inputs
@@ -1122,12 +1119,43 @@ def get_mult_table(netlist, graph):
     return table
 
 
-def binary_to_decimal(input_binary_file, output_decimal_file):    
+def binary_to_decimal(input_binary_file, output_decimal_file, input_separator='\t', output_separator='\t'):    
     with open(input_binary_file, 'r') as f:
         inputs = f.readlines()
     
     with open(output_decimal_file, 'w') as f:
         for line in inputs:
-            decimal_line = '\t'.join(str(int(x, 2)) if set(x) == {'0', '1'} else x for x in line.split())
+            decimal_line = output_separator.join(
+                str(int(x, 2))
+                for x in line.strip().split(input_separator)
+            )
             f.write(decimal_line)
             f.write('\n')
+
+
+if __name__ == '__main__':
+        
+    parser = argparse.ArgumentParser(description='Convert binary file to decimal file.')
+    parser.add_argument('--input-binary-file', type=str, required=True, help='Path to the input binary file (required)')
+    parser.add_argument('--output-decimal-file', type=str, required=True, help='Path to the output decimal file (required)')
+    parser.add_argument('--input-separator', choices=["tab", "space", "underscore", "none"], default='tab', help='Separator used in the input binary file')
+    parser.add_argument('--output-separator', choices=["tab", "space", "underscore", "none"], default='tab', help='Separator used in the output decimal file')
+    args = parser.parse_args()
+
+    args.input_separator = {
+        "tab": '\t',
+        "space": ' ',
+        "underscore": '_',
+        "none": '',
+        "nothing": ''
+    }.get(args.input_separator)
+    args.output_separator = {
+        "tab": '\t',
+        "space": ' ',
+        "underscore": '_',
+        "none": '',
+        "nothing": ''
+    }.get(args.output_separator)
+
+    binary_to_decimal(args.input_binary_file, args.output_decimal_file,
+                        args.input_separator, args.output_separator)

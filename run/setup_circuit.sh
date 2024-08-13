@@ -17,6 +17,9 @@ circdir="$maindir/circuits/$circuit"
 top_design="top"
 tunit="ns"
 
+enable_safety_bits="1"
+safety_bits="1"
+
 mkdir -p $maindir/hdl
 mkdir -p $maindir/sim
 
@@ -26,6 +29,13 @@ cp $circdir/top.v hdl/
 # create initial inputs file, if input bitwidth is specified
 if [[ ! "$inputs_exist" == "True" ]]; then
     bits_num=$(($#-1))
+
+    if [[ "$enable_safety_bits" == "1" ]]; then
+        safety_bits_array=()
+        for ((i=0; i<$bits_num; i++)); do
+            safety_bits_array+=($safety_bits)
+        done
+    fi
 
     # size of input dataset
     num_inputs_optim="100000"
@@ -43,8 +53,9 @@ if [[ ! "$inputs_exist" == "True" ]]; then
         --num-inputs $num_inputs_optim \
         --deterministic \
         --type binary \
-        --separator space \
+        --separator underscore \
         --bits ${@:2:$bits_num} \
+        --safety-bits ${safety_bits_array[@]} \
         --out-file sim/inputs.txt \
         $signed
 
@@ -55,23 +66,41 @@ if [[ ! "$inputs_exist" == "True" ]]; then
     # rtl simulation to record output
     rm -rf work_lib/
     rm -rf rtl_simv.daidir/
+    sed -i "/parameter NUM_INPUTS=/ c\parameter NUM_INPUTS=$num_inputs_optim;" sim/top_tb.v
     make rtl_sim
-    paste -d"\t" sim/inputs.txt sim/output.txt > $circdir/inputs.txt
+    paste -d"_" sim/inputs.txt sim/output.txt > $circdir/inputs.txt
+
+    # convert inputs to their decimal values
+    python3 $maindir/src/utils.py \
+        --input-binary-file $circdir/inputs.txt \
+        --output-decimal-file $circdir/inputs_decimal.txt \
+        --input-separator underscore \
+        --output-separator underscore
 
     # generate inputs for evaluation
     python3 $maindir/src/create_inputs.py \
         --num-inputs $num_inputs_eval \
         --deterministic \
         --type binary \
-        --separator space \
+        --separator underscore \
         --bits ${@:2:$bits_num} \
+        --safety-bits ${safety_bits_array[@]} \
         --out-file sim/inputs.txt \
         $signed
 
     rm -rf work_lib/
     rm -rf rtl_simv.daidir/
+    sed -i "/parameter NUM_INPUTS=/ c\parameter NUM_INPUTS=$num_inputs_eval;" sim/top_tb.v
     make rtl_sim
-    paste -d"\t" sim/inputs.txt sim/output.txt > $circdir/inputs_eval.txt
+    paste -d"_" sim/inputs.txt sim/output.txt > $circdir/inputs_eval.txt
+
+    # convert inputs to their decimal values
+    python3 $maindir/src/utils.py \
+        --input-binary-file $circdir/inputs_eval.txt \
+        --output-decimal-file $circdir/inputs_eval_decimal.txt \
+        --input-separator underscore \
+        --output-separator underscore
+
 fi
 
 # get baseline measurements for the circuit

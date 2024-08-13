@@ -45,8 +45,8 @@ echo -e "Area\tDelay\tMED\tPower" > $resfile
 # prepare testbench, inputs and true outputs for simulation
 cp $circdir/top.v ./hdl/top.v
 cp $circdir/tb.v ./sim/top_tb.v
-awk '{for (i=1; i<NF; i++) {printf("%s", $i); if(i<NF-1) printf(" ")} printf("\n")}' $circdir/inputs.txt > ./sim/inputs.txt
-awk '{print $NF}' $circdir/inputs.txt > ./sim/expected.txt
+awk -F'_' '{for (i=1; i<NF; i++) {printf("%s", $i); if(i<NF-1) printf("_")} printf("\n")}' $circdir/inputs.txt > ./sim/inputs.txt
+awk -F'_' '{print $NF}' $circdir/inputs.txt > ./sim/expected.txt
 
 # setup environment
 sed -i "/ENV_LIBRARY_PATH=/ c\export ENV_LIBRARY_PATH=\"$libpath\"" ./scripts/env.sh

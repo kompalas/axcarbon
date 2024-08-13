@@ -30,7 +30,7 @@ initial begin
         //          "Prefix: %b\tPrefixedCorSum: %b\n\t\t", DUT.prefix, DUT.prefixed_corrected_sum_of_xs,
         //          "\tProduct: %b (%d)\n\t\t", DUT.product, DUT.product,
         //          "\tDesired Prodcut: %b (%d)", $unsigned(operand_a)*$unsigned(operand_b), $unsigned(operand_a)*$unsigned(operand_b));
-        $fwrite(f, "%d\n", partial_sum_out);
+        $fwrite(f, "%b\n", partial_sum_out);
     end
     $finish;
 end

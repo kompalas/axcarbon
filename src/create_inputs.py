@@ -23,6 +23,8 @@ parser.add_argument("--separator", "--sep", dest="separator",
                          "Choices are: space, nothing/none, tab (default) and underscore")
 parser.add_argument("--signed", action='store_true',
                     help='Set for using signed integers as inputs. Only affects decimal numbers')
+parser.add_argument("--safety-bits", type=int, nargs='+', default=[],
+                    help='Specify safety bitwidth for each input, separated by space. Default is 0')
 args = parser.parse_args()
 
 if args.deterministic:
@@ -35,26 +37,37 @@ args.separator = {"tab": '\t',
                   "nothing": ''
                  }.get(args.separator)
 
+if len(args.safety_bits) == 0:
+    args.safety_bits = [0] * len(args.bits)
+elif len(args.safety_bits) == 1:
+    args.safety_bits = args.safety_bits * len(args.bits)
+elif len(args.safety_bits) != len(args.bits):
+    raise ValueError("The '--safety-bits' must be empty, have one argument, or have"
+                     "as many arguments asthe number of bitwidths")
+
 input_vectors = []
-for bitwidth in args.bits:
+for bitwidth, safety_bits in zip(args.bits, args.safety_bits):
 
     # decimal inputs
     if args.input_type == "decimal":
         if args.signed:
             # adding 1 to the high range to include highest value
-            number = np.random.randint(-2 ** (bitwidth - 1), 2 ** (bitwidth - 1) - 1 + 1, size=args.num_inputs, dtype=np.int64)
+            number = np.random.randint(-(2 ** (bitwidth - 1 - safety_bits)),
+                                       (2 ** (bitwidth - 1 - safety_bits)) - 1 + 1,
+                                       size=args.num_inputs, dtype=np.int64)
         else:
             # if bitwidth > 64:
             #     input_vectors.append(
             #         np.random.randint(0, 2 ** bitwidth - 1, size=args.num_inputs, dtype=np.u)
             #     )
             # else:
-            number = np.random.randint(0, 2**bitwidth-1, size=args.num_inputs, dtype=np.uint64)
+            number = np.random.randint(0, (2 ** (bitwidth - safety_bits)) - 1, size=args.num_inputs, dtype=np.uint64)
 
     # binary inputs
     elif args.input_type == "binary":
-            # adding 1 to the high range to include highest value
-        number = np.random.randint(0, 2**bitwidth-1 + 1, size=args.num_inputs, dtype=np.uint64)
+        # adding 1 to the high range to include highest value
+        number = np.random.randint(0, (2 ** (bitwidth - safety_bits)) - 1 + 1,
+                                   size=args.num_inputs, dtype=np.uint64)
 
         bin_func = lambda num: bin(num)[2:].zfill(bitwidth)
         number = np.array(list(map(bin_func, number)))
