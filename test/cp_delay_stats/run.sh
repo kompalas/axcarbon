@@ -4,6 +4,8 @@
 set -eou pipefail
 #set -x
 
+# TODO: Change this according to the new scripts in maindir
+
 mkdir -p logs/
 mkdir -p hdl/
 mkdir -p gate/

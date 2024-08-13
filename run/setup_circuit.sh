@@ -3,14 +3,19 @@
 # example usage: ./setup_circuit.sh mult8 8 8
 
 set -euo pipefail
-#set -x
+set -x
 
 circuit=${1?"Specify the circuit as first positional argument"}
 # if inputs already exist, leave the second positional argument unset
 inputs_exist=${2:-"True"}
 
+library="nangate45"
+
 maindir="$HOME/axcarbon"
 circdir="$maindir/circuits/$circuit"
+
+top_design="top"
+tunit="ns"
 
 mkdir -p $maindir/hdl
 mkdir -p $maindir/sim
@@ -25,7 +30,7 @@ if [[ ! "$inputs_exist" == "True" ]]; then
     # size of input dataset
     num_inputs_optim="100000"
     num_inputs_eval="1000000"
-    
+
     # check if inputs are supposed to be signed numbers
     if grep -q "input signed" ./hdl/top.v; then
         signed="--signed"
@@ -37,49 +42,51 @@ if [[ ! "$inputs_exist" == "True" ]]; then
     python3 $maindir/src/create_inputs.py \
         --num-inputs $num_inputs_optim \
         --deterministic \
-        --type decimal \
+        --type binary \
         --separator space \
         --bits ${@:2:$bits_num} \
-        --out-file $maindir/sim/inputs.txt \
+        --out-file sim/inputs.txt \
         $signed
 
     cp $circdir/tb.v sim/top_tb.v
     simclk="10.0"
-    sed -i "/localparam period =/ c\localparam period = $simclk;" sim/top_tb.v
+    sed -i "/parameter PERIOD=/ c\parameter PERIOD=$simclk;" ./sim/top_tb.v
 
     # rtl simulation to record output
-    rm -rf work/
+    rm -rf work_lib/
+    rm -rf rtl_simv.daidir/
     make rtl_sim
-    paste -d"\t" $maindir/sim/inputs.txt $maindir/sim/output.txt > $circdir/inputs.txt
+    paste -d"\t" sim/inputs.txt sim/output.txt > $circdir/inputs.txt
 
     # generate inputs for evaluation
-    python3 $maindir/src/create_inputs.py 
+    python3 $maindir/src/create_inputs.py \
         --num-inputs $num_inputs_eval \
         --deterministic \
-        --type decimal \
+        --type binary \
         --separator space \
         --bits ${@:2:$bits_num} \
-        --out-file $maindir/sim/inputs.txt \
+        --out-file sim/inputs.txt \
         $signed
 
-    rm -rf work/
+    rm -rf work_lib/
+    rm -rf rtl_simv.daidir/
     make rtl_sim
     paste -d"\t" sim/inputs.txt sim/output.txt > $circdir/inputs_eval.txt
 fi
 
 # get baseline measurements for the circuit
-source $maindir/run/baseline_eval.sh $circuit
+source $maindir/run/baseline_eval.sh $circuit $library
 
 # save netlist
 cp $maindir/gate/top.v $circdir/top.sv
 
 # get delay annotations from sta delay report
-delay_rpt="$maindir/reports/top_${synclk}ns.delay_calc.pt.rpt"
+delay_rpt="$maindir/reports/${top_design}_${synclk}${tunit}.delay_calc.pt.rpt"
 if ! [ -f "$delay_rpt" ]; then
     echo "Perform STA with delay calculation to annotate gates. Exiting..."
     exit 1
 fi
-if grep -q "Error" $delay_rpt; then
+if grep -qi "error" $delay_rpt; then
     echo "Errors found in delay calculation. Cannot proceed. Exiting..."
     exit 1
 fi

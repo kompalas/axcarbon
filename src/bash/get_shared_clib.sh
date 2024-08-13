@@ -6,7 +6,7 @@ set -euo pipefail
 
 cfile=${1?"Set c-file as first positional argument"}
 
-maindir="$HOME/ax_map_accel/circuit_generation"
+maindir="$HOME/axcarbon"
 
 
 dir="$(dirname $cfile)"

@@ -34,13 +34,17 @@ __all__ = [
     'app_args', 'env_cfg', 'logging_cfg',
     'get_gates_dict', 'get_cancel_dict', 'check_cancel_gates',
     'translate_netlist_to_gates_and_wires',
+    'assign_wire_activity',
     'gate_to_node', 'gates_to_nodes',
     'wires_to_edges',
     'get_size', 'clear_directory',
     'create_shared_cfile', 'build_c_netlist_text_main_structure', 'build_c_netlist_text',
     'signed_io_verilog',
+    'get_precision_scaling_data',
     'get_overrides', 'get_cp_net_indices',
-    'forward'
+    'forward',
+    'get_mult_table',
+    'binary_to_decimal',
 ]
 
 logger = logging.getLogger(__name__)
@@ -840,7 +844,7 @@ void filetest(int ax_values[], double *error) {{
     int signed_inputs={signed_inputs_value};
     int signed_outputs={signed_outputs_value};
 
-    char file[] = "{project_dir}/circuits/{netlist.circuit}/inputs.txt";
+    char file[] = "{project_dir}/circuits/{netlist.circuit}/inputs_decimal.txt";
     FILE *f = fopen(file, "r");
     if (f == NULL)
         exit(1);
@@ -1116,3 +1120,14 @@ def get_mult_table(netlist, graph):
             logger.info(f"{input1} x {input2} = {res} ({input1*input2})")
 
     return table
+
+
+def binary_to_decimal(input_binary_file, output_decimal_file):    
+    with open(input_binary_file, 'r') as f:
+        inputs = f.readlines()
+    
+    with open(output_decimal_file, 'w') as f:
+        for line in inputs:
+            decimal_line = '\t'.join(str(int(x, 2)) if set(x) == {'0', '1'} else x for x in line.split())
+            f.write(decimal_line)
+            f.write('\n')

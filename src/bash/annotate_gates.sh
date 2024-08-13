@@ -8,7 +8,7 @@
 circ="${1?"Set circuit as first positional argument."}"
 report_file="${2?"Set report file as second positional argument"}"
 
-maindir="$HOME/ax_map_accel/circuit_generation"
+maindir="$HOME/axcarbon"
 csvfile="${3:-$maindir/circuits/${circ}/gate_delay.rpt.csv}"
 
 # initialize csv file

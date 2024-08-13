@@ -4,6 +4,7 @@ import argparse
 import pickle
 from enum import Enum
 from multiprocessing import cpu_count
+import warnings
 
 __all__ = [    
     'ga_args', 'validate_ga_args',
@@ -203,7 +204,9 @@ str_to_error_metric_map = {
     'maxerror': ErrorMetric.MaxError,
     'me': ErrorMetric.MaxError,
     'errorvariance': ErrorMetric.ErrorRange,
-    'errorrange': ErrorMetric.ErrorRange
+    'variance': ErrorMetric.ErrorRange,
+    'errorrange': ErrorMetric.ErrorRange,
+    'range': ErrorMetric.ErrorRange
 }
 
 def error_metric_arg(metric_str):

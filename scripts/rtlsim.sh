@@ -46,7 +46,7 @@ fi
 
 vcs -full64 -debug_access+r -kdb -lca ${ENV_TB_NAME} -o ${simv} -l ./logs/vcs_rtl.log
 exstatus="$?"
-err="$(grep -E -o '[0-9]+[ ]*error' ./logs/vcs.log | grep -E -o '[0-9]+')"
+err="$(grep -E -o '[0-9]+[ ]*error' ./logs/vcs_rtl.log | grep -E -o '[0-9]+')"
 err=${err:=0}
 if [ "$exstatus" -ne 0 ] || [ "$err" -ne 0 ]; then
         echo "ERROR in vcs"

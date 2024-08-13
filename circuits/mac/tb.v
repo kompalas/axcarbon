@@ -1,11 +1,11 @@
 `timescale 1ns/1ps
 
-module mac_unit_tb();
+module top_tb();
 parameter PERIOD=0.6;
 parameter NUM_INPUTS=100000;
 
 parameter BIT_WIDTH=8;
-parameter ACCUM_BITS=0;
+parameter ACCUM_BITS=32;
 
 // DUT I/O ports
 reg     [BIT_WIDTH  -1  :0] weight, inp;
@@ -17,7 +17,7 @@ reg  [(BIT_WIDTH*2 + ACCUM_BITS) -1:0] inputs [0:NUM_INPUTS-1];
 integer i, f;
 
 initial begin
-    f = $fopen("./sim/mac_unit_output.txt");
+    f = $fopen("./sim/output.txt");
     #(5*PERIOD);
     for(i=0; i<NUM_INPUTS; i=i+1) begin
         {weight, inp, partial_sum_in} = inputs[i];
@@ -30,16 +30,16 @@ initial begin
         //          "Prefix: %b\tPrefixedCorSum: %b\n\t\t", DUT.prefix, DUT.prefixed_corrected_sum_of_xs,
         //          "\tProduct: %b (%d)\n\t\t", DUT.product, DUT.product,
         //          "\tDesired Prodcut: %b (%d)", $unsigned(operand_a)*$unsigned(operand_b), $unsigned(operand_a)*$unsigned(operand_b));
-        $fwrite(f, "%d\n", product);
+        $fwrite(f, "%d\n", partial_sum_out);
     end
     $finish;
 end
 
 initial begin 
-    $readmemb("./sim/mac_unit_inputs.txt", inputs);
+    $readmemb("./sim/inputs.txt", inputs);
 end
 
-mac_unit
+top
 // #(
 //     .width       (BIT_WIDTH),
 //     .accwidth    (ACCUM_BITS)

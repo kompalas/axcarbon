@@ -5,8 +5,7 @@
 # logging symlinks
 latest_log_dir
 latest_log_file
-optimization/latest_log_file
-optimization/latest_log_dir
+*.log
 
 # files left my Design Compiler
 **/extracted_model_constr.pt
@@ -24,6 +23,7 @@ optimization/latest_log_dir
 **/__pycache__/
 **/alib-52/
 **/sim/
+**/csrc/
 **/work/
 **/work_gate/
 **/hdl/
@@ -38,6 +38,14 @@ optimization/latest_log_dir
 # libraries / library interm objects
 libs/*.so
 libs/*.o
+tech_lib/
+**/gate_simv.daidir/
+**/rtl_simv.daidir/
+**/gate_simv
+**/rtl_simv
+**/work_lib/
+**/work_gate_lib/
+synopsys_sim.setup
 
 # circuits
 circuits/*/*approx*

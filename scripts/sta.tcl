@@ -38,8 +38,14 @@ check_timing -include {supply_net_voltage signal_level unconnected_pg_pins}
 update_timing
 
 #reports
-#write_sdf ../gate/${TOP_DESIGN}.sdf
+write_sdf ./gate/${top_design}.sdf
+# write_saif ./gate/${top_design}.saif
 set clk_period $::env(ENV_CLK_PERIOD)
-report_timing > ./reports/${top_design}_${clk_period}${tunit}.timing.pt.rpt
+report_timing -significant_digits 3 > ./reports/${top_design}_${clk_period}${tunit}.timing.pt.rpt
+
+set all_cells [get_object_name [get_cells "*"]]
+set arcs [get_timing_arcs -of_objects $all_cells]
+# exact delay calculation report for specified arc (node or edge)
+report_delay_calculation -nosplit -derate -of_objects $arcs  > ./reports/${top_design}_${clk_period}${tunit}.delay_calc.pt.rpt
 
 quit

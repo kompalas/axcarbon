@@ -7,7 +7,7 @@ parser.add_argument("--type", "-t", dest="input_type",
                     choices=["binary", "decimal"], default="decimal",
                     help="Numerical representation of the input numbers. "
                          "Choices are decimal (default) and binary")
-parser.add_argument("--num-inputs", "-n", type=int, default=1e4, dest='num_inputs',
+parser.add_argument("--num-inputs", "-n", type=int, default=10000, dest='num_inputs',
                     help="Define number of input samples (default 10,000)")
 parser.add_argument("--bits", "-b", type=int, nargs='+',
                     help='''Specify bitwidth for each input, separated by space.\
@@ -18,9 +18,9 @@ parser.add_argument("--deterministic", '-d', action='store_true',
 parser.add_argument("--out-file", "-o", dest='out_file', default='./inputs.txt',
                     help="Location of output file (default './inputs.txt'")
 parser.add_argument("--separator", "--sep", dest="separator", 
-                    choices=["tab", "space", "underscore"], default='tab',
+                    choices=["tab", "space", "underscore", "none"], default='tab',
                     help="Separator between consecutive inputs. "
-                         "Choices are: space, tab (default) and underscore")
+                         "Choices are: space, nothing/none, tab (default) and underscore")
 parser.add_argument("--signed", action='store_true',
                     help='Set for using signed integers as inputs. Only affects decimal numbers')
 args = parser.parse_args()
@@ -30,7 +30,9 @@ if args.deterministic:
 
 args.separator = {"tab": '\t',
                   "space": ' ',
-                  "underscore": '_'
+                  "underscore": '_',
+                  "none": '',
+                  "nothing": ''
                  }.get(args.separator)
 
 input_vectors = []

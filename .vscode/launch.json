@@ -1,0 +1,41 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "GA (main.py)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": [
+                "--circuit", "mac",
+                "--libfile", "nangate45",
+                "--name", "ga_mac",
+                "--ga",
+                "--generations", "10",
+                "--population-size", "20",
+                "--tournament-participants", "0.05",
+                "--tournament-probability", "0.9",
+                "--number-of-objectives", "2",
+                "--error-metric", "variance",
+                "--gene-type", "discrete",
+                "--candidate-type", "constant",
+                "--initial-weight", "20",
+                "--threads", "10",
+                "--save-frequency", "5"
+            ],
+            "console": "integratedTerminal",
+            "redirectOutput": true,
+            "justMyCode": true
+        },
+    ]
+}

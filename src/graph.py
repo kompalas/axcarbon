@@ -332,7 +332,7 @@ class DAG:
 
                 # keeping only delay-valued keys
                 start = 1 + row.index.get_loc('sense')
-                for metric, value in row.iloc[start:].iteritems():
+                for metric, value in row.iloc[start:].items():
                     # if the pins are not included/specified in the netlist, 
                     # do not include that delay transition in the node delay details
                     if row['from'] in node.input_pins and row['to'] in node.output_pins:

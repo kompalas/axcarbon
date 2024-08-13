@@ -1,4 +1,4 @@
-module mac_unit (
+module top (
     weight, inp, partial_sum_in,
     partial_sum_out
 );
