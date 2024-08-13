@@ -4,8 +4,6 @@
 set -eou pipefail
 #set -x
 
-# TODO: Change this according to the new scripts in maindir
-
 mkdir -p logs/
 mkdir -p hdl/
 mkdir -p gate/
@@ -13,47 +11,67 @@ mkdir -p reports/
 
 circuit=${1?"Specify a circuit as the first positional argument"}
 runs=${2?"Specify the number of approximate netlists as the second positional argument"}
+library=${3?"Specify a library as the third positional argument. Options are: asap7, 14nm, nangate45"}
 
-maindir="$HOME/ax_map_accel/circuit_generation"
+maindir="$HOME/axcarbon"
 circdir="$maindir/circuits/$circuit"
 testdir="$maindir/test/cp_delay_stats"
 
+top_design="top"
+synclk="0.0"
+
+# set up libraries and environment
+if [[ $library == "asap7" ]]; then
+    libpath="$maindir/libs/asap7/7nm/db"
+    libverilog="$maindir/libs/asap7/7nm/verilog"
+    lib="asap7.db"
+    tunit="ps"
+    libfile_python="asap7"
+elif [[ $library == "nangate45" ]]; then
+    libpath="$maindir/libs/nangate45/db"
+    libverilog="$maindir/libs/nangate45/verilog"
+    lib="nangate45.db"
+    tunit="ns"
+    libfile_python="nangate45"
+elif [[ $library == "14nm" ]]; then
+    # TODO: find 14nm library
+    libpath="$maindir/libs/14nm/db"
+    libverilog="$maindir/libs/14nm/verilog"
+    lib="14nm.db"
+    libfile_python="14nm"
+else
+    echo "Invalid library option. Options are: asap7, 14nm, nangate45"
+    exit 1
+fi
+
+# results and reports directories
 resdir="$testdir/results"
 mkdir -p $resdir
 resdir="$resdir/$circuit"
 mkdir -p $resdir
 rm -rf $resdir/*
-
 reports_dir="$testdir/reports"
 mkdir -p $reports_dir
 reports_dir="$reports_dir/$circuit"
 mkdir -p $reports_dir
 rm -rf $reports_dir/timing_report_*
 
+delay_rpt="reports/${top_design}_${synclk}${tunit}.timing.pt.rpt"
 logfile="$testdir/logs/delay_stats_${circuit}.log"
 
-synclk="0.0"
-delay_rpt="reports/top_${synclk}ns.timing.pt.rpt"
-
-# set up libraries and environment
-libpath="$maindir/libs/nangate45/db"
-libverilog="$maindir/libs/nangate45/verilog"
-lib="nangate45.db"
-libfile_python="nangate45"
-
-# If asap7 libray is used, override the default nangate45
-#libpath="$maindir/libs/asap7/7nm/db"
-#libverilog="$maindir/libs/asap7/7nm/verilog"
-#lib="asap7.db"
-#libfile_python="asap7"
-
+# setup library paths
 sed -i "/ENV_LIBRARY_PATH=/ c\export ENV_LIBRARY_PATH=\"$libpath\"" ./scripts/env.sh
 sed -i "/ENV_LIBRARY_DB=/ c\export ENV_LIBRARY_DB=\"$lib\"" ./scripts/env.sh
 sed -i "/ENV_LIBRARY_VERILOG_PATH=/ c\export ENV_LIBRARY_VERILOG_PATH=\"$libverilog\"" ./scripts/env.sh
 sed -i "/ENV_CLK_PERIOD=/ c\export ENV_CLK_PERIOD=\"$synclk\"" ./scripts/env.sh
 
 # create the approximate netlists
-python3 $testdir/create_approx_netlists.py --circuit $circuit --libfile $libfile_python --runs $runs --deterministic --results-dir $resdir
+python3 $testdir/create_approx_netlists.py \
+    --circuit $circuit \
+    --libfile $libfile_python \
+    --runs $runs \
+    --deterministic \
+    --results-dir $resdir
 
 # extract the timing report and CPD from each netlist
 echo "Creating timing reports" | tee -a $logfile 2>&1
@@ -62,7 +80,7 @@ for netlist in $resdir/*.sv; do
     netlist_id="${netlist_id%.*}"
     echo $netlist_id
 
-    cp $netlist ./gate/top.sv
+    cp $netlist ./gate/${top_design}.v
     make sta
 
     if grep 'data arrival time' $delay_rpt > /dev/null; then
@@ -78,5 +96,7 @@ done
 echo "Timing reports created in $reports_dir" | tee -a $logfile 2>&1
 
 # collect timing arc statistics based on the timing reports
-python3 $testdir/get_delay_stats.py --circuit $circuit --reports-dir $reports_dir --output-dir $circdir
-
+python3 $testdir/get_delay_stats.py \
+    --circuit $circuit \
+    --reports-dir $reports_dir \
+    --output-dir $circdir

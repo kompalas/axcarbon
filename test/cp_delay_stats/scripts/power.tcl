@@ -23,30 +23,29 @@ set link_path [list ${LIB_DB_NAME} ${synthetic_library} *]
 #read files
 set top_design $::env(ENV_TOP_DESIGN)
 
-read_verilog ./gate/${top_design}.sv
+read_verilog ./gate/${top_design}.v
 current_design $top_design
 link_design
 read_sdf ./gate/${top_design}.sdf
 
 #sdc
 source ./scripts/sdc.tcl
-
+source ./scripts/units.tcl
 
 #power
 set power_enable_analysis true
 
 set power_analysis_mode averaged
-set vcdfile $::env(ENV_VCDFILE)
+set vcdfile $::env(ENV_DUMPFILE)
 set dut $::env(ENV_DUT_NAME)
 set tb $::env(ENV_TB_NAME)
-read_vcd -strip_path ${tb}/${dut} ${vcdfile}
+read_fsdb -strip_path ${tb}/${dut} ${vcdfile}
 
 update_power
 
 #reports
 set clk_period $::env(ENV_CLK_PERIOD)
-report_power > ./reports/${top_design}_${clk_period}ns.power.ptpx.rpt
-report_power -hierarchy > ./reports/${top_design}_${clk_period}ns.hierarchy.power.ptpx.rpt
-write_saif ./gate/${top_design}.saif
+report_power > ./reports/${top_design}_${clk_period}${tunit}.power.ptpx.rpt
+report_power -hierarchy > ./reports/${top_design}_${clk_period}${tunit}.hierarchy.power.ptpx.rpt
 
 quit

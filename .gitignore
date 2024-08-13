@@ -54,6 +54,7 @@ circuits/*/*.so
 circuits/*/*ctypes*
 circuits/*/*vcd*
 circuits/*/*.c
+circuits/*/*txt
 
 # test intermediate files
 test/**/*.sv

@@ -133,7 +133,7 @@ do
         # execute test to extract delay stats from 500 approximate netlists
         [yY]*)
             cd $maindir/test/cp_delay_stats
-            ./run.sh $circuit 500       
+            ./run.sh $circuit 500 $library
             break
             ;;
 

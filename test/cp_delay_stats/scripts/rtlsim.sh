@@ -1,44 +1,61 @@
 #!/bin/bash
 
 source ./scripts/env.sh
+mkdir -p ./logs
 
-if [ ! -d work ]; then
-	echo "Creating Library work"
-	vlib work
-	vlogfiles=$(find ${ENV_LIBRARY_VERILOG_PATH}/*.v | awk 'ORS=" "')
-	echo "Compiling $vlogfiles"
-	vlog -quiet $vlogfiles
+work="./work_lib"
+simv="rtl_simv"
+
+cat > ./synopsys_sim.setup << EOM
+--Mapping default work directory
+WORK > WORK_LIB
+WORK_LIB : ${work}
+
+EOM
+
+vfiles=$(find ./hdl/*.v 2>/dev/null | awk 'ORS=" "')
+if [ -n "$vfiles" ]; then
+	vlogan -full64 -work WORK_LIB -kdb $vfiles
 	exstatus="$?"
 	if [ "$exstatus" -ne  0 ]; then
-        	echo "ERROR in lib"
-		rm -r work
-        	exit 1
+		echo "ERROR in testbench"
+		exit 1
 	fi
 fi
 
+
+vhdlfiles=$(find ./hdl/*.vhd 2>/dev/null | awk 'ORS=" "')
+if [ -n "$vhdlfiles" ]; then
+	vhdlan -full64 -work WORK_LIB -kdb $vhdlfiles
+	exstatus="$?"
+	if [ "$exstatus" -ne  0 ]; then
+		echo "ERROR in testbench"
+		exit 1
+	fi
+fi
+
+
 tbfiles=$(find ./sim/*.v | awk 'ORS=" "')
-echo "Compiling: $tbfiles"
-vlog $tbfiles
+vlogan -full64 -work WORK_LIB -kdb $tbfiles
 exstatus="$?"
 if [ "$exstatus" -ne  0 ]; then
 	echo "ERROR in testbench"
 	exit 1
 fi
 
-vlogfiles=$(find ./hdl/*.v | awk 'ORS=" "')
-echo "Compiling: $vlogfiles"
-vlog $vlogfiles
+
+vcs -full64 -debug_access+r -kdb -lca ${ENV_TB_NAME} -o ${simv} -l ./logs/vcs_rtl.log
 exstatus="$?"
-if [ "$exstatus" -ne 0 ]; then
-        echo "ERROR in hdl"
+err="$(grep -E -o '[0-9]+[ ]*error' ./logs/vcs_rtl.log | grep -E -o '[0-9]+')"
+err=${err:=0}
+if [ "$exstatus" -ne 0 ] || [ "$err" -ne 0 ]; then
+        echo "ERROR in vcs"
         exit 1
 fi
 
 
-vsim -c -do "run -all; rm -rf simv*; quit" work.top_tb
-exstatus="$?"
-if [ "$exstatus" -ne 0 ]; then
-        echo "ERROR in simulation"
-        exit 1
+if [ "$1" == "-g" ]; then
+	./${simv} -gui=verdi
+else
+	./${simv}	
 fi
-

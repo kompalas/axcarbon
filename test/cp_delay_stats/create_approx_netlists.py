@@ -37,16 +37,20 @@ def logger_cfg(args):
     logger.addHandler(file_handler)
 
 
-def prepare(circuit, libfile):
+def prepare(circuit_name, libfile):
     gates_dict = get_gates_dict(libfile=libfile + '.v')
-    netlist = Netlist(circuit, gates_dict)
+    netlist = Netlist(circuit_name, gates_dict)
     gates, wires = translate_netlist_to_gates_and_wires(netlist)
     nodes = gates_to_nodes(gates)
     edges = wires_to_edges(wires)
-    graph = DAG(name=netlist.circuit, nodes=nodes, edges=edges)
-    candidates, variables_range = get_candidates(netlist, graph, candidate_type=None, reduced=False)
-    cancel_dict = get_cancel_dict(gates_dict)
+    graph = DAG(name=netlist.circuit, nodes=nodes, edges=edges,
+                output_wires=netlist.netlist_data['outputs'])
     netlist.build_cfile(graph)
+
+    candidates, variables_range = get_candidates(netlist, graph,
+                                                 candidate_type=None,
+                                                 reduced=False)
+    cancel_dict = get_cancel_dict(gates_dict)
     return netlist, graph, candidates, cancel_dict, variables_range
 
 
@@ -96,15 +100,16 @@ def main():
         logger.debug(f"Chromosome {chrom}")
 
         calc_fitness(
-            chromosome=chrom, candidates=candidates, cancel_dict=cancel_dict,
-            netlist=netlist, graph=graph,
+            chromosome=chrom,
+            candidates=candidates,
+            variables_range=variables_range,
+            cancel_dict=cancel_dict,
+            netlist=netlist,
+            graph=graph,
+            single_objective=True,
+            error_metric=ErrorMetric.NMED,
             write_cfile_to=os.path.join(project_dir, 'circuits', args.circuit, 'top_approx.c'),
             write_verilog_to=os.path.join(args.results_dir, f'top_approx{run}.sv'),
-            error_function='ctypes',
-            delay_version=1,
-            variables_range=variables_range,
-            single_objective=True,
-            error_metric=ErrorMetric.NMED
         )
     logger.info(f"Netlists created in {args.results_dir}.")
 

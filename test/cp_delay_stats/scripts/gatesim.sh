@@ -2,38 +2,56 @@
 
 source ./scripts/env.sh
 
-if [ ! -d work_gate ]; then
-	echo "Creating Library work_gate"
-	vlib work_gate
+work="./work_lib"
+work_gate="./work_gate_lib"
+tech="./tech_lib"
+simv="gate_simv"
+
+cat > ./synopsys_sim.setup << EOM
+--Mapping default work directory
+WORK > WORK_LIB
+WORK_LIB : ${work_gate}
+TECH_LIB : ${tech}
+
+EOM
+
+
+if [ ! -d ${tech} ]; then
+	echo "Creating Library TECH_LIB"
+	#find ${ENV_LIBRARY_VERILOG_PATH}/*.v > tech
 	vlogfiles=$(find ${ENV_LIBRARY_VERILOG_PATH}/*.v | awk 'ORS=" "')
-	echo "Compiling $vlogfiles"
-	vlog -work work_gate -quiet $vlogfiles
+	vlogan -full64 -kdb -work TECH_LIB $vlogfiles
+	
 	exstatus="$?"
 	if [ "$exstatus" -ne  0 ]; then
         	echo "ERROR in lib"
-		rm -r work_gate
+		rm -rf ${tech}
         	exit 1
 	fi
 fi
 
 tbfiles=$(find ./sim/*.v | awk 'ORS=" "')
-vlog -work work_gate $tbfiles
+vlogan -full64 -work WORK_LIB -kdb $tbfiles
 exstatus="$?"
 if [ "$exstatus" -ne  0 ]; then
 	echo "ERROR in testbench"
 	exit 1
 fi
 
-vlog -work work_gate ./gate/${ENV_TOP_DESIGN}.sv
+vlogan -full64 -work WORK_LIB -kdb ./gate/${ENV_TOP_DESIGN}.v
 exstatus="$?"
 if [ "$exstatus" -ne 0 ]; then
-        echo "ERROR in hdl"
+        echo "ERROR in synthesized verilog"
         exit 1
 fi
 
-vsim -c -t 1ps -sdfmax /${ENV_DUT_NAME}/=./gate/${ENV_TOP_DESIGN}.sdf +sdfverbose -do ./scripts/gatesim.tcl work_gate.${ENV_TB_NAME}
+vcs -full64 -kdb -lca -debug_access ${ENV_TB_NAME} -sdf max:${ENV_TB_NAME}.${ENV_DUT_NAME}:./gate/${ENV_TOP_DESIGN}.sdf -o ${simv} -l ./logs/vcs_gate.log
 exstatus="$?"
-if [ "$exstatus" -ne 0 ]; then
-        echo "ERROR in simulation"
+err="$(grep -E -o '[0-9]+[ ]*error' ./logs/vcs_gate.log | grep -E -o '[0-9]+')"
+err=${err:=0}
+if [ "$exstatus" -ne 0 ] || [ "$err" -ne 0 ]; then
+        echo "ERROR in vcs"
         exit 1
 fi
+
+./${simv} -ucli -do ./scripts/dump.tcl
