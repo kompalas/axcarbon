@@ -13,6 +13,7 @@ __all__ = [
     'crossover_param_type',
     'GeneType', 'str_to_gene_type_map', 'gene_type_arg',
     'ErrorMetric', 'str_to_error_metric_map', 'error_metric_arg',
+    'HW_Metric', 'str_to_hw_metric_map', 'hw_metric_arg',
 ]
 
 logger = logging.getLogger(__name__)
@@ -35,8 +36,6 @@ def ga_args(parser):
                          help="Select probability for crossover [0, 1] or 'adj' for adjusted crossover probability. Default is 0.95")
     ga_args.add_argument("--mutation-probability", "--mprob", type=float, dest='mutation_probability',
                          help="Select probability for mutation [0, 1]. Default is the reversed chromosome length")
-    ga_args.add_argument("--number-of-objectives", "--obj", type=int, choices=[1, 2, 3], default=2, dest="num_of_objectives",
-                         help="Select the number of objectives to return. Choices are 1, 2 (default) or 3")
     ga_args.add_argument("--threads", type=int, default=1,  # default=multiprocessing.cpu_count(),
                          help="Specify the number of threads to use for parallel execution. Default is 1 for serial execution")
     ga_args.add_argument("--save-frequency", '--sf', type=int, default=1, dest='save_frequency',
@@ -71,9 +70,12 @@ def ga_args(parser):
     ga_args.add_argument("--initial-weight", '-iw', dest='initial_weight', type=int, default=50,
                          help='Set the initial weight towards non-approximated wires as an integer '
                               '(default is 50:1 weight)')
-    ga_args.add_argument("--error-metric", dest="error_metric", type=error_metric_arg, default='nmed',
+    ga_args.add_argument("--error-metric", dest="error_metric", type=error_metric_arg,
                          help="Choose the error metric as one of the objectives for the GA. Choices: "
                               "{' | '.join(str_to_error_metric_map)}. Default is NMED")
+    ga_args.add_argument("--hw-metric", dest="hw_metric", type=hw_metric_arg,
+                            help="Choose the hardware metric as one of the objectives for the GA. Choices: "
+                                "{' | '.join(str_to_hw_metric_map)}. Default is delay")
     return parser
 
 
@@ -179,7 +181,7 @@ def gene_type_arg(gene_str):
     try:
         return str_to_gene_type_map[gene_str]
     except KeyError:
-        raise argparse.ArgumentTypeeError('--gene-type argument must be one of {0} (received {1})'.format(
+        raise argparse.ArgumentTypeError('--gene-type argument must be one of {0} (received {1})'.format(
             list(str_to_gene_type_map.keys()), gene_str
         ))
 
@@ -210,11 +212,33 @@ str_to_error_metric_map = {
 }
 
 def error_metric_arg(metric_str):
+    if metric_str is None:
+        return
     try:
-        return str_to_error_metric_map[metric_str.replace('_', '').replace('-', '')]
+        return str_to_error_metric_map[metric_str.replace('_', '').replace('-', '').lower()]
     except KeyError:
-        raise argparse.ArgumentTypeeError('--error-metric argument must be one of {0} (received {1})'.format(
+        raise argparse.ArgumentTypeError('--error-metric argument must be one of {0} (received {1})'.format(
             list(str_to_error_metric_map.keys()), metric_str
         ))
 
 
+class HW_Metric(Enum):
+    Delay = 0
+    Area = 1
+    Power = 2
+
+str_to_hw_metric_map = {
+    'delay': HW_Metric.Delay,
+    'area': HW_Metric.Area,
+    'power': HW_Metric.Power
+}
+
+def hw_metric_arg(metric_str):
+    if metric_str is None:
+        return
+    try:
+        return str_to_hw_metric_map[metric_str.lower()]
+    except KeyError:
+        raise argparse.ArgumentTypeError('--hw-metric argument must be one of {0} (received {1})'.format(
+            list(str_to_hw_metric_map.keys()), metric_str
+        ))

@@ -117,9 +117,6 @@ class DAG:
                                 self.get_edges[node.name + '->'] = set()
                             self.get_edges[node.name + '->'].add(edge)
 
-            # exit()
-            # if True:
-
                 # adjacency matrix
                 self.adj[node.name] = {
                     edge.destination for edge in self.get_edges[node.name + '->']
@@ -141,6 +138,9 @@ class DAG:
                 if any(edge.destination == '' and edge.net in output_wires 
                        for edge in self.get_edges[node.name + '->']):
                     self.output_nodes.add(node.name)
+
+    # TODO: Implement logic to check which nodes are disconnected, including nodes
+    #       from their fan-in cones
 
     def replace(self, net, replacement):
         """Replace a wire which drives many edges with a constant value"""
@@ -188,14 +188,16 @@ class DAG:
             # if it was an output edge and there are no more left, remove node from output nodes
             if len(self.get_edges[edge_to_replace.origin + '->']) == 0:
                 self.output_nodes.remove(edge_to_replace.origin)
-        else:
+        else: # if it was not an output edge
             self.get_edges['->' + edge_to_replace.destination].remove(edge_to_replace)
             if not goes_into_input_node:
                 self.get_edges[edge_to_replace.origin + '->'].remove(edge_to_replace)
                 self.get_edges[edge_to_replace.origin + '->' + edge_to_replace.destination].remove(edge_to_replace)
-            else:
-                if len(self.get_edges['->' + edge_to_replace.destination]) == 0:
-                    self.input_nodes.remove(edge_to_replace.destination)
+
+                # TODO: Check here if the origin node has any other outgoing edges, and if so add it to a list/set
+
+            elif len(self.get_edges['->' + edge_to_replace.destination]) == 0:
+                self.input_nodes.remove(edge_to_replace.destination)
 
         new_edge = None
         if create_new_edge:
@@ -255,8 +257,8 @@ class DAG:
 
     def update_adj(self, edge_to_replace, comes_from_output_node, new_edge=None):
         """Update adjacency matrices with replaced edge"""
+        # NOTE: iterables needed to not change size of the dictionaries
 
-        # iterables needed to not change size of the dictionaries
         no_longer_adj = [
             child for child in self.adj[edge_to_replace.origin]
             if self.get_edges[edge_to_replace.origin + '->' + child] == set()
@@ -273,6 +275,7 @@ class DAG:
                 self.rev_adj[edge_to_replace.destination].remove(parent)
                 self.in_degree[edge_to_replace.destination] = max(0, self.in_degree[edge_to_replace.destination] - 1)
 
+        # in case of replacement with another wire/edge
         if new_edge is not None and new_edge.origin != '':
             if new_edge.destination not in self.adj[new_edge.origin]:
                 self.adj[new_edge.origin].add(new_edge.destination)
@@ -390,7 +393,8 @@ class DAG:
 
             else:
                 # others get infinite delay
-                self.dist[node.name] = {output_pin: math.inf for output_pin in node.output_pins}
+                # NOTE: Minus is needed to get the maximum delay in the critical path
+                self.dist[node.name] = {output_pin: -math.inf for output_pin in node.output_pins}
 
         while queue:
             # if node reaches zero in-degree, append to topological order
@@ -430,6 +434,20 @@ class DAG:
                     queue.appendleft(child)
 
         assert len(self.top_sort) == len(self.nodes)
+
+    def reachable_nodes(self):
+        """Compute all reachable nodes from the input nodes"""
+        reachable = set()
+        for start in self.input_nodes:
+            queue = deque([start])
+            while queue:
+                node_name = queue.popleft()
+                if node_name not in reachable:
+                    reachable.add(node_name)
+                    for neighbor_node_name in self.adj[node_name]:
+                        if neighbor_node_name not in reachable:
+                            queue.append(neighbor_node_name)
+        return reachable
 
     def critical_path(self):
         """Critical path of the graph"""

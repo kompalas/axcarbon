@@ -310,7 +310,9 @@ def check_cancel_gates(graph, cancel_dict, already_approxed_edges):
         ]
     ]
     fr = lambda i, j: [
-        i[0], sorted(list(i[1]) + list(j[1])), [i[2][0]] + [j[2][0]]
+        i[0],
+        sorted(list(i[1]) + list(j[1])),
+        [i[2][0]] + [j[2][0]]
     ]
 
     # take all approximated edges to specific node

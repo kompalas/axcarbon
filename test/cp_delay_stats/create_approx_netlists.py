@@ -4,7 +4,7 @@ from src.graph import DAG
 from src.utils import translate_netlist_to_gates_and_wires, gates_to_nodes, wires_to_edges
 from src.utils import get_cancel_dict, get_gates_dict
 from src.nsga2.objectives import calc_fitness
-from src.nsga2.utils import get_candidates, ErrorMetric
+from src.nsga2.utils import get_candidates
 from tqdm import tqdm
 import pandas as pd
 import random
@@ -106,8 +106,8 @@ def main():
             cancel_dict=cancel_dict,
             netlist=netlist,
             graph=graph,
-            single_objective=True,
-            error_metric=ErrorMetric.NMED,
+            error_metric=None,
+            hw_metric=None,
             write_cfile_to=os.path.join(project_dir, 'circuits', args.circuit, 'top_approx.c'),
             write_verilog_to=os.path.join(args.results_dir, f'top_approx{run}.sv'),
         )

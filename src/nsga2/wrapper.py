@@ -33,14 +33,14 @@ class EvolutionWrapper:
             candidates=candidates,
             variables_range=variables_range,
             cancel_dict=get_cancel_dict(netlist.gate_dict),
-            error_metric=args.error_metric,
             netlist=netlist,
             graph=graph,
+            error_metric=args.error_metric,
+            hw_metric=args.hw_metric,
             constrained=args.constrained,
-            single_objective=args.num_of_objectives == 1,
         )
         problem = Problem(
-            objective_functions=[objective_function] + [null_objective_function] * (args.num_of_objectives - 1),
+            objective_functions=[objective_function, null_objective_function],  # workaround to convey 2 objectives
             num_of_variables=len(candidates),
             variables_range=variables_range,
             variable_type=args.gene_type,

@@ -15,8 +15,8 @@ python3 $maindir/main.py \
         --population-size 20 \
         --tournament-participants 0.05 \
         --tournament-probability 0.9 \
-        --number-of-objectives 2 \
         --error-metric variance \
+        --hw-metric delay \
         --gene-type discrete \
         --candidate-type constant \
         --initial-weight 20 \

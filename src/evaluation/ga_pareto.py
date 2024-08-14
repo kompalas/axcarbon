@@ -13,7 +13,7 @@ from src.utils import get_gates_dict, get_cancel_dict
 from src.utils import translate_netlist_to_gates_and_wires, gates_to_nodes, wires_to_edges
 from src.netlist import Netlist
 from src.graph import DAG
-from src.nsga2.utils import get_candidates, error_metric_arg
+from src.nsga2.utils import get_candidates, error_metric_arg, hw_metric_arg, str_to_error_metric_map, str_to_hw_metric_map
 from src.nsga2.objectives import calc_fitness
 
 logger = logging.getLogger(__name__)
@@ -143,7 +143,10 @@ if __name__ == "__main__":
                         help="Set to combine all fronts and pick 'pareto' as the solutions with lowest error")
     parser.add_argument("--error-metric", dest="error_metric", type=error_metric_arg, default='nmed',
                         help="Choose the error metric as one of the objectives for the GA. Choices: "
-                             "{' | '.join(str_to_error_metric_map)}. Default is NMED")
+                             f"{' | '.join(str_to_error_metric_map)}. Default is NMED")
+    parser.add_argument("--hw-metric", dest="hw_metric", type=hw_metric_arg, default='delay',
+                        help="Choose the hardware metric as one of the objectives for the GA. Choices: "
+                             f"{' | '.join(str_to_hw_metric_map)}. Default is delay")
     args = parser.parse_args()
 
     # configure experiment and results directory
@@ -237,6 +240,7 @@ if __name__ == "__main__":
                 netlist=netlist,
                 graph=graph,
                 error_metric=args.error_metric,
+                hw_metric=args.hw_metric,
                 write_verilog_to=f'{args.results_dir}/approx{idx}.sv'
                     if args.results_dir is not None else None,
                 )

@@ -3,15 +3,13 @@ from copy import deepcopy
 from time import time
 import re
 import random
-import subprocess
 import logging
-import sys
 import ctypes
 import os.path
 from src import project_dir
 from src import MAX_ERROR, MAX_DELAY, MAX_STDEV
-from src.utils import get_cancel_dict, check_cancel_gates
-from src.nsga2.utils import ErrorMetric
+from src.utils import check_cancel_gates
+from src.nsga2.utils import ErrorMetric, HW_Metric
 
 __all__ = [
     'calc_error_ctypes', 'calc_delay',
@@ -55,6 +53,11 @@ def calc_delay(graph):
     return graph.cpd
 
 
+def calc_area(graph):
+    return 0
+    raise NotImplementedError("Area calculation is not implemented yet.")
+
+
 def apply_approximations(chromosome, candidates, cancel_dict, graph, variables_range):
     """Apply the approximations of a chromosome to the graph"""
     # subs must be tuples of replaced (net), replacement (constant or net)
@@ -90,7 +93,8 @@ def translate_chromosome(chromosome, candidates, variables_range):
     return [(candidates[i], gene) for i, gene in enumerate(chromosome) if gene != variables_range[i][-1]]
 
 
-def calc_fitness(chromosome, candidates, variables_range, cancel_dict, error_metric, netlist, graph, **kwargs):
+def calc_fitness(chromosome, candidates, variables_range, cancel_dict, netlist, graph,
+                 error_metric=None, hw_metric=None, **kwargs):
     """Single objective function to return all objective values:
         Accuracy, nominal delay and standard deviation of critical path"""
 
@@ -98,17 +102,21 @@ def calc_fitness(chromosome, candidates, variables_range, cancel_dict, error_met
     # NOTE: Use the last entry in 'variables_range' as indication that no approximation is needed for that gene
     if 'sanity_test' not in kwargs:
         if all(chromosome[gene] == variables_range[gene][-1] for gene in range(len(chromosome))):
-            return MAX_ERROR, MAX_DELAY, MAX_STDEV
+            return MAX_ERROR, MAX_DELAY
 
+    # apply approximations to the graph
     ng = deepcopy(graph)
     subs = apply_approximations(chromosome, candidates, cancel_dict, ng, variables_range)
 
-    errors = calc_error_ctypes(
-        chromosome=chromosome, netlist=netlist,
-        shared_location=re.search("(.*)/[^/]*$", kwargs['write_cfile_to']).group(1)
-        if 'write_cfile_to' in kwargs else None,
-    )
-    error = errors.get(error_metric)
+    # calculate error metric
+    error = MAX_ERROR
+    if error_metric is not None:
+        errors = calc_error_ctypes(
+            chromosome=chromosome, netlist=netlist,
+            shared_location=re.search("(.*)/[^/]*$", kwargs['write_cfile_to']).group(1)
+            if 'write_cfile_to' in kwargs else None,
+        )
+        error = errors.get(error_metric)
 
     # TODO: Find a better way to constrain the error, this only works with a baseline file that contains min/max values
     # # mandatory constraint: if error exceeds the maximum error, return worst fitness
@@ -120,17 +128,22 @@ def calc_fitness(chromosome, candidates, variables_range, cancel_dict, error_met
     #     if error > kwargs['baseline_data']['Error']['max'] / kwargs['constrained']:
     #         return MAX_ERROR, MAX_DELAY, MAX_STDEV
 
-    delay = MAX_DELAY
-    if 'single_objective' not in kwargs or not kwargs['single_objective']:
-        # calculate delay of approximate graph
-        delay = calc_delay(ng)
+    # calculate hardware metric
+    hw_value = MAX_DELAY
+    if hw_metric is not None:
+        if hw_metric == HW_Metric.Delay:
+            hw_value = calc_delay(ng)
+        elif hw_metric == HW_Metric.Area:
+            hw_value = calc_area(ng)
+        elif hw_metric == HW_Metric.Power:
+            raise NotImplementedError("Power calculation is not implemented yet.")
 
     if 'write_verilog_to' in kwargs:
         netlist.build_vfile(
             approximations=subs,
             write_to=kwargs['write_verilog_to'] if 'write_verilog_to' in kwargs else None
         )
-    return error, delay
+    return error, hw_value
 
 
 def null_objective_function(*args, **kwargs):

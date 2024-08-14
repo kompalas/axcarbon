@@ -25,7 +25,7 @@ class Node(Gate):
             for out_pin in self.output_pins:
                 # save delay distribution for specific input/output pin
                 self.delay[inp_pin][out_pin] = self.get_delay(inp_pin, out_pin,
-                                                           metric=f'delay_{transition}' if transition else None)
+                                                              metric=f'delay_{transition}' if transition else None)
 
             # when 'any' is used, save the max (or average) of all distribution from each input pin
             self.delay[inp_pin]['any'] = max(self.delay[inp_pin].values())
