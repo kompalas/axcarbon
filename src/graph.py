@@ -62,6 +62,7 @@ class DAG:
         self.topol_ord()
         logger.debug(f"Topological sort: {self.top_sort}")
         logger.debug(f"Accumulated delay: {self.dist}")
+        assert len(self.nodes) == len(self.find_connected_nodes()), "Graph is not connected!"
         # get significance of each node
         self.significance = {}
         self.assign_significance()
@@ -435,19 +436,27 @@ class DAG:
 
         assert len(self.top_sort) == len(self.nodes)
 
-    def reachable_nodes(self):
-        """Compute all reachable nodes from the input nodes"""
-        reachable = set()
-        for start in self.input_nodes:
-            queue = deque([start])
-            while queue:
-                node_name = queue.popleft()
-                if node_name not in reachable:
-                    reachable.add(node_name)
-                    for neighbor_node_name in self.adj[node_name]:
-                        if neighbor_node_name not in reachable:
-                            queue.append(neighbor_node_name)
-        return reachable
+    def find_connected_nodes(self):
+        """Compute all reachable nodes from the input and output nodes"""
+        def reachable_nodes(self, starting_nodes, adj_matrix):
+            reachable = set()
+            for start in starting_nodes:
+                queue = deque([start])
+                while queue:
+                    node_name = queue.popleft()
+                    if node_name not in reachable:
+                        reachable.add(node_name)
+                        for neighbor_node_name in adj_matrix[node_name]:
+                            if neighbor_node_name not in reachable:
+                                queue.append(neighbor_node_name)
+            return reachable
+
+        # Identify reachable nodes from input nodes
+        from_input = reachable_nodes(self, self.input_nodes, self.adj)
+        # Identify reachable nodes from output nodes
+        from_output = reachable_nodes(self, self.output_nodes, self.rev_adj)
+        # their intersection consists of the nodes that are part of the connected graph
+        return from_input & from_output
 
     def critical_path(self):
         """Critical path of the graph"""

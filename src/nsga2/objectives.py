@@ -53,9 +53,12 @@ def calc_delay(graph):
     return graph.cpd
 
 
-def calc_area(graph):
-    return 0
-    raise NotImplementedError("Area calculation is not implemented yet.")
+def calc_area(exact_graph, ax_graph):
+    """Estimate the area of the DAG by the number of connected nodes 
+    compared to the fully-connected graph
+    """
+    connected_nodes = ax_graph.find_connected_nodes()
+    return len(connected_nodes) / len(exact_graph.nodes)
 
 
 def apply_approximations(chromosome, candidates, cancel_dict, graph, variables_range):
@@ -134,7 +137,7 @@ def calc_fitness(chromosome, candidates, variables_range, cancel_dict, netlist, 
         if hw_metric == HW_Metric.Delay:
             hw_value = calc_delay(ng)
         elif hw_metric == HW_Metric.Area:
-            hw_value = calc_area(ng)
+            hw_value = calc_area(graph, ng)
         elif hw_metric == HW_Metric.Power:
             raise NotImplementedError("Power calculation is not implemented yet.")
 
