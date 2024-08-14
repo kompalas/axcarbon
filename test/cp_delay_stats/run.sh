@@ -11,7 +11,7 @@ mkdir -p reports/
 
 circuit=${1?"Specify a circuit as the first positional argument"}
 runs=${2?"Specify the number of approximate netlists as the second positional argument"}
-library=${3?"Specify a library as the third positional argument. Options are: asap7, 14nm, nangate45"}
+library=${3?"Specify a library as the third positional argument. Options are: asap7, variability14, nangate45"}
 
 maindir="$HOME/axcarbon"
 circdir="$maindir/circuits/$circuit"
@@ -33,14 +33,14 @@ elif [[ $library == "nangate45" ]]; then
     lib="nangate45.db"
     tunit="ns"
     libfile_python="nangate45"
-elif [[ $library == "14nm" ]]; then
-    # TODO: find 14nm library
-    libpath="$maindir/libs/14nm/db"
-    libverilog="$maindir/libs/14nm/verilog"
-    lib="14nm.db"
-    libfile_python="14nm"
+elif [[ $library == "variability14" ]]; then
+    libpath="$maindir/libs/variability14/db"
+    libverilog="$maindir/libs/variability14/verilog"
+    lib="predicted_0.db"
+    tunit="ns"
+    libfile_python="variability14"
 else
-    echo "Invalid library option. Options are: asap7, 14nm, nangate45"
+    echo "Invalid library option. Options are: asap7, variability14, nangate45"
     exit 1
 fi
 

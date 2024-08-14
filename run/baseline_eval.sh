@@ -4,11 +4,11 @@ set -eou pipefail
 set -x
 
 circuit=${1?"Specify a circuit as the first positional argument"}
-library=${2?"Specify a library as the second positional argument. Options are: asap7, 14nm, nangate45"}
+library=${2?"Specify a library as the second positional argument. Options are: asap7, variability14, nangate45"}
 
 export synclk="0.0"
 incr="0.01"
-top_design="top"
+export top_design="top"
 
 maindir="$HOME/axcarbon"
 testdir="$maindir"
@@ -19,23 +19,43 @@ circdir="$maindir/circuits/$circuit"
 # set up libraries and environment
 if [[ $library == "asap7" ]]; then
     libpath="$maindir/libs/asap7/7nm/db"
+    libcpath="$maindir/libs/asap7/7nm/c"
     libverilog="$maindir/libs/asap7/7nm/verilog"
     lib="asap7.db"
     tunit="ps"
 elif [[ $library == "nangate45" ]]; then
     libpath="$maindir/libs/nangate45/db"
+    libcpath="$maindir/libs/nangate45/c"
     libverilog="$maindir/libs/nangate45/verilog"
     lib="nangate45.db"
     tunit="ns"
-elif [[ $library == "14nm" ]]; then
-    # TODO: find 14nm library
-    libpath="$maindir/libs/14nm/db"
-    libverilog="$maindir/libs/14nm/verilog"
-    lib="14nm.db"
+elif [[ $library == "variability14" ]]; then
+    libpath="$maindir/libs/variability14/db"
+    libcpath="$maindir/libs/variability14/c"
+    libverilog="$maindir/libs/variability14/verilog"
+    lib="predicted_0.db"
+    tunit="ns"
 else
-    echo "Invalid library option. Options are: asap7, 14nm, nangate45"
+    echo "Invalid library option. Options are: asap7, variability14, nangate45"
     exit 1
 fi
+export tunit="$tunit"
+
+# setup libraries
+sed -i "/ENV_LIBRARY_PATH=/ c\export ENV_LIBRARY_PATH=\"$libpath\"" ./scripts/env.sh
+sed -i "/ENV_LIBRARY_DB=/ c\export ENV_LIBRARY_DB=\"$lib\"" ./scripts/env.sh
+sed -i "/ENV_LIBRARY_VERILOG_PATH=/ c\export ENV_LIBRARY_VERILOG_PATH=\"$libverilog\"" ./scripts/env.sh
+sed -i "/ENV_CLK_PERIOD=/ c\export ENV_CLK_PERIOD=\"$synclk\"" ./scripts/env.sh
+
+# prepare C libraries
+if [ ! -f "$libcpath/library.c" ] || [ ! -f "$libcpath/library.h" ]; then
+    echo "Library C-files do not exist under $libcpath. Exiting"
+    exit 1
+fi
+rm -f $maindir/libs/*.o
+rm -f $maindir/libs/*.so
+cp $libcpath/library.c $maindir/libs/
+cp $libcpath/library.h $maindir/libs/
 
 mkdir -p $testdir/results
 mkdir -p $testdir/results/baseline
@@ -47,12 +67,6 @@ cp $circdir/top.v ./hdl/top.v
 cp $circdir/tb.v ./sim/top_tb.v
 awk -F'_' '{for (i=1; i<NF; i++) {printf("%s", $i); if(i<NF-1) printf("_")} printf("\n")}' $circdir/inputs.txt > ./sim/inputs.txt
 awk -F'_' '{print $NF}' $circdir/inputs.txt > ./sim/expected.txt
-
-# setup environment
-sed -i "/ENV_LIBRARY_PATH=/ c\export ENV_LIBRARY_PATH=\"$libpath\"" ./scripts/env.sh
-sed -i "/ENV_LIBRARY_DB=/ c\export ENV_LIBRARY_DB=\"$lib\"" ./scripts/env.sh
-sed -i "/ENV_LIBRARY_VERILOG_PATH=/ c\export ENV_LIBRARY_VERILOG_PATH=\"$libverilog\"" ./scripts/env.sh
-sed -i "/ENV_CLK_PERIOD=/ c\export ENV_CLK_PERIOD=\"$synclk\"" ./scripts/env.sh
 
 # reports
 area_rpt="$testdir/reports/${top_design}_${synclk}${tunit}.area.rpt"

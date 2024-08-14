@@ -210,7 +210,7 @@ def get_cancel_dict(gates_dict):
             efforts += 1
             _lib = ctypes.CDLL(os.path.join(project_dir, 'libs', '_library.so'))
             break
-        except OSError:
+        except (OSError, FileNotFoundError):
             if efforts > 5:
                 raise
             # try recreating the shared library for a limited amount of retries

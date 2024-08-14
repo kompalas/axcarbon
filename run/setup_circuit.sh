@@ -9,13 +9,10 @@ circuit=${1?"Specify the circuit as first positional argument"}
 # if inputs already exist, leave the second positional argument unset
 inputs_exist=${2:-"True"}
 
-library="nangate45"
+library="variability14"
 
 maindir="$HOME/axcarbon"
 circdir="$maindir/circuits/$circuit"
-
-top_design="top"
-tunit="ns"
 
 enable_safety_bits="0"
 safety_bits="1"
@@ -135,7 +132,8 @@ do
         # execute test to extract delay stats from 500 approximate netlists
         [yY]*)
             cd $maindir/test/cp_delay_stats
-            ./run.sh $circuit 500 $library
+            rm -f $circdir/gate_delay_stats.pkl
+            ./run.sh $circuit 10 $library
             break
             ;;
 

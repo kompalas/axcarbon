@@ -124,13 +124,13 @@ elif [[ $library == "nangate45" ]]; then
     libverilog="$maindir/libs/nangate45/verilog"
     lib="nangate45.db"
     tunit="ns"
-elif [[ $library == "14nm" ]]; then
-    # TODO: find 14nm library
-    libpath="$maindir/libs/14nm/db"
-    libverilog="$maindir/libs/14nm/verilog"
-    lib="14nm.db"
+elif [[ $library == "variability14" ]]; then
+    libpath="$maindir/libs/variability14/db"
+    libverilog="$maindir/libs/variability14/verilog"
+    lib="predicted_0.db"
+    tunit="ns"
 else
-    echo "Invalid library option. Options are: asap7, 14nm, nangate45"
+    echo "Invalid library option. Options are: asap7, variability14, nangate45"
     exit 1
 fi
 

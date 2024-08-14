@@ -100,13 +100,17 @@ class Gate:
             logger.error("\nInvalid timing transition.\nThe most probable cause for this error is a "
                          "transition that appeared in the critical path during the delay_stats test "
                          "was not documented by the report with analytical delay calculation of all timing "
-                         "arcs.\nConsider re-running both the delay annotation and stats gathering.")
+                         "arcs.\nConsider re-running both the delay annotation and stats gathering.\n"
+                         "Ignoring this for now, and the gate will be annotated with the default delay.\n"
+                         "The error message was caused by the following timing transitions:")
             logger.error(f"Node {self.name}, {self.type}")
             logger.error(f"Pins: from {pin_from} to {pin_to}")
             logger.error(f"Default transitions: {self._default_transitions}")
             logger.error(f"Default transitions for specified pins: {self._default_transitions[(pin_from, pin_to)]}")
             logger.error(f"Timing transitions for specified pins: {self._delay[pin_from][pin_to]}")
-            raise
+            logger.error(f"Sense and metric requested: {sense}, {metric}")
+            # TODO: it may not be needed to raise this error.
+            # raise
 
         # if no metric specified get the median (or average) of all delay transitions and senses
         if metric is None:

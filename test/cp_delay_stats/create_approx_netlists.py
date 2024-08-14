@@ -51,6 +51,9 @@ def prepare(circuit_name, libfile):
                                                  candidate_type=None,
                                                  reduced=False)
     cancel_dict = get_cancel_dict(gates_dict)
+    logger.debug(f"Candidates: {candidates}")
+    logger.debug(f"Variables range: {variables_range}")
+    logger.debug(f"Cancel dict: {cancel_dict}")
     return netlist, graph, candidates, cancel_dict, variables_range
 
 
