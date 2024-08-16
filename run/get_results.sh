@@ -7,6 +7,12 @@ set -x
 expdir=${1?"Specify the directory at which GA results are stored"}
 which_gen="${2:--1}"
 
+maindir="$HOME/axcarbon"
+testdir="$maindir"
+library="variability14"
+synclk="0.0"
+top_design="top"
+get_error_from="c_simulations"  # options: gate_level_simulations, c_simulations
 
 ############## Custom Functions ###################
 
@@ -18,7 +24,9 @@ function getBaselineMeasurement {
 }
 # TODO: Fix these to handle binary numbers
 function getErrorRate() {
-    paste $maindir/sim/expected.txt  $maindir/sim/output.txt | awk '
+    paste $testdir/sim/expected.txt  $testdir/sim/output.txt | \
+    perl -pe 's/\b[01]+\b/oct "0b" . $&/ge' | \
+    awk '
     BEGIN {
         errors = 0;
     } {
@@ -32,7 +40,9 @@ function getErrorRate() {
     }'
 }
 function getMRE() {
-    paste $maindir/sim/expected.txt  $maindir/sim/output.txt | awk '
+    paste $testdir/sim/expected.txt  $testdir/sim/output.txt | \
+    perl -pe 's/\b[01]+\b/oct "0b" . $&/ge' | \
+    awk '
     BEGIN {
         mre = 0;
     } {
@@ -51,8 +61,28 @@ function getMRE() {
         printf "%.3e\n", mre/NR
     }'
 }
+function getMED() {
+    paste $testdir/sim/expected.txt  $testdir/sim/output.txt | \
+    perl -pe 's/\b[01]+\b/oct "0b" . $&/ge' | \
+    awk '
+    BEGIN {
+        sum=0;
+    } {
+        if ($1 ~ /x/ || $2 ~ /x/) next;
+        diff = $1 - $2;
+        if (diff < 0) {
+            diff = -diff;
+        }
+        sum = sum + diff;
+    } 
+    END {
+        printf "%.3e\n", sum/NR
+    }'
+}
 function getMinError() {
-    paste $maindir/sim/expected.txt  $maindir/sim/output.txt | awk '
+    paste $testdir/sim/expected.txt  $testdir/sim/output.txt | \
+    perl -pe 's/\b[01]+\b/oct "0b" . $&/ge' | \
+    awk '
     BEGIN {
         min_error = 10^5;
     } {
@@ -64,13 +94,18 @@ function getMinError() {
             if (diff < min_error)
                 min_error = diff;
         }
+        else {
+            min_error = 0;
+        }
     }
     END {
-        printf "%d\n", min_error
+        printf "%.3e\n", min_error
     }'
 }
 function getMaxError() {
-    paste $maindir/sim/expected.txt  $maindir/sim/output.txt | awk '
+    paste $testdir/sim/expected.txt  $testdir/sim/output.txt | \
+    perl -pe 's/\b[01]+\b/oct "0b" . $&/ge' | \
+    awk '
     BEGIN {
         max_error = 0;
     } {
@@ -84,18 +119,11 @@ function getMaxError() {
         }
     }
     END {
-        printf "%d\n", max_error
+        printf "%.3e\n", max_error
     }'
 }
 
 ################# Setup ######################
-
-maindir="$HOME/axcarbon"
-testdir="$maindir"
-cd $testdir
-library="nangate45"
-synclk="0.0"
-top_design="top"
 
 # if the last character of expdir is a slash, remove it
 if [[ ${expdir: -1} == "/" ]]; then
@@ -135,20 +163,20 @@ else
 fi
 
 # prepare testbench, inputs and true outputs for simulation
-cp $circdir/tb.v ./sim/top_tb.v
+cp $circdir/tb.v $testdir/sim/top_tb.v
 # simulation clock is given by the delay of each exact circuit
 simclk="$(awk 'NR==2 {printf("%.2f", $2)}' $maindir/results/baseline/$circuit.txt)"
 awk -F'_' '{for (i=1; i<NF; i++) {printf("%s", $i); if(i<NF-1) printf("_")} printf("\n")}' $circdir/inputs_eval.txt > ./sim/inputs.txt
-awk -F'_' '{print $NF}' $circdir/inputs_eval.txt > ./sim/expected.txt
-sed -i "/parameter PERIOD=/ c\parameter PERIOD=$simclk;" ./sim/top_tb.v
-num_inputs="$(wc -l ./sim/inputs.txt | awk '{print $1}')"
-sed -i "/parameter NUM_INPUTS=/ c\parameter NUM_INPUTS=$num_inputs;" sim/top_tb.v
+awk -F'_' '{print $NF}' $circdir/inputs_eval.txt > $testdir/sim/expected.txt
+sed -i "/parameter PERIOD=/ c\parameter PERIOD=$simclk;" $testdir/sim/top_tb.v
+num_inputs="$(wc -l $testdir/sim/inputs.txt | awk '{print $1}')"
+sed -i "/parameter NUM_INPUTS=/ c\parameter NUM_INPUTS=$num_inputs;" $testdir/sim/top_tb.v
 
 # setup environment
-sed -i "/ENV_LIBRARY_PATH=/ c\export ENV_LIBRARY_PATH=\"$libpath\"" ./scripts/env.sh
-sed -i "/ENV_LIBRARY_DB=/ c\export ENV_LIBRARY_DB=\"$lib\"" ./scripts/env.sh
-sed -i "/ENV_LIBRARY_VERILOG_PATH=/ c\export ENV_LIBRARY_VERILOG_PATH=\"$libverilog\"" ./scripts/env.sh
-sed -i "/ENV_CLK_PERIOD=/ c\export ENV_CLK_PERIOD=\"$synclk\"" ./scripts/env.sh
+sed -i "/ENV_LIBRARY_PATH=/ c\export ENV_LIBRARY_PATH=\"$libpath\"" $testdir/scripts/env.sh
+sed -i "/ENV_LIBRARY_DB=/ c\export ENV_LIBRARY_DB=\"$lib\"" $testdir/scripts/env.sh
+sed -i "/ENV_LIBRARY_VERILOG_PATH=/ c\export ENV_LIBRARY_VERILOG_PATH=\"$libverilog\"" $testdir/scripts/env.sh
+sed -i "/ENV_CLK_PERIOD=/ c\export ENV_CLK_PERIOD=\"$synclk\"" $testdir/scripts/env.sh
 
 # report files from synopsys tools
 area_rpt="$testdir/reports/${top_design}_${synclk}${tunit}.area.rpt"
@@ -158,6 +186,8 @@ power_rpt="$testdir/reports/${top_design}_${synclk}${tunit}.power.ptpx.rpt"
 
 ################# Evaluation ######################
 
+cd $testdir
+
 # extract the baseline measurements
 bl_area="$(getBaselineMeasurement $circuit Area)"
 bl_delay="$(getBaselineMeasurement $circuit Delay)"
@@ -166,9 +196,12 @@ echo "-1,$library,$synclk,$simclk,$bl_area,$bl_delay,$bl_power,0.0,0.0,0.0,0.0,0
 
 # create approximate netlists from GA results and evaluate them
 python3 $maindir/src/evaluation/ga_pareto.py \
+    --libfile $library \
     --circuit $circuit \
     --experiment $expdir \
     --results-directory $expdir/netlists \
+    --error-metric variance \
+    --hw-metric delay \
     --generation $which_gen
 
 # iterate over each approximate netlist
@@ -186,25 +219,63 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
     make sta
     delay="$(grep "data arrival time" $delay_rpt | awk 'NR==1 {print $NF}')"
 
-    # gate level simulation to get error
+    # gate level simulation to get errors
     rm -rf work_gate_lib
     rm -rf gate_simv.daidir
     rm -rf tech_lib/
     make gate_sim
-    error_rate="$(getErrorRate)"
-    mre="$(getMRE)"
-    med="$(./scripts/med.sh ./sim/expected.txt ./sim/output.txt)"
-    outwidth="$(grep "parameter OUT_WIDTH" ./sim/top_tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
-    nmed="$(awk -v a=$med -v b=$outwidth 'BEGIN {printf "%.3e\n", a/(2**b)}')"
-    min_error="$(getMinError)"
-    max_error="$(getMaxError)"
+
+    if [[ "$get_error_from" == "gate_level_simulations" ]]; then
+        # get error measurements from gate level simulations
+        error_rate="$(getErrorRate)"
+        mre="$(getMRE)"
+        med="$(getMED)"
+        outwidth="$(grep "parameter OUT_WIDTH" ./sim/top_tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
+        nmed="$(awk -v a=$med -v b=$outwidth 'BEGIN {printf "%.3e\n", a/(2**b)}')"
+        min_error="$(getMinError)"
+        max_error="$(getMaxError)"
+
+    elif [[ "$get_error_from" == "c_simulations" ]]; then
+        
+        # get error measurements from C simulations
+        # get the chromosome from the the logfile of ga_pareto.py
+        pareto_logfile=$(find $expdir -name "pareto*.log")  # or pareto_${exp_name}.log
+        chromosome=( $(grep "Chromosome $netl_id:" $pareto_logfile | awk -F'[' '{print $NF}' | awk '{gsub("]", "", $0); gsub(" ", "", $0); print}' | awk -F',' '{for (i=1; i<=NF;i++) print $i}') )
+
+        cfile=$circdir/top.c
+        ofile=$circdir/top
+        # change void main to int main, so that it returns 0
+        if grep -q "void main" $cfile; then
+            sed -i 's/void main/int main/' $cfile
+            sed -zE '$ s/(.*)}/\1\treturn 0;\n}/' $cfile > tmp && mv tmp $cfile
+        fi
+
+        # compile the C netlist and execute using the chromosome as arguments
+        gcc -I${maindir}/libs ${maindir}/libs/library.c $cfile -o $ofile
+        $ofile ${chromosome[@]} &> tmp
+
+        # get error measurements from the output
+        error_rate="$(awk '/Error rate:/ {print $NF}' tmp)"
+        mre="$(awk '/MRE:/ {print $NF}' tmp)"
+        med="$(awk '/MED:/ {print $NF}' tmp)"
+        nmed="$(awk '/NMED:/ {print $NF}' tmp)"
+        min_error="$(awk '/Min Error:/ {print $NF}' tmp)"
+        max_error="$(awk '/Max Error:/ {print $NF}' tmp)"
+        # clean up
+        rm -f tmp
+        rm -f $ofile
+
+    else
+        echo "Wrong variable: get_error_from is set to $get_error_from. Options are: gate_level_simulations, c_simulations"
+        exit 1
+    fi
 
     # get power
     make power
     power="$(awk '/Total Power/ {print $4}' $power_rpt)"
 
-    # write the results 
-    echo -e "$netl_id,$library,$simclk,$area,$delay,$power,$error_rate,$mre,$med,$nmed,$min_error,$max_error" >> $resfile
+    # write the results
+    echo -e "$netl_id,$library,$synclk,$simclk,$area,$delay,$power,$error_rate,$mre,$med,$nmed,$min_error,$max_error" >> $resfile
 
     # move reports to the appropriate directory
     rm -rf $expdir/reports/approx${netl_id}

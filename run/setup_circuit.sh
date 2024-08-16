@@ -133,7 +133,7 @@ do
         [yY]*)
             cd $maindir/test/cp_delay_stats
             rm -f $circdir/gate_delay_stats.pkl
-            ./run.sh $circuit 10 $library
+            ./run.sh $circuit 500 $library
             break
             ;;
 

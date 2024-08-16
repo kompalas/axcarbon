@@ -23,17 +23,16 @@ class Netlist:
         self.gate_dict = deepcopy(gates_dict)
         self.netlist_data = {}
 
+
         # figure out if inputs and/or outputs are signed (only from a non-given netlist file)
-        if not netlist_file:
-            default_file = f"{project_dir}/circuits/{self.circuit}/top.sv"
-            signed_inputs, signed_outputs = signed_io_verilog(vfile=default_file.replace(".sv", ".v"))
+        if netlist_file is None:
+            netlist_file = f"{project_dir}/circuits/{self.circuit}/top.sv"
+            signed_inputs, signed_outputs = signed_io_verilog(vfile=netlist_file.replace(".sv", ".v"))
             self.netlist_data['signed_inputs'] = signed_inputs
             self.netlist_data['signed_outputs'] = signed_outputs
 
-        parse_verilog_netlist(
-            netlist_data=self.netlist_data,
-            netlist_file=netlist_file or f"{project_dir}/circuits/{self.circuit}/top.sv"
-        )
+        parse_verilog_netlist(netlist_data=self.netlist_data,
+                              netlist_file=netlist_file)
 
         # create initial description in c
         self.cfile = os.path.join(project_dir, 'circuits', self.circuit, f'top.c')

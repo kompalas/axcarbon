@@ -18,7 +18,7 @@
             "program": "${workspaceFolder}/main.py",
             "args": [
                 "--circuit", "mac",
-                "--libfile", "nangate45",
+                "--libfile", "asap7",
                 "--name", "ga_mac",
                 "--ga",
                 "--generations", "10",

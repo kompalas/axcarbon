@@ -157,7 +157,7 @@ if __name__ == "__main__":
         os.mkdir(args.results_dir)
 
     # initialize logging
-    logger_cfg(logfile=os.path.join(project_dir, 'logs', f'pareto__{args.circuit}_{exper}.log'))
+    logger_cfg(logfile=os.path.join(expdir, f'pareto__{args.circuit}_{exper}.log'))
     logger.info(f"Command line args: {args.__dict__}")
 
     pop = open_population_file(experiment_dir=expdir, generation=args.gen)

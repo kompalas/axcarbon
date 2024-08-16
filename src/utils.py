@@ -373,7 +373,10 @@ def translate_netlist_to_gates_and_wires(netlist):
             out_pin for out_pin in netlist.gate_dict[gtype][1]
             if re.search(f"{out_pin}\(.*\)", ' '.join(info))
         ])
-        assert num_of_inputs + num_of_outputs == len(info), f'{gtype} {name} {info} {num_of_inputs} {num_of_outputs}'
+        if num_of_inputs + num_of_outputs != len(info):
+            raise ValueError(f"Gate {name} ({gtype}) has {len(info)} ({info}) pins "
+                             f"but {num_of_inputs} + {num_of_outputs} = {num_of_inputs + num_of_outputs} are expected.")
+
         inputs, input_pins = [], []
         outputs, output_pins = [], []
 
@@ -924,7 +927,16 @@ void main(int argc, char *argv[]) {{
     }}
     filetest(ax_values, error);
     //for (i=0; i<8; i++) printf("%f\\n", error[i]);
-    printf("MED: %f\\n", error[3]);
+
+    printf("Total Inputs: %.3e\\n", error[0]);
+    printf("Error Rate: %.3e\\n", error[1]);
+    printf("MRE: %.3e\\n", error[2]);
+    printf("MED: %.3e\\n", error[3]);
+    printf("NMED: %.3e\\n", error[4]);
+    printf("Min Error: %.3e\\n", error[5]);
+    printf("Max Error: %.3e\\n", error[6]);
+    printf("Error Variance: %.3e\\n", error[7]);
+
 }}
 """
     return data

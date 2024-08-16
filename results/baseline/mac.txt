@@ -1,2 +1,2 @@
-Area	Delay	MED	Power
-564.983999	0.869	0.000e+00	1.398e-03
+Area	Delay	Error	Power
+155.615310	0.343	0.000e+00	1.258e-03
