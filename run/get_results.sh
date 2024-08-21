@@ -139,7 +139,7 @@ circdir="$maindir/circuits/$circuit"
 mkdir -p $expdir/reports
 mkdir -p $expdir/netlists
 resfile="$expdir/eval_results.csv"
-echo "NetlID,Lib,SynClk,SimClk,Area,Delay,Power,ErrorRate,MRE,MED,NMED,MinError,MaxError" > $resfile
+echo "NetlID,Lib,SynClk,SimClk,Area,Delay,Power,ErrorRate,MRE,MED,NMED,MinError,MaxError,ErrorRange" > $resfile
 
 # set up libraries
 if [[ $library == "asap7" ]]; then
@@ -192,7 +192,12 @@ cd $testdir
 bl_area="$(getBaselineMeasurement $circuit Area)"
 bl_delay="$(getBaselineMeasurement $circuit Delay)"
 bl_power="$(getBaselineMeasurement $circuit Power)"
-echo "-1,$library,$synclk,$simclk,$bl_area,$bl_delay,$bl_power,0.0,0.0,0.0,0.0,0.0,0.0" >> $resfile
+echo "-1,$library,$synclk,$simclk,$bl_area,$bl_delay,$bl_power,0.0,0.0,0.0,0.0,0.0,0.0,0.0" >> $resfile
+
+# get the error and hardware metrics from the logfile
+exp_logfile=$(find $expdir -name "ga*.log")  # or pareto_${exp_name}.log
+hw_metric="$(grep -oP "(?<=hw_metric': <HW_Metric.)[^:]*" "$exp_logfile" | tr '[:upper:]' '[:lower:]')"
+error_metric="$(grep -oP "(?<=error_metric': <ErrorMetric.)[^:]*" "$exp_logfile" | tr '[:upper:]' '[:lower:]')"
 
 # create approximate netlists from GA results and evaluate them
 python3 $maindir/src/evaluation/ga_pareto.py \
@@ -200,8 +205,8 @@ python3 $maindir/src/evaluation/ga_pareto.py \
     --circuit $circuit \
     --experiment $expdir \
     --results-directory $expdir/netlists \
-    --error-metric variance \
-    --hw-metric delay \
+    --hw-metric $hw_metric \
+    --error-metric $error_metric \
     --generation $which_gen
 
 # iterate over each approximate netlist
@@ -255,12 +260,13 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
         $ofile ${chromosome[@]} &> tmp
 
         # get error measurements from the output
-        error_rate="$(awk '/Error rate:/ {print $NF}' tmp)"
+        error_rate="$(awk '/Error Rate:/ {print $NF}' tmp)"
         mre="$(awk '/MRE:/ {print $NF}' tmp)"
-        med="$(awk '/MED:/ {print $NF}' tmp)"
+        med="$(awk '/^MED:/ {print $NF}' tmp)"
         nmed="$(awk '/NMED:/ {print $NF}' tmp)"
         min_error="$(awk '/Min Error:/ {print $NF}' tmp)"
         max_error="$(awk '/Max Error:/ {print $NF}' tmp)"
+        range="$(awk -v max=$max_error -v min=$min_error 'BEGIN {print max-min}')"
         # clean up
         rm -f tmp
         rm -f $ofile
@@ -275,13 +281,19 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
     power="$(awk '/Total Power/ {print $4}' $power_rpt)"
 
     # write the results
-    echo -e "$netl_id,$library,$synclk,$simclk,$area,$delay,$power,$error_rate,$mre,$med,$nmed,$min_error,$max_error" >> $resfile
+    echo -e "$netl_id,$library,$synclk,$simclk,$area,$delay,$power,$error_rate,$mre,$med,$nmed,$min_error,$max_error,$range" >> $resfile
 
     # move reports to the appropriate directory
     rm -rf $expdir/reports/approx${netl_id}
     mv $testdir/reports $expdir/reports/approx${netl_id}
 
 done
+
+# filter the pareto front and save to another csv file
+python3 $maindir/src/evaluation/filter_pareto_csv.py \
+    --input-csv-file $resfile \
+    --hw-metric $hw_metric \
+    --error-metric $error_metric
 
 # keep a copy of the latest resutls for easy access
 cp $resfile $maindir/results/latest_ga_results.csv
