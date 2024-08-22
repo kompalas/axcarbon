@@ -12,7 +12,7 @@ testdir="$maindir"
 library="variability14"
 synclk="0.0"
 top_design="top"
-get_error_from="c_simulations"  # options: gate_level_simulations, c_simulations
+get_error_from="gate_level_simulations"  # options: gate_level_simulations, c_simulations
 
 ############## Custom Functions ###################
 
@@ -236,6 +236,7 @@ python3 $maindir/src/evaluation/ga_pareto.py \
     --results-directory $expdir/netlists \
     --hw-metric $hw_metric \
     --error-metric $error_metric \
+    --use-all-fronts \
     --generation $which_gen
 
 # iterate over each approximate netlist
@@ -265,10 +266,10 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
         mre="$(getMRE)"
         med="$(getMED)"
         outwidth="$(grep "parameter OUT_WIDTH" ./sim/top_tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
-        nmed="$(awk -v a=$med -v b=$outwidth 'BEGIN {printf "%.3e\n", a/(2**b)}')"
+        nmed="$(awk -v a=$med -v b=$outwidth 'BEGIN {printf "%.3e", a/(2**b)}')"
         min_error="$(getMinError)"
         max_error="$(getMaxError)"
-        range="$(awk -v max=$max_error -v min=$min_error 'BEGIN {print max-min}')"
+        range="$(awk -v max=$max_error -v min=$min_error 'BEGIN {printf "%.3e", max-min}')"
         variance="$(getErrorVariance)"
 
     elif [[ "$get_error_from" == "c_simulations" ]]; then
@@ -297,7 +298,7 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
         nmed="$(awk '/NMED:/ {print $NF}' tmp)"
         min_error="$(awk '/Min Error:/ {print $NF}' tmp)"
         max_error="$(awk '/Max Error:/ {print $NF}' tmp)"
-        range="$(awk -v max=$max_error -v min=$min_error 'BEGIN {print max-min}')"
+        range="$(awk -v max=$max_error -v min=$min_error 'BEGIN {printf "%.3e", max-min}')"
         variance="$(awk '/Variance:/ {print $NF}' tmp)"
         # clean up
         rm -f tmp
@@ -313,7 +314,7 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
     power="$(awk '/Total Power/ {print $4}' $power_rpt)"
 
     # write the results
-    echo -e "$netl_id,$library,$synclk,$simclk,$area,$delay,$power,$error_rate,$mre,$med,$nmed,$min_error,$max_error,$range" >> $resfile
+    echo -e "$netl_id,$library,$synclk,$simclk,$area,$delay,$power,$error_rate,$mre,$med,$nmed,$min_error,$max_error,$range,$variance" >> $resfile
 
     # move reports to the appropriate directory
     rm -rf $expdir/reports/approx${netl_id}

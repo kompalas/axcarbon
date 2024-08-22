@@ -28,10 +28,10 @@ def calc_error_ctypes(chromosome, netlist, shared_location=None):
     shared_lib = ctypes.CDLL(shared_location + f'_top.so')
     # define the arrays for the approximate values and the error measurements
     IntArray = ctypes.c_int * len(chromosome)
-    DoubleArray = ctypes.c_double * len(ErrorMetric)
+    DoubleArray = ctypes.c_double * (1 + len(ErrorMetric))
     # insert them as arguments to the ctypes function
     arguments = IntArray(*chromosome)
-    initial_values = [-1.0] * len(ErrorMetric)
+    initial_values = [-1.0] * (1 + len(ErrorMetric))
     error = DoubleArray(*initial_values)
     # call the function to populate error array
     shared_lib.filetest(arguments, error)

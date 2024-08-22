@@ -836,7 +836,7 @@ void filetest(int ax_values[], double *error) {{
 
     double med=0;
     double mre=0;
-    double squared_sum=0;     // To accumulate squared differences for variance calculation
+    double dev=0, squared_sum=0;     // To accumulate squared differences for variance calculation
 
     double med_max=0;
     med_max = pow(2, {outsize}) - 1;
@@ -884,7 +884,8 @@ void filetest(int ax_values[], double *error) {{
                 mre += (float)nabs/(float)y_true;
             }}
             med += nabs;
-            squared_sum += pow(nabs - (med / i), 2); // Sum up the squared deviations for variance
+            dev = nabs - (med / i);
+            squared_sum += dev * dev; // Sum up the squared deviations for variance
         }}
         else {{
 			min_error=0;

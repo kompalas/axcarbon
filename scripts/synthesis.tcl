@@ -31,8 +31,8 @@ elaborate $top_design
 current_design $top_design
 link
 set auto_wire_load_selection true
-# set_max_area 0
-set_dynamic_optimization true
+set_max_area 0
+# set_dynamic_optimization true
 
 #sdc
 source ./scripts/sdc.tcl

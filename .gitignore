@@ -18,6 +18,9 @@ latest_log_file
 **/Synopsys*
 **/crte*
 **/.nfs*
+**/ucli.key
+**/verdi_config_file
+lc_output.txt
 
 # unecessary folders
 **/__pycache__/

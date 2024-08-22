@@ -11,17 +11,18 @@ python3 $maindir/main.py \
 	--libfile variability14 \
         --name ga_${circuit} \
         --ga \
-        --generations 200 \
-        --population-size 100 \
+        --generations 20 \
+        --population-size 200 \
         --tournament-participants 0.05 \
-        --tournament-probability 0.9 \
+        --tournament-probability 0.8 \
         --error-metric variance \
-        --hw-metric delay \
+        --hw-metric area \
         --gene-type discrete \
         --candidate-type constant \
-        --initial-weight 20 \
+        --initial-weight 10 \
         --threads 10 \
         --save-frequency 5 \
+        # --mutation-probability 0.3
 
 results=$(grep -A 2 "Pareto front contains" latest_log_file | tail -n 3)
 curl -d "GA ($circuit) finished: $results" ntfy.sh/axcarbon
