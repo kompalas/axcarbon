@@ -836,6 +836,7 @@ void filetest(int ax_values[], double *error) {{
 
     double med=0;
     double mre=0;
+    double squared_sum=0;     // To accumulate squared differences for variance calculation
 
     double med_max=0;
     med_max = pow(2, {outsize}) - 1;
@@ -883,6 +884,7 @@ void filetest(int ax_values[], double *error) {{
                 mre += (float)nabs/(float)y_true;
             }}
             med += nabs;
+            squared_sum += pow(nabs - (med / i), 2); // Sum up the squared deviations for variance
         }}
         else {{
 			min_error=0;
@@ -906,8 +908,10 @@ void filetest(int ax_values[], double *error) {{
     error[5] = min_error;
     // maximum error
     error[6] = max_error;
-    // error variance
+    // error range
     error[7] = max_error - min_error;
+    // error variance
+    error[8] = squared_sum/(double)i;
 
     fclose(f);
     //fclose(fo);
@@ -935,7 +939,8 @@ void main(int argc, char *argv[]) {{
     printf("NMED: %.3e\\n", error[4]);
     printf("Min Error: %.3e\\n", error[5]);
     printf("Max Error: %.3e\\n", error[6]);
-    printf("Error Variance: %.3e\\n", error[7]);
+    printf("Error Range: %.3e\\n", error[7]);
+    printf("Variance: %.3e\\n", error[8]);
 
 }}
 """

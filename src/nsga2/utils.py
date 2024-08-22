@@ -194,21 +194,20 @@ class ErrorMetric(Enum):
     MinError = 4
     MaxError = 5
     ErrorRange = 6
+    Variance = 7
 
 str_to_error_metric_map = {
     'errorrate': ErrorMetric.ErrorRate,
-    'er': ErrorMetric.ErrorRate,
     'mre': ErrorMetric.MRE,
     'med': ErrorMetric.MED,
+    'mae': ErrorMetric.MED,  # Mean Absolute Error is the same as Mean Error Distance
     'nmed': ErrorMetric.NMED,
     'minerror': ErrorMetric.MinError,
-    'me': ErrorMetric.MinError,
     'maxerror': ErrorMetric.MaxError,
-    'me': ErrorMetric.MaxError,
-    'errorvariance': ErrorMetric.ErrorRange,
-    'variance': ErrorMetric.ErrorRange,
     'errorrange': ErrorMetric.ErrorRange,
-    'range': ErrorMetric.ErrorRange
+    'range': ErrorMetric.ErrorRange,
+    'errorvariance': ErrorMetric.Variance,
+    'variance': ErrorMetric.Variance,
 }
 
 def error_metric_arg(metric_str):

@@ -22,7 +22,6 @@ function getBaselineMeasurement {
     bl_file="$maindir/results/baseline/${circuit}.txt"
     awk -F"\t" -v m="$measurement" 'NR==1 {for (i=1; i<=NF; i++) if ($i==m) foi=i;} NR==2 {print $foi}' $bl_file
 }
-# TODO: Fix these to handle binary numbers
 function getErrorRate() {
     paste $testdir/sim/expected.txt  $testdir/sim/output.txt | \
     perl -pe 's/\b[01]+\b/oct "0b" . $&/ge' | \
@@ -122,6 +121,36 @@ function getMaxError() {
         printf "%.3e\n", max_error
     }'
 }
+function getErrorVariance() {
+    paste $testdir/sim/expected.txt $testdir/sim/output.txt | \
+    perl -pe 's/\b[01]+\b/oct "0b" . $&/ge' | \
+    awk '
+    BEGIN {
+        sum = 0;
+        sum_squared = 0;
+        count = 0;
+    } 
+    {
+        if ($1 ~ /x/ || $2 ~ /x/) next;
+        count++;
+        diff = $1 - $2;
+        if (diff < 0) {
+            diff = -diff;
+        }
+        sum += diff;
+        sum_squared += diff * diff;
+    } 
+    END {
+        if (count > 0) {
+            mean = sum / count;
+            variance = (sum_squared / count) - (mean * mean);
+            printf "%.3e\n", variance;
+        } else {
+            print "0.000e+00";
+        }
+    }'
+}
+
 
 ################# Setup ######################
 
@@ -139,7 +168,7 @@ circdir="$maindir/circuits/$circuit"
 mkdir -p $expdir/reports
 mkdir -p $expdir/netlists
 resfile="$expdir/eval_results.csv"
-echo "NetlID,Lib,SynClk,SimClk,Area,Delay,Power,ErrorRate,MRE,MED,NMED,MinError,MaxError,ErrorRange" > $resfile
+echo "NetlID,Lib,SynClk,SimClk,Area,Delay,Power,ErrorRate,MRE,MED,NMED,MinError,MaxError,ErrorRange,Variance" > $resfile
 
 # set up libraries
 if [[ $library == "asap7" ]]; then
@@ -192,7 +221,7 @@ cd $testdir
 bl_area="$(getBaselineMeasurement $circuit Area)"
 bl_delay="$(getBaselineMeasurement $circuit Delay)"
 bl_power="$(getBaselineMeasurement $circuit Power)"
-echo "-1,$library,$synclk,$simclk,$bl_area,$bl_delay,$bl_power,0.0,0.0,0.0,0.0,0.0,0.0,0.0" >> $resfile
+echo "-1,$library,$synclk,$simclk,$bl_area,$bl_delay,$bl_power,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0" >> $resfile
 
 # get the error and hardware metrics from the logfile
 exp_logfile=$(find $expdir -name "ga*.log")  # or pareto_${exp_name}.log
@@ -239,6 +268,8 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
         nmed="$(awk -v a=$med -v b=$outwidth 'BEGIN {printf "%.3e\n", a/(2**b)}')"
         min_error="$(getMinError)"
         max_error="$(getMaxError)"
+        range="$(awk -v max=$max_error -v min=$min_error 'BEGIN {print max-min}')"
+        variance="$(getErrorVariance)"
 
     elif [[ "$get_error_from" == "c_simulations" ]]; then
         
@@ -267,6 +298,7 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
         min_error="$(awk '/Min Error:/ {print $NF}' tmp)"
         max_error="$(awk '/Max Error:/ {print $NF}' tmp)"
         range="$(awk -v max=$max_error -v min=$min_error 'BEGIN {print max-min}')"
+        variance="$(awk '/Variance:/ {print $NF}' tmp)"
         # clean up
         rm -f tmp
         rm -f $ofile

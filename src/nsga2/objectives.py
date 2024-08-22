@@ -28,23 +28,24 @@ def calc_error_ctypes(chromosome, netlist, shared_location=None):
     shared_lib = ctypes.CDLL(shared_location + f'_top.so')
     # define the arrays for the approximate values and the error measurements
     IntArray = ctypes.c_int * len(chromosome)
-    DoubleArray = ctypes.c_double * 8
+    DoubleArray = ctypes.c_double * len(ErrorMetric)
     # insert them as arguments to the ctypes function
     arguments = IntArray(*chromosome)
-    initial_values = [-1.0] * 8
+    initial_values = [-1.0] * len(ErrorMetric)
     error = DoubleArray(*initial_values)
     # call the function to populate error array
     shared_lib.filetest(arguments, error)
 
     # unpack all error values tracked from the simulation
-    num_inputs, error_rate, mre, med, nmed, min_error, max_error, error_var = error
+    num_inputs, error_rate, mre, med, nmed, min_error, max_error, range, variance = error
     return {ErrorMetric.ErrorRate: error_rate,
             ErrorMetric.MRE: mre,
             ErrorMetric.MED: med,
             ErrorMetric.NMED: nmed,
             ErrorMetric.MinError: min_error,
             ErrorMetric.MaxError: max_error,
-            ErrorMetric.ErrorRange: error_var}
+            ErrorMetric.ErrorRange: range,
+            ErrorMetric.Variance: variance}
 
 
 def calc_delay(graph):

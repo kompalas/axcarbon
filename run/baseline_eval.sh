@@ -18,10 +18,10 @@ circdir="$maindir/circuits/$circuit"
 
 # set up libraries and environment
 if [[ $library == "asap7" ]]; then
-    libpath="$maindir/libs/asap7/7nm/db"
-    libcpath="$maindir/libs/asap7/7nm/c"
-    libverilog="$maindir/libs/asap7/7nm/verilog"
-    lib="asap7.db"
+    # libpath="$maindir/libs/asap7/7nm/db"
+    # libcpath="$maindir/libs/asap7/7nm/c"
+    # libverilog="$maindir/libs/asap7/7nm/verilog"
+    # lib="asap7.db"
     tunit="ps"
 elif [[ $library == "nangate45" ]]; then
     libpath="$maindir/libs/nangate45/db"
