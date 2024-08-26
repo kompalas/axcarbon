@@ -40,8 +40,14 @@ elif [[ $library == "variability14" ]]; then
     libverilog="$maindir/libs/variability14/verilog"
     lib="predicted_0.db"
     tunit="ns"
+elif [[ $library == "fdsoi28" ]]; then
+    libpath="$maindir/libs/fdsoi28/db"
+    libcpath="$maindir/libs/fdsoi28/c"
+    libverilog="$maindir/libs/fdsoi28/verilog"
+    lib="28nm_FDSOI_0.9V_300K.db"
+    tunit="ns"
 else
-    echo "Invalid library option. Options are: asap7, variability14, nangate45"
+    echo "Invalid library option. Options are: asap7, variability14, fdsoi28, nangate45"
     exit 1
 fi
 export tunit="$tunit"

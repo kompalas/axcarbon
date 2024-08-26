@@ -25,7 +25,7 @@ def translate_operation_backup(verilog_line):
     return verilog_line
 
 
-def translate_operation(logic_gate, io_wires):
+def translate_operation(logic_gate, io_wires, all_wires):
     """Function to translate a Verilog logic operation to C code
     """
     def translate_not(signals):
@@ -63,6 +63,8 @@ def translate_operation(logic_gate, io_wires):
 
     # Apply the operator replacements
     io_wires = [wire.strip() for wire in io_wires.split(',')]
+    if any(wire not in all_wires for wire in io_wires):
+        return
     return verilog_gates_factory[logic_gate](io_wires)
 
 
@@ -72,6 +74,7 @@ def verilog_to_c(verilog_module, return_header=False):
     # Extract module name
     module_name_match = re.search(r"module\s+(\w+)\s*\(", verilog_module)
     module_name = module_name_match.group(1) if module_name_match else "unknown_module"
+    module_name = module_name.replace('_func', '')
 
     # Extract the input and output signals
     try:
@@ -110,9 +113,12 @@ def verilog_to_c(verilog_module, return_header=False):
         c_function += f"    int {wire};\n"
 
     # Extract and convert each logic operation to C
-    logic_lines = re.findall(r"\b(not|and|or|buf)\s*\(([\w\s,]+)\);", verilog_module)
+    logic_lines = re.findall(r"\b(not|and|or|buf)\s+?.*?\(([\w\s,]+)\);", verilog_module)
     for logic_gate, io_wires in logic_lines:
-        c_expr = translate_operation(logic_gate, io_wires)
+        c_expr = translate_operation(logic_gate, io_wires, inputs + outputs + wires)
+        if c_expr is None:
+            return
+
         # Replace the output signals with pointers
         for output_signal in outputs:
             c_expr = re.sub(rf"\b{output_signal}\b", f"*{output_signal}", c_expr)
@@ -141,24 +147,23 @@ def verilog_lib_to_clib(input_verilog_lib, output_c_lib, output_header=None):
 
     with open(output_c_lib, 'w') as f:
         for module in modules:
-            # try:
             c_code = verilog_to_c(module)
-            f.write(c_code)
-            # except AttributeError:
-            #     pass
-            f.write('\n')
+            if c_code is not None:
+                f.write(c_code)
+                f.write('\n')
     
     if output_header is not None:
         with open(output_header, 'w') as f:
             for module in modules:
                 c_header = verilog_to_c(module, return_header=True)
-                f.write(c_header)
-                f.write('\n')
+                if c_header is not None:
+                    f.write(c_header)
+                    f.write('\n')
 
 
 if __name__ == '__main__':
 
-    input_verilog_lib = os.path.join(project_dir, 'libs', 'asap7', '7nm', 'verilog', 'asap7.v')
-    output_c_lib = os.path.join(project_dir, 'libs', 'asap7', '7nm', 'c', 'asap7.c')
-    output_header = os.path.join(project_dir, 'libs', 'asap7', '7nm', 'c', 'asap7.h')
+    input_verilog_lib = os.path.join(project_dir, 'libs', 'fdsoi28', 'verilog', 'verilog_udp.v')
+    output_c_lib = os.path.join(project_dir, 'libs', 'fdsoi28', 'c', 'library.c')
+    output_header = os.path.join(project_dir, 'libs', 'fdsoi28', 'c', 'library.h')
     verilog_lib_to_clib(input_verilog_lib, output_c_lib, output_header)

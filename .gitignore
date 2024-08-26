@@ -41,6 +41,7 @@ lc_output.txt
 # libraries / library interm objects
 libs/*.so
 libs/*.o
+libs/asap7/7nm/libfiles/
 tech_lib/
 **/gate_simv.daidir/
 **/rtl_simv.daidir/
@@ -53,6 +54,7 @@ synopsys_sim.setup
 # circuits
 circuits/*/*approx*
 circuits/*/*.o
+circuits/*/top
 circuits/*/*.so
 circuits/*/*ctypes*
 circuits/*/*vcd*
