@@ -1,20 +1,166 @@
-// Verilog for library /home/bvemired/asap7/PDKrundir/asap7_rundir/Liberate/Verilog/asap7sc7p5t_SEQ_RVT_TT_08302018 created by Liberate 16.1.0.530 on Thu Aug 30 22:58:41 MST 2018 for SDF version 2.1
+// BSD 3-Clause License
+// 
+// Copyright 2021 Lawrence T. Clark, Vinay Vashishtha, or Arizona State
+// University
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+// this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+// 
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived from this
+// software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Verilog for library /home/anolas19/Liberate/Verilog/asap7sc6t_SEQ_RVT_TT_210905 created by Liberate 18.1.0.293 on Fri Sep 24 08:13:30 MST 2021 for SDF version 2.1
 
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module ASYNC_DFFHx1_ASAP7_75t_R (QN, D, RESET, SET, CLK);
+module DFFARHQNx1_ASAP7_6t_R (QN, D, RESETN, CLK);
 	output QN;
-	input D, RESET, SET, CLK;
+	input D, RESETN, CLK;
 	reg notifier;
-	wire delayed_D, delayed_RESET, delayed_SET, delayed_CLK;
+	wire delayed_D, delayed_CLK;
 
 	// Function
-	wire int_fwire_d, int_fwire_IQN, xcr_0;
+	wire int_fwire_d, int_fwire_IQN, int_fwire_s;
+	wire xcr_0;
 
 	not (int_fwire_d, delayed_D);
-	altos_dff_sr_err (xcr_0, delayed_CLK, int_fwire_d, delayed_SET, delayed_RESET);
-	altos_dff_sr_1 (int_fwire_IQN, notifier, delayed_CLK, int_fwire_d, delayed_SET, delayed_RESET, xcr_0);
+	not (int_fwire_s, RESETN);
+	altos_dff_s_err (xcr_0, delayed_CLK, int_fwire_d, int_fwire_s);
+	altos_dff_s (int_fwire_IQN, notifier, delayed_CLK, int_fwire_d, int_fwire_s, xcr_0);
+	buf (QN, int_fwire_IQN);
+
+	// Timing
+
+	// Additional timing wires
+	wire adacond0, adacond1, D__bar;
+
+
+	// Additional timing gates
+	and (adacond0, D, RESETN);
+	not (D__bar, D);
+	and (adacond1, D__bar, RESETN);
+
+	specify
+		if (CLK)
+			(negedge RESETN => (QN+:1'b1)) = 0;
+		if (~CLK)
+			(negedge RESETN => (QN+:1'b1)) = 0;
+		ifnone (negedge RESETN => (QN+:1'b1)) = 0;
+		(posedge CLK => (QN+:!D)) = 0;
+		$setuphold (posedge CLK &&& RESETN, posedge D &&& RESETN, 0, 0, notifier,,, delayed_CLK, delayed_D);
+		$setuphold (posedge CLK &&& RESETN, negedge D &&& RESETN, 0, 0, notifier,,, delayed_CLK, delayed_D);
+		$setuphold (posedge CLK, posedge D, 0, 0, notifier,,, delayed_CLK, delayed_D);
+		$setuphold (posedge CLK, negedge D, 0, 0, notifier,,, delayed_CLK, delayed_D);
+		$recovery (posedge RESETN &&& D, posedge CLK &&& D, 0, notifier);
+		$recovery (posedge RESETN, posedge CLK, 0, notifier);
+		$hold (posedge CLK &&& D, posedge RESETN &&& D, 0, notifier);
+		$hold (posedge CLK, posedge RESETN, 0, notifier);
+		$width (negedge RESETN &&& CLK, 0, 0, notifier);
+		$width (negedge RESETN &&& ~CLK, 0, 0, notifier);
+		$width (posedge CLK &&& adacond0, 0, 0, notifier);
+		$width (negedge CLK &&& adacond0, 0, 0, notifier);
+		$width (posedge CLK &&& adacond1, 0, 0, notifier);
+		$width (negedge CLK &&& adacond1, 0, 0, notifier);
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module DFFASHQNx1_ASAP7_6t_R (QN, D, SETN, CLK);
+	output QN;
+	input D, SETN, CLK;
+	reg notifier;
+	wire delayed_D, delayed_CLK;
+
+	// Function
+	wire int_fwire_d, int_fwire_IQN, int_fwire_r;
+	wire xcr_0;
+
+	not (int_fwire_d, delayed_D);
+	not (int_fwire_r, SETN);
+	altos_dff_r_err (xcr_0, delayed_CLK, int_fwire_d, int_fwire_r);
+	altos_dff_r (int_fwire_IQN, notifier, delayed_CLK, int_fwire_d, int_fwire_r, xcr_0);
+	buf (QN, int_fwire_IQN);
+
+	// Timing
+
+	// Additional timing wires
+	wire adacond0, adacond1, D__bar;
+
+
+	// Additional timing gates
+	and (adacond0, D, SETN);
+	not (D__bar, D);
+	and (adacond1, D__bar, SETN);
+
+	specify
+		if (CLK)
+			(negedge SETN => (QN+:1'b0)) = 0;
+		if ((~CLK & D))
+			(negedge SETN => (QN+:1'b0)) = 0;
+		if ((~CLK & ~D))
+			(negedge SETN => (QN+:1'b0)) = 0;
+		ifnone (negedge SETN => (QN+:1'b0)) = 0;
+		(posedge CLK => (QN+:!D)) = 0;
+		$setuphold (posedge CLK &&& SETN, posedge D &&& SETN, 0, 0, notifier,,, delayed_CLK, delayed_D);
+		$setuphold (posedge CLK &&& SETN, negedge D &&& SETN, 0, 0, notifier,,, delayed_CLK, delayed_D);
+		$setuphold (posedge CLK, posedge D, 0, 0, notifier,,, delayed_CLK, delayed_D);
+		$setuphold (posedge CLK, negedge D, 0, 0, notifier,,, delayed_CLK, delayed_D);
+		$recovery (posedge SETN &&& ~D, posedge CLK &&& ~D, 0, notifier);
+		$recovery (posedge SETN, posedge CLK, 0, notifier);
+		$hold (posedge CLK &&& ~D, posedge SETN &&& ~D, 0, notifier);
+		$hold (posedge CLK, posedge SETN, 0, notifier);
+		$width (negedge SETN &&& CLK, 0, 0, notifier);
+		$width (negedge SETN &&& ~CLK, 0, 0, notifier);
+		$width (posedge CLK &&& adacond0, 0, 0, notifier);
+		$width (negedge CLK &&& adacond0, 0, 0, notifier);
+		$width (posedge CLK &&& adacond1, 0, 0, notifier);
+		$width (negedge CLK &&& adacond1, 0, 0, notifier);
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module DFFASRHQNx1_ASAP7_6t_R (QN, D, RESETN, SETN, CLK);
+	output QN;
+	input D, RESETN, SETN, CLK;
+	reg notifier;
+	wire delayed_D, delayed_RESETN, delayed_SETN, delayed_CLK;
+
+	// Function
+	wire int_fwire_d, int_fwire_IQN, int_fwire_r;
+	wire int_fwire_s, xcr_0;
+
+	not (int_fwire_d, delayed_D);
+	not (int_fwire_s, delayed_RESETN);
+	not (int_fwire_r, delayed_SETN);
+	altos_dff_sr_err (xcr_0, delayed_CLK, int_fwire_d, int_fwire_s, int_fwire_r);
+	altos_dff_sr_0 (int_fwire_IQN, notifier, delayed_CLK, int_fwire_d, int_fwire_s, int_fwire_r, xcr_0);
 	buf (QN, int_fwire_IQN);
 
 	// Timing
@@ -23,76 +169,71 @@ module ASYNC_DFFHx1_ASAP7_75t_R (QN, D, RESET, SET, CLK);
 	wire adacond0, adacond1, adacond2;
 	wire adacond3, adacond4, adacond5;
 	wire adacond6, adacond7, adacond8;
-	wire CLK__bar, D__bar, RESET__bar;
-	wire SET__bar;
+	wire CLK__bar, D__bar;
 
 
 	// Additional timing gates
-	not (SET__bar, SET);
-	not (RESET__bar, RESET);
-	and (adacond0, RESET__bar, SET__bar);
-	not (D__bar, D);
-	and (adacond1, D__bar, SET__bar);
-	and (adacond2, CLK, SET__bar);
+	and (adacond0, RESETN, SETN);
+	and (adacond1, D, SETN);
+	and (adacond2, CLK, SETN);
 	not (CLK__bar, CLK);
-	and (adacond3, CLK__bar, SET__bar);
-	and (adacond4, D, RESET__bar);
-	and (adacond5, CLK, RESET__bar);
-	and (adacond6, CLK__bar, RESET__bar);
-	and (adacond7, D, RESET__bar, SET__bar);
-	and (adacond8, D__bar, RESET__bar, SET__bar);
+	and (adacond3, CLK__bar, SETN);
+	not (D__bar, D);
+	and (adacond4, D__bar, RESETN);
+	and (adacond5, CLK, RESETN);
+	and (adacond6, CLK__bar, RESETN);
+	and (adacond7, D, RESETN, SETN);
+	and (adacond8, D__bar, RESETN, SETN);
 
 	specify
-		if ((CLK & ~SET))
-			(posedge RESET => (QN+:1'b0)) = 0;
-		if ((~CLK & D & ~SET))
-			(posedge RESET => (QN+:1'b0)) = 0;
-		if ((~CLK & ~D & ~SET))
-			(posedge RESET => (QN+:1'b0)) = 0;
-		ifnone (posedge RESET => (QN+:1'b0)) = 0;
-		if ((CLK & RESET))
-			(negedge SET => (QN+:1'b0)) = 0;
-		if ((~CLK & D & RESET))
-			(negedge SET => (QN+:1'b0)) = 0;
-		if ((~CLK & ~D & RESET))
-			(negedge SET => (QN+:1'b0)) = 0;
-		ifnone (negedge SET => (QN+:1'b0)) = 0;
-		if ((CLK & RESET))
-			(posedge SET => (QN+:1'b1)) = 0;
-		if ((CLK & ~RESET))
-			(posedge SET => (QN+:1'b1)) = 0;
-		if ((~CLK & D & RESET))
-			(posedge SET => (QN+:1'b1)) = 0;
-		if ((~CLK & D & ~RESET))
-			(posedge SET => (QN+:1'b1)) = 0;
-		if ((~CLK & ~D & RESET))
-			(posedge SET => (QN+:1'b1)) = 0;
-		if ((~CLK & ~D & ~RESET))
-			(posedge SET => (QN+:1'b1)) = 0;
-		ifnone (posedge SET => (QN+:1'b1)) = 0;
+		if ((CLK & SETN))
+			(negedge RESETN => (QN+:1'b1)) = 0;
+		if ((~CLK & SETN))
+			(negedge RESETN => (QN+:1'b1)) = 0;
+		ifnone (negedge RESETN => (QN+:1'b1)) = 0;
+		if ((CLK & RESETN))
+			(negedge SETN => (QN+:1'b0)) = 0;
+		if ((CLK & ~RESETN))
+			(negedge SETN => (QN+:1'b0)) = 0;
+		if ((~CLK & D & RESETN))
+			(negedge SETN => (QN+:1'b0)) = 0;
+		if ((~CLK & D & ~RESETN))
+			(negedge SETN => (QN+:1'b0)) = 0;
+		if ((~CLK & ~D & RESETN))
+			(negedge SETN => (QN+:1'b0)) = 0;
+		if ((~CLK & ~D & ~RESETN))
+			(negedge SETN => (QN+:1'b0)) = 0;
+		ifnone (negedge SETN => (QN+:1'b0)) = 0;
+		if ((CLK & ~RESETN))
+			(posedge SETN => (QN+:1'b1)) = 0;
+		if ((~CLK & D & ~RESETN))
+			(posedge SETN => (QN+:1'b1)) = 0;
+		if ((~CLK & ~D & ~RESETN))
+			(posedge SETN => (QN+:1'b1)) = 0;
+		ifnone (posedge SETN => (QN+:1'b1)) = 0;
 		(posedge CLK => (QN+:!D)) = 0;
 		$setuphold (posedge CLK &&& adacond0, posedge D &&& adacond0, 0, 0, notifier,,, delayed_CLK, delayed_D);
 		$setuphold (posedge CLK &&& adacond0, negedge D &&& adacond0, 0, 0, notifier,,, delayed_CLK, delayed_D);
 		$setuphold (posedge CLK, posedge D, 0, 0, notifier,,, delayed_CLK, delayed_D);
 		$setuphold (posedge CLK, negedge D, 0, 0, notifier,,, delayed_CLK, delayed_D);
-		$setuphold (negedge SET &&& CLK, negedge RESET &&& CLK, 0, 0, notifier,,, delayed_SET, delayed_RESET);
-		$setuphold (negedge SET &&& ~CLK, negedge RESET &&& ~CLK, 0, 0, notifier,,, delayed_SET, delayed_RESET);
-		$setuphold (negedge SET, negedge RESET, 0, 0, notifier,,, delayed_SET, delayed_RESET);
-		$setuphold (negedge RESET &&& CLK, negedge SET &&& CLK, 0, 0, notifier,,, delayed_RESET, delayed_SET);
-		$setuphold (negedge RESET &&& ~CLK, negedge SET &&& ~CLK, 0, 0, notifier,,, delayed_RESET, delayed_SET);
-		$setuphold (negedge RESET, negedge SET, 0, 0, notifier,,, delayed_RESET, delayed_SET);
-		$recovery (negedge RESET &&& adacond1, posedge CLK &&& adacond1, 0, notifier);
-		$recovery (negedge RESET, posedge CLK, 0, notifier);
-		$hold (posedge CLK &&& adacond1, negedge RESET &&& adacond1, 0, notifier);
-		$hold (posedge CLK, negedge RESET, 0, notifier);
-		$recovery (negedge SET &&& adacond4, posedge CLK &&& adacond4, 0, notifier);
-		$recovery (negedge SET, posedge CLK, 0, notifier);
-		$hold (posedge CLK &&& adacond4, negedge SET &&& adacond4, 0, notifier);
-		$hold (posedge CLK, negedge SET, 0, notifier);
-		$width (posedge RESET &&& adacond2, 0, 0, notifier);
-		$width (posedge RESET &&& adacond3, 0, 0, notifier);
-		$width (posedge SET &&& adacond5, 0, 0, notifier);
-		$width (posedge SET &&& adacond6, 0, 0, notifier);
+		$setuphold (posedge SETN &&& CLK, posedge RESETN &&& CLK, 0, 0, notifier,,, delayed_SETN, delayed_RESETN);
+		$setuphold (posedge SETN &&& ~CLK, posedge RESETN &&& ~CLK, 0, 0, notifier,,, delayed_SETN, delayed_RESETN);
+		$setuphold (posedge SETN, posedge RESETN, 0, 0, notifier,,, delayed_SETN, delayed_RESETN);
+		$setuphold (posedge RESETN &&& CLK, posedge SETN &&& CLK, 0, 0, notifier,,, delayed_RESETN, delayed_SETN);
+		$setuphold (posedge RESETN &&& ~CLK, posedge SETN &&& ~CLK, 0, 0, notifier,,, delayed_RESETN, delayed_SETN);
+		$setuphold (posedge RESETN, posedge SETN, 0, 0, notifier,,, delayed_RESETN, delayed_SETN);
+		$recovery (posedge RESETN &&& adacond1, posedge CLK &&& adacond1, 0, notifier);
+		$recovery (posedge RESETN, posedge CLK, 0, notifier);
+		$hold (posedge CLK &&& adacond1, posedge RESETN &&& adacond1, 0, notifier);
+		$hold (posedge CLK, posedge RESETN, 0, notifier);
+		$recovery (posedge SETN &&& adacond4, posedge CLK &&& adacond4, 0, notifier);
+		$recovery (posedge SETN, posedge CLK, 0, notifier);
+		$hold (posedge CLK &&& adacond4, posedge SETN &&& adacond4, 0, notifier);
+		$hold (posedge CLK, posedge SETN, 0, notifier);
+		$width (negedge RESETN &&& adacond2, 0, 0, notifier);
+		$width (negedge RESETN &&& adacond3, 0, 0, notifier);
+		$width (negedge SETN &&& adacond5, 0, 0, notifier);
+		$width (negedge SETN &&& adacond6, 0, 0, notifier);
 		$width (posedge CLK &&& adacond7, 0, 0, notifier);
 		$width (negedge CLK &&& adacond7, 0, 0, notifier);
 		$width (posedge CLK &&& adacond8, 0, 0, notifier);
@@ -104,7 +245,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DFFHQNx1_ASAP7_75t_R (QN, D, CLK);
+module DFFHQNx1_ASAP7_6t_R (QN, D, CLK);
 	output QN;
 	input D, CLK;
 	reg notifier;
@@ -134,7 +275,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DFFHQNx2_ASAP7_75t_R (QN, D, CLK);
+module DFFHQNx2_ASAP7_6t_R (QN, D, CLK);
 	output QN;
 	input D, CLK;
 	reg notifier;
@@ -164,7 +305,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DFFHQNx3_ASAP7_75t_R (QN, D, CLK);
+module DFFHQNx3_ASAP7_6t_R (QN, D, CLK);
 	output QN;
 	input D, CLK;
 	reg notifier;
@@ -194,7 +335,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DFFHQx4_ASAP7_75t_R (Q, D, CLK);
+module DFFHQx4_ASAP7_6t_R (Q, D, CLK);
 	output Q;
 	input D, CLK;
 	reg notifier;
@@ -223,7 +364,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DFFLQNx1_ASAP7_75t_R (QN, D, CLK);
+module DFFLQNx1_ASAP7_6t_R (QN, D, CLK);
 	output QN;
 	input D, CLK;
 	reg notifier;
@@ -255,7 +396,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DFFLQNx2_ASAP7_75t_R (QN, D, CLK);
+module DFFLQNx2_ASAP7_6t_R (QN, D, CLK);
 	output QN;
 	input D, CLK;
 	reg notifier;
@@ -287,7 +428,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DFFLQNx3_ASAP7_75t_R (QN, D, CLK);
+module DFFLQNx3_ASAP7_6t_R (QN, D, CLK);
 	output QN;
 	input D, CLK;
 	reg notifier;
@@ -319,7 +460,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DFFLQx4_ASAP7_75t_R (Q, D, CLK);
+module DFFLQx4_ASAP7_6t_R (Q, D, CLK);
 	output Q;
 	input D, CLK;
 	reg notifier;
@@ -349,7 +490,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DHLx1_ASAP7_75t_R (Q, D, CLK);
+module DHLx1_ASAP7_6t_R (Q, D, CLK);
 	output Q;
 	input D, CLK;
 	reg notifier;
@@ -376,7 +517,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DHLx2_ASAP7_75t_R (Q, D, CLK);
+module DHLx2_ASAP7_6t_R (Q, D, CLK);
 	output Q;
 	input D, CLK;
 	reg notifier;
@@ -403,7 +544,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DHLx3_ASAP7_75t_R (Q, D, CLK);
+module DHLx3_ASAP7_6t_R (Q, D, CLK);
 	output Q;
 	input D, CLK;
 	reg notifier;
@@ -430,7 +571,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DLLx1_ASAP7_75t_R (Q, D, CLK);
+module DLLx1_ASAP7_6t_R (Q, D, CLK);
 	output Q;
 	input D, CLK;
 	reg notifier;
@@ -458,7 +599,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DLLx2_ASAP7_75t_R (Q, D, CLK);
+module DLLx2_ASAP7_6t_R (Q, D, CLK);
 	output Q;
 	input D, CLK;
 	reg notifier;
@@ -486,7 +627,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module DLLx3_ASAP7_75t_R (Q, D, CLK);
+module DLLx3_ASAP7_6t_R (Q, D, CLK);
 	output Q;
 	input D, CLK;
 	reg notifier;
@@ -514,7 +655,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module ICGx1_ASAP7_75t_R (GCLK, ENA, SE, CLK);
+module ICGx10_ASAP7_6t_R (GCLK, ENA, SE, CLK);
 	output GCLK;
 	input ENA, SE, CLK;
 	reg notifier;
@@ -566,7 +707,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module ICGx2_ASAP7_75t_R (GCLK, ENA, SE, CLK);
+module ICGx12_ASAP7_6t_R (GCLK, ENA, SE, CLK);
 	output GCLK;
 	input ENA, SE, CLK;
 	reg notifier;
@@ -618,7 +759,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module ICGx3_ASAP7_75t_R (GCLK, ENA, SE, CLK);
+module ICGx1_ASAP7_6t_R (GCLK, ENA, SE, CLK);
 	output GCLK;
 	input ENA, SE, CLK;
 	reg notifier;
@@ -670,7 +811,267 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module SDFHx1_ASAP7_75t_R (QN, D, SE, SI, CLK);
+module ICGx2_ASAP7_6t_R (GCLK, ENA, SE, CLK);
+	output GCLK;
+	input ENA, SE, CLK;
+	reg notifier;
+	wire delayed_ENA, delayed_SE, delayed_CLK;
+
+	// Function
+	wire int_fwire_clk, int_fwire_IQ, int_fwire_test;
+
+	not (int_fwire_clk, delayed_CLK);
+	or (int_fwire_test, delayed_ENA, delayed_SE);
+	altos_latch (int_fwire_IQ, notifier, int_fwire_clk, int_fwire_test);
+	and (GCLK, delayed_CLK, int_fwire_IQ);
+
+	// Timing
+
+	// Additional timing wires
+	wire adacond0, adacond1, ENA__bar;
+	wire int_twire_0, SE__bar;
+
+
+	// Additional timing gates
+	not (ENA__bar, ENA);
+	and (int_twire_0, ENA__bar, SE);
+	or (adacond0, ENA, int_twire_0);
+	not (SE__bar, SE);
+	and (adacond1, ENA__bar, SE__bar);
+
+	specify
+		if ((ENA) | (~ENA & SE))
+			(negedge CLK => (GCLK+:1'b0)) = 0;
+		if ((~ENA & ~SE))
+			(negedge CLK => (GCLK+:1'b0)) = 0;
+		ifnone (CLK => GCLK) = 0;
+		$setuphold (posedge CLK &&& ~SE, posedge ENA &&& ~SE, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK &&& ~SE, negedge ENA &&& ~SE, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK, posedge ENA, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK, negedge ENA, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK &&& ~ENA, posedge SE &&& ~ENA, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK &&& ~ENA, negedge SE &&& ~ENA, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK, posedge SE, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK, negedge SE, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$width (posedge CLK &&& adacond0, 0, 0, notifier);
+		$width (negedge CLK &&& adacond0, 0, 0, notifier);
+		$width (negedge CLK &&& adacond1, 0, 0, notifier);
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module ICGx3_ASAP7_6t_R (GCLK, ENA, SE, CLK);
+	output GCLK;
+	input ENA, SE, CLK;
+	reg notifier;
+	wire delayed_ENA, delayed_SE, delayed_CLK;
+
+	// Function
+	wire int_fwire_clk, int_fwire_IQ, int_fwire_test;
+
+	not (int_fwire_clk, delayed_CLK);
+	or (int_fwire_test, delayed_ENA, delayed_SE);
+	altos_latch (int_fwire_IQ, notifier, int_fwire_clk, int_fwire_test);
+	and (GCLK, delayed_CLK, int_fwire_IQ);
+
+	// Timing
+
+	// Additional timing wires
+	wire adacond0, adacond1, ENA__bar;
+	wire int_twire_0, SE__bar;
+
+
+	// Additional timing gates
+	not (ENA__bar, ENA);
+	and (int_twire_0, ENA__bar, SE);
+	or (adacond0, ENA, int_twire_0);
+	not (SE__bar, SE);
+	and (adacond1, ENA__bar, SE__bar);
+
+	specify
+		if ((ENA) | (~ENA & SE))
+			(negedge CLK => (GCLK+:1'b0)) = 0;
+		if ((~ENA & ~SE))
+			(negedge CLK => (GCLK+:1'b0)) = 0;
+		ifnone (CLK => GCLK) = 0;
+		$setuphold (posedge CLK &&& ~SE, posedge ENA &&& ~SE, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK &&& ~SE, negedge ENA &&& ~SE, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK, posedge ENA, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK, negedge ENA, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK &&& ~ENA, posedge SE &&& ~ENA, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK &&& ~ENA, negedge SE &&& ~ENA, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK, posedge SE, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK, negedge SE, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$width (posedge CLK &&& adacond0, 0, 0, notifier);
+		$width (negedge CLK &&& adacond0, 0, 0, notifier);
+		$width (negedge CLK &&& adacond1, 0, 0, notifier);
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module ICGx4_ASAP7_6t_R (GCLK, ENA, SE, CLK);
+	output GCLK;
+	input ENA, SE, CLK;
+	reg notifier;
+	wire delayed_ENA, delayed_SE, delayed_CLK;
+
+	// Function
+	wire int_fwire_clk, int_fwire_IQ, int_fwire_test;
+
+	not (int_fwire_clk, delayed_CLK);
+	or (int_fwire_test, delayed_ENA, delayed_SE);
+	altos_latch (int_fwire_IQ, notifier, int_fwire_clk, int_fwire_test);
+	and (GCLK, delayed_CLK, int_fwire_IQ);
+
+	// Timing
+
+	// Additional timing wires
+	wire adacond0, adacond1, ENA__bar;
+	wire int_twire_0, SE__bar;
+
+
+	// Additional timing gates
+	not (ENA__bar, ENA);
+	and (int_twire_0, ENA__bar, SE);
+	or (adacond0, ENA, int_twire_0);
+	not (SE__bar, SE);
+	and (adacond1, ENA__bar, SE__bar);
+
+	specify
+		if ((ENA) | (~ENA & SE))
+			(negedge CLK => (GCLK+:1'b0)) = 0;
+		if ((~ENA & ~SE))
+			(negedge CLK => (GCLK+:1'b0)) = 0;
+		ifnone (CLK => GCLK) = 0;
+		$setuphold (posedge CLK &&& ~SE, posedge ENA &&& ~SE, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK &&& ~SE, negedge ENA &&& ~SE, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK, posedge ENA, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK, negedge ENA, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK &&& ~ENA, posedge SE &&& ~ENA, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK &&& ~ENA, negedge SE &&& ~ENA, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK, posedge SE, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK, negedge SE, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$width (posedge CLK &&& adacond0, 0, 0, notifier);
+		$width (negedge CLK &&& adacond0, 0, 0, notifier);
+		$width (negedge CLK &&& adacond1, 0, 0, notifier);
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module ICGx5_ASAP7_6t_R (GCLK, ENA, SE, CLK);
+	output GCLK;
+	input ENA, SE, CLK;
+	reg notifier;
+	wire delayed_ENA, delayed_SE, delayed_CLK;
+
+	// Function
+	wire int_fwire_clk, int_fwire_IQ, int_fwire_test;
+
+	not (int_fwire_clk, delayed_CLK);
+	or (int_fwire_test, delayed_ENA, delayed_SE);
+	altos_latch (int_fwire_IQ, notifier, int_fwire_clk, int_fwire_test);
+	and (GCLK, delayed_CLK, int_fwire_IQ);
+
+	// Timing
+
+	// Additional timing wires
+	wire adacond0, adacond1, ENA__bar;
+	wire int_twire_0, SE__bar;
+
+
+	// Additional timing gates
+	not (ENA__bar, ENA);
+	and (int_twire_0, ENA__bar, SE);
+	or (adacond0, ENA, int_twire_0);
+	not (SE__bar, SE);
+	and (adacond1, ENA__bar, SE__bar);
+
+	specify
+		if ((ENA) | (~ENA & SE))
+			(negedge CLK => (GCLK+:1'b0)) = 0;
+		if ((~ENA & ~SE))
+			(negedge CLK => (GCLK+:1'b0)) = 0;
+		ifnone (CLK => GCLK) = 0;
+		$setuphold (posedge CLK &&& ~SE, posedge ENA &&& ~SE, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK &&& ~SE, negedge ENA &&& ~SE, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK, posedge ENA, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK, negedge ENA, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK &&& ~ENA, posedge SE &&& ~ENA, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK &&& ~ENA, negedge SE &&& ~ENA, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK, posedge SE, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK, negedge SE, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$width (posedge CLK &&& adacond0, 0, 0, notifier);
+		$width (negedge CLK &&& adacond0, 0, 0, notifier);
+		$width (negedge CLK &&& adacond1, 0, 0, notifier);
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module ICGx8_ASAP7_6t_R (GCLK, ENA, SE, CLK);
+	output GCLK;
+	input ENA, SE, CLK;
+	reg notifier;
+	wire delayed_ENA, delayed_SE, delayed_CLK;
+
+	// Function
+	wire int_fwire_clk, int_fwire_IQ, int_fwire_test;
+
+	not (int_fwire_clk, delayed_CLK);
+	or (int_fwire_test, delayed_ENA, delayed_SE);
+	altos_latch (int_fwire_IQ, notifier, int_fwire_clk, int_fwire_test);
+	and (GCLK, delayed_CLK, int_fwire_IQ);
+
+	// Timing
+
+	// Additional timing wires
+	wire adacond0, adacond1, ENA__bar;
+	wire int_twire_0, SE__bar;
+
+
+	// Additional timing gates
+	not (ENA__bar, ENA);
+	and (int_twire_0, ENA__bar, SE);
+	or (adacond0, ENA, int_twire_0);
+	not (SE__bar, SE);
+	and (adacond1, ENA__bar, SE__bar);
+
+	specify
+		if ((ENA) | (~ENA & SE))
+			(negedge CLK => (GCLK+:1'b0)) = 0;
+		if ((~ENA & ~SE))
+			(negedge CLK => (GCLK+:1'b0)) = 0;
+		ifnone (CLK => GCLK) = 0;
+		$setuphold (posedge CLK &&& ~SE, posedge ENA &&& ~SE, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK &&& ~SE, negedge ENA &&& ~SE, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK, posedge ENA, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK, negedge ENA, 0, 0, notifier,,, delayed_CLK, delayed_ENA);
+		$setuphold (posedge CLK &&& ~ENA, posedge SE &&& ~ENA, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK &&& ~ENA, negedge SE &&& ~ENA, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK, posedge SE, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$setuphold (posedge CLK, negedge SE, 0, 0, notifier,,, delayed_CLK, delayed_SE);
+		$width (posedge CLK &&& adacond0, 0, 0, notifier);
+		$width (negedge CLK &&& adacond0, 0, 0, notifier);
+		$width (negedge CLK &&& adacond1, 0, 0, notifier);
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module SDFHx1_ASAP7_6t_R (QN, D, SE, SI, CLK);
 	output QN;
 	input D, SE, SI, CLK;
 	reg notifier;
@@ -753,7 +1154,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module SDFHx2_ASAP7_75t_R (QN, D, SE, SI, CLK);
+module SDFHx2_ASAP7_6t_R (QN, D, SE, SI, CLK);
 	output QN;
 	input D, SE, SI, CLK;
 	reg notifier;
@@ -836,7 +1237,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module SDFHx3_ASAP7_75t_R (QN, D, SE, SI, CLK);
+module SDFHx3_ASAP7_6t_R (QN, D, SE, SI, CLK);
 	output QN;
 	input D, SE, SI, CLK;
 	reg notifier;
@@ -919,7 +1320,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module SDFHx4_ASAP7_75t_R (QN, D, SE, SI, CLK);
+module SDFHx4_ASAP7_6t_R (QN, D, SE, SI, CLK);
 	output QN;
 	input D, SE, SI, CLK;
 	reg notifier;
@@ -1002,7 +1403,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module SDFLx1_ASAP7_75t_R (QN, D, SE, SI, CLK);
+module SDFLx1_ASAP7_6t_R (QN, D, SE, SI, CLK);
 	output QN;
 	input D, SE, SI, CLK;
 	reg notifier;
@@ -1087,7 +1488,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module SDFLx2_ASAP7_75t_R (QN, D, SE, SI, CLK);
+module SDFLx2_ASAP7_6t_R (QN, D, SE, SI, CLK);
 	output QN;
 	input D, SE, SI, CLK;
 	reg notifier;
@@ -1172,7 +1573,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module SDFLx3_ASAP7_75t_R (QN, D, SE, SI, CLK);
+module SDFLx3_ASAP7_6t_R (QN, D, SE, SI, CLK);
 	output QN;
 	input D, SE, SI, CLK;
 	reg notifier;
@@ -1257,7 +1658,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module SDFLx4_ASAP7_75t_R (QN, D, SE, SI, CLK);
+module SDFLx4_ASAP7_6t_R (QN, D, SE, SI, CLK);
 	output QN;
 	input D, SE, SI, CLK;
 	reg notifier;

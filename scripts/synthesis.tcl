@@ -25,6 +25,7 @@ set symbol_library [list ${LIB_SDB_NAME}]
 #read files
 set verilog_files $::env(ENV_VERILOG_FILES)
 set top_design $::env(ENV_TOP_DESIGN)
+set_dont_use {asap7/FAxp33_ASAP7_6t_R}
 
 analyze -f Verilog $verilog_files
 elaborate $top_design

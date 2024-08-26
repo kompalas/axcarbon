@@ -18,11 +18,16 @@ circdir="$maindir/circuits/$circuit"
 
 # set up libraries and environment
 if [[ $library == "asap7" ]]; then
-    # libpath="$maindir/libs/asap7/7nm/db"
-    # libcpath="$maindir/libs/asap7/7nm/c"
-    # libverilog="$maindir/libs/asap7/7nm/verilog"
-    # lib="asap7.db"
+    libpath="$maindir/libs/asap7/7nm/db"
+    libcpath="$maindir/libs/asap7/7nm/c"
+    libverilog="$maindir/libs/asap7/7nm/verilog"
+    lib="asap7.db"
     tunit="ps"
+
+    if ! grep -q "set_dont_use {asap7" $testdir/scripts/synthesis.tcl; then
+        sed -i "28i set_dont_use {asap7/FAxp33_ASAP7_6t_R}" $testdir/scripts/synthesis.tcl
+    fi
+
 elif [[ $library == "nangate45" ]]; then
     libpath="$maindir/libs/nangate45/db"
     libcpath="$maindir/libs/nangate45/c"

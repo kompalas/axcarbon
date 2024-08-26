@@ -1,14 +1,14 @@
 #!/bin/bash
 set -eou pipefail
 
-circuit="$1"
+circuit="${1?Specify the circuit as the first positional argument}"
 
 scriptdir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 maindir="$HOME/axcarbon"
 
 python3 $maindir/main.py \
 	--circuit $circuit \
-	--libfile variability14 \
+	--libfile asap7 \
         --name ga_${circuit} \
         --ga \
         --generations 20 \

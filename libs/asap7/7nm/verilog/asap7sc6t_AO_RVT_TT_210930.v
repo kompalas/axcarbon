@@ -1,9 +1,40 @@
-// Verilog for library /home/bvemired/asap7/PDKrundir/asap7_rundir/Liberate/Verilog/asap7sc7p5t_AO_RVT_TT_08302018 created by Liberate 16.1.0.530 on Thu Aug 30 17:10:58 MST 2018 for SDF version 2.1
+// BSD 3-Clause License
+// 
+// Copyright 2021 Lawrence T. Clark, Vinay Vashishtha, or Arizona State
+// University
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+// this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+// 
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived from this
+// software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Verilog for library /home/anolas19/Liberate/Verilog/asap7sc6t_AO_RVT_TT_210905 created by Liberate 18.1.0.293 on Thu Sep 23 13:00:28 MST 2021 for SDF version 2.1
 
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module A2O1A1Ixp33_ASAP7_75t_R (Y, A1, A2, B, C);
+module A2O1A1Ixp33_ASAP7_6t_R (Y, A1, A2, B, C);
 	output Y;
 	input A1, A2, B, C;
 
@@ -46,7 +77,50 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module A2O1A1O1Ixp25_ASAP7_75t_R (Y, A1, A2, B, C, D);
+module A2O1A1Ixp5_ASAP7_6t_R (Y, A1, A2, B, C);
+	output Y;
+	input A1, A2, B, C;
+
+	// Function
+	wire A1__bar, A2__bar, B__bar;
+	wire C__bar, int_fwire_0, int_fwire_1;
+
+	not (C__bar, C);
+	not (B__bar, B);
+	not (A2__bar, A2);
+	and (int_fwire_0, A2__bar, B__bar);
+	not (A1__bar, A1);
+	and (int_fwire_1, A1__bar, B__bar);
+	or (Y, int_fwire_1, int_fwire_0, C__bar);
+
+	// Timing
+	specify
+		(A1 => Y) = 0;
+		(A2 => Y) = 0;
+		if ((A1 & ~A2 & C))
+			(B => Y) = 0;
+		if ((~A1 & A2 & C))
+			(B => Y) = 0;
+		if ((~A1 & ~A2 & C))
+			(B => Y) = 0;
+		ifnone (B => Y) = 0;
+		if ((A1 & A2 & B))
+			(C => Y) = 0;
+		if ((A1 & A2 & ~B))
+			(C => Y) = 0;
+		if ((~A2 & B))
+			(C => Y) = 0;
+		if ((~A1 & A2 & B))
+			(C => Y) = 0;
+		ifnone (C => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module A2O1A1O1Ixp33_ASAP7_6t_R (Y, A1, A2, B, C, D);
 	output Y;
 	input A1, A2, B, C, D;
 
@@ -80,9 +154,9 @@ module A2O1A1O1Ixp25_ASAP7_75t_R (Y, A1, A2, B, C, D);
 			(C => Y) = 0;
 		if ((A1 & A2 & ~B & ~D))
 			(C => Y) = 0;
-		if ((~A2 & B & ~D))
+		if ((A1 & ~A2 & B & ~D))
 			(C => Y) = 0;
-		if ((~A1 & A2 & B & ~D))
+		if ((~A1 & B & ~D))
 			(C => Y) = 0;
 		ifnone (C => Y) = 0;
 		if ((B & ~C))
@@ -107,7 +181,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO211x2_ASAP7_75t_R (Y, A1, A2, B, C);
+module AO211x1_ASAP7_6t_R (Y, A1, A2, B, C);
 	output Y;
 	input A1, A2, B, C;
 
@@ -142,7 +216,42 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO21x1_ASAP7_75t_R (Y, A1, A2, B);
+module AO211x2_ASAP7_6t_R (Y, A1, A2, B, C);
+	output Y;
+	input A1, A2, B, C;
+
+	// Function
+	wire int_fwire_0;
+
+	and (int_fwire_0, A1, A2);
+	or (Y, int_fwire_0, B, C);
+
+	// Timing
+	specify
+		(A1 => Y) = 0;
+		(A2 => Y) = 0;
+		if ((A1 & ~A2 & ~C))
+			(B => Y) = 0;
+		if ((~A1 & A2 & ~C))
+			(B => Y) = 0;
+		if ((~A1 & ~A2 & ~C))
+			(B => Y) = 0;
+		ifnone (B => Y) = 0;
+		if ((A1 & ~A2 & ~B))
+			(C => Y) = 0;
+		if ((~A1 & A2 & ~B))
+			(C => Y) = 0;
+		if ((~A1 & ~A2 & ~B))
+			(C => Y) = 0;
+		ifnone (C => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AO21x1_ASAP7_6t_R (Y, A1, A2, B);
 	output Y;
 	input A1, A2, B;
 
@@ -170,7 +279,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO21x2_ASAP7_75t_R (Y, A1, A2, B);
+module AO21x2_ASAP7_6t_R (Y, A1, A2, B);
 	output Y;
 	input A1, A2, B;
 
@@ -198,7 +307,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO221x1_ASAP7_75t_R (Y, A1, A2, B1, B2, C);
+module AO221x1_ASAP7_6t_R (Y, A1, A2, B1, B2, C);
 	output Y;
 	input A1, A2, B1, B2, C;
 
@@ -265,7 +374,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO221x2_ASAP7_75t_R (Y, A1, A2, B1, B2, C);
+module AO221x2_ASAP7_6t_R (Y, A1, A2, B1, B2, C);
 	output Y;
 	input A1, A2, B1, B2, C;
 
@@ -332,7 +441,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO222x2_ASAP7_75t_R (Y, A1, A2, B1, B2, C1, C2);
+module AO222x1_ASAP7_6t_R (Y, A1, A2, B1, B2, C1, C2);
 	output Y;
 	input A1, A2, B1, B2, C1, C2;
 
@@ -356,11 +465,9 @@ module AO222x2_ASAP7_75t_R (Y, A1, A2, B1, B2, C1, C2);
 			(A1 => Y) = 0;
 		if ((A2 & ~B1 & B2 & ~C1 & C2))
 			(A1 => Y) = 0;
-		if ((A2 & ~B1 & B2 & ~C1 & ~C2))
+		if ((A2 & ~B1 & B2 & ~C1 & ~C2) | (A2 & ~B1 & ~B2 & ~C1 & C2))
 			(A1 => Y) = 0;
 		if ((A2 & ~B1 & ~B2 & C1 & ~C2))
-			(A1 => Y) = 0;
-		if ((A2 & ~B1 & ~B2 & ~C1 & C2))
 			(A1 => Y) = 0;
 		if ((A2 & ~B1 & ~B2 & ~C1 & ~C2))
 			(A1 => Y) = 0;
@@ -375,11 +482,9 @@ module AO222x2_ASAP7_75t_R (Y, A1, A2, B1, B2, C1, C2);
 			(A2 => Y) = 0;
 		if ((A1 & ~B1 & B2 & ~C1 & C2))
 			(A2 => Y) = 0;
-		if ((A1 & ~B1 & B2 & ~C1 & ~C2))
+		if ((A1 & ~B1 & B2 & ~C1 & ~C2) | (A1 & ~B1 & ~B2 & ~C1 & C2))
 			(A2 => Y) = 0;
 		if ((A1 & ~B1 & ~B2 & C1 & ~C2))
-			(A2 => Y) = 0;
-		if ((A1 & ~B1 & ~B2 & ~C1 & C2))
 			(A2 => Y) = 0;
 		if ((A1 & ~B1 & ~B2 & ~C1 & ~C2))
 			(A2 => Y) = 0;
@@ -432,9 +537,11 @@ module AO222x2_ASAP7_75t_R (Y, A1, A2, B1, B2, C1, C2);
 			(C1 => Y) = 0;
 		if ((~A1 & A2 & ~B1 & B2 & C2))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & ~B1 & ~B2 & C2) | (~A1 & ~A2 & ~B1 & B2 & C2))
+		if ((~A1 & A2 & ~B1 & ~B2 & C2))
 			(C1 => Y) = 0;
 		if ((~A1 & ~A2 & B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & ~A2 & ~B1 & B2 & C2))
 			(C1 => Y) = 0;
 		if ((~A1 & ~A2 & ~B1 & ~B2 & C2))
 			(C1 => Y) = 0;
@@ -449,9 +556,11 @@ module AO222x2_ASAP7_75t_R (Y, A1, A2, B1, B2, C1, C2);
 			(C2 => Y) = 0;
 		if ((~A1 & A2 & ~B1 & B2 & C1))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & ~B1 & ~B2 & C1) | (~A1 & ~A2 & ~B1 & B2 & C1))
+		if ((~A1 & A2 & ~B1 & ~B2 & C1))
 			(C2 => Y) = 0;
 		if ((~A1 & ~A2 & B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & ~A2 & ~B1 & B2 & C1))
 			(C2 => Y) = 0;
 		if ((~A1 & ~A2 & ~B1 & ~B2 & C1))
 			(C2 => Y) = 0;
@@ -463,7 +572,138 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO22x1_ASAP7_75t_R (Y, A1, A2, B1, B2);
+module AO222x2_ASAP7_6t_R (Y, A1, A2, B1, B2, C1, C2);
+	output Y;
+	input A1, A2, B1, B2, C1, C2;
+
+	// Function
+	wire int_fwire_0, int_fwire_1, int_fwire_2;
+
+	and (int_fwire_0, C1, C2);
+	and (int_fwire_1, B1, B2);
+	and (int_fwire_2, A1, A2);
+	or (Y, int_fwire_2, int_fwire_1, int_fwire_0);
+
+	// Timing
+	specify
+		if ((A2 & B1 & ~B2 & C1 & ~C2))
+			(A1 => Y) = 0;
+		if ((A2 & B1 & ~B2 & ~C1 & C2))
+			(A1 => Y) = 0;
+		if ((A2 & B1 & ~B2 & ~C1 & ~C2))
+			(A1 => Y) = 0;
+		if ((A2 & ~B1 & B2 & C1 & ~C2))
+			(A1 => Y) = 0;
+		if ((A2 & ~B1 & B2 & ~C1 & C2))
+			(A1 => Y) = 0;
+		if ((A2 & ~B1 & B2 & ~C1 & ~C2) | (A2 & ~B1 & ~B2 & ~C1 & C2))
+			(A1 => Y) = 0;
+		if ((A2 & ~B1 & ~B2 & C1 & ~C2))
+			(A1 => Y) = 0;
+		if ((A2 & ~B1 & ~B2 & ~C1 & ~C2))
+			(A1 => Y) = 0;
+		ifnone (A1 => Y) = 0;
+		if ((A1 & B1 & ~B2 & C1 & ~C2))
+			(A2 => Y) = 0;
+		if ((A1 & B1 & ~B2 & ~C1 & C2))
+			(A2 => Y) = 0;
+		if ((A1 & B1 & ~B2 & ~C1 & ~C2))
+			(A2 => Y) = 0;
+		if ((A1 & ~B1 & B2 & C1 & ~C2))
+			(A2 => Y) = 0;
+		if ((A1 & ~B1 & B2 & ~C1 & C2))
+			(A2 => Y) = 0;
+		if ((A1 & ~B1 & B2 & ~C1 & ~C2) | (A1 & ~B1 & ~B2 & ~C1 & C2))
+			(A2 => Y) = 0;
+		if ((A1 & ~B1 & ~B2 & C1 & ~C2))
+			(A2 => Y) = 0;
+		if ((A1 & ~B1 & ~B2 & ~C1 & ~C2))
+			(A2 => Y) = 0;
+		ifnone (A2 => Y) = 0;
+		if ((A1 & ~A2 & B2 & C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((A1 & ~A2 & B2 & ~C1 & C2))
+			(B1 => Y) = 0;
+		if ((A1 & ~A2 & B2 & ~C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((~A1 & A2 & B2 & C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((~A1 & A2 & B2 & ~C1 & C2))
+			(B1 => Y) = 0;
+		if ((~A1 & A2 & B2 & ~C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((~A1 & ~A2 & B2 & C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((~A1 & ~A2 & B2 & ~C1 & C2))
+			(B1 => Y) = 0;
+		if ((~A1 & ~A2 & B2 & ~C1 & ~C2))
+			(B1 => Y) = 0;
+		ifnone (B1 => Y) = 0;
+		if ((A1 & ~A2 & B1 & C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((A1 & ~A2 & B1 & ~C1 & C2))
+			(B2 => Y) = 0;
+		if ((A1 & ~A2 & B1 & ~C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((~A1 & A2 & B1 & C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((~A1 & A2 & B1 & ~C1 & C2))
+			(B2 => Y) = 0;
+		if ((~A1 & A2 & B1 & ~C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((~A1 & ~A2 & B1 & C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((~A1 & ~A2 & B1 & ~C1 & C2))
+			(B2 => Y) = 0;
+		if ((~A1 & ~A2 & B1 & ~C1 & ~C2))
+			(B2 => Y) = 0;
+		ifnone (B2 => Y) = 0;
+		if ((A1 & ~A2 & B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((A1 & ~A2 & ~B1 & B2 & C2))
+			(C1 => Y) = 0;
+		if ((A1 & ~A2 & ~B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & A2 & B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & A2 & ~B1 & B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & A2 & ~B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & ~A2 & B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & ~A2 & ~B1 & B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & ~A2 & ~B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		ifnone (C1 => Y) = 0;
+		if ((A1 & ~A2 & B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((A1 & ~A2 & ~B1 & B2 & C1))
+			(C2 => Y) = 0;
+		if ((A1 & ~A2 & ~B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & A2 & B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & A2 & ~B1 & B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & A2 & ~B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & ~A2 & B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & ~A2 & ~B1 & B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & ~A2 & ~B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		ifnone (C2 => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AO22x1_ASAP7_6t_R (Y, A1, A2, B1, B2);
 	output Y;
 	input A1, A2, B1, B2;
 
@@ -511,7 +751,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO22x2_ASAP7_75t_R (Y, A1, A2, B1, B2);
+module AO22x2_ASAP7_6t_R (Y, A1, A2, B1, B2);
 	output Y;
 	input A1, A2, B1, B2;
 
@@ -559,7 +799,103 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO31x2_ASAP7_75t_R (Y, A1, A2, A3, B);
+module AO311x1_ASAP7_6t_R (Y, A1, A2, A3, B, C);
+	output Y;
+	input A1, A2, A3, B, C;
+
+	// Function
+	wire int_fwire_0;
+
+	and (int_fwire_0, A1, A2, A3);
+	or (Y, int_fwire_0, B, C);
+
+	// Timing
+	specify
+		(A1 => Y) = 0;
+		(A2 => Y) = 0;
+		(A3 => Y) = 0;
+		if ((A1 & A2 & ~A3 & ~C))
+			(B => Y) = 0;
+		if ((A1 & ~A2 & A3 & ~C))
+			(B => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & ~C))
+			(B => Y) = 0;
+		if ((~A1 & A2 & A3 & ~C))
+			(B => Y) = 0;
+		if ((~A1 & A2 & ~A3 & ~C) | (~A1 & ~A2 & A3 & ~C))
+			(B => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & ~C))
+			(B => Y) = 0;
+		ifnone (B => Y) = 0;
+		if ((A1 & A2 & ~A3 & ~B))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & A3 & ~B))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & ~B))
+			(C => Y) = 0;
+		if ((~A1 & A2 & A3 & ~B))
+			(C => Y) = 0;
+		if ((~A1 & A2 & ~A3 & ~B) | (~A1 & ~A2 & A3 & ~B))
+			(C => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & ~B))
+			(C => Y) = 0;
+		ifnone (C => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AO311x2_ASAP7_6t_R (Y, A1, A2, A3, B, C);
+	output Y;
+	input A1, A2, A3, B, C;
+
+	// Function
+	wire int_fwire_0;
+
+	and (int_fwire_0, A1, A2, A3);
+	or (Y, int_fwire_0, B, C);
+
+	// Timing
+	specify
+		(A1 => Y) = 0;
+		(A2 => Y) = 0;
+		(A3 => Y) = 0;
+		if ((A1 & A2 & ~A3 & ~C))
+			(B => Y) = 0;
+		if ((A1 & ~A2 & A3 & ~C))
+			(B => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & ~C))
+			(B => Y) = 0;
+		if ((~A1 & A2 & A3 & ~C))
+			(B => Y) = 0;
+		if ((~A1 & A2 & ~A3 & ~C) | (~A1 & ~A2 & A3 & ~C))
+			(B => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & ~C))
+			(B => Y) = 0;
+		ifnone (B => Y) = 0;
+		if ((A1 & A2 & ~A3 & ~B))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & A3 & ~B))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & ~B))
+			(C => Y) = 0;
+		if ((~A1 & A2 & A3 & ~B))
+			(C => Y) = 0;
+		if ((~A1 & A2 & ~A3 & ~B) | (~A1 & ~A2 & A3 & ~B))
+			(C => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & ~B))
+			(C => Y) = 0;
+		ifnone (C => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AO31x1_ASAP7_6t_R (Y, A1, A2, A3, B);
 	output Y;
 	input A1, A2, A3, B;
 
@@ -594,7 +930,250 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO322x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, C1, C2);
+module AO31x2_ASAP7_6t_R (Y, A1, A2, A3, B);
+	output Y;
+	input A1, A2, A3, B;
+
+	// Function
+	wire int_fwire_0;
+
+	and (int_fwire_0, A1, A2, A3);
+	or (Y, int_fwire_0, B);
+
+	// Timing
+	specify
+		(A1 => Y) = 0;
+		(A2 => Y) = 0;
+		(A3 => Y) = 0;
+		if ((A1 & A2 & ~A3))
+			(B => Y) = 0;
+		if ((A1 & ~A2 & A3))
+			(B => Y) = 0;
+		if ((A1 & ~A2 & ~A3))
+			(B => Y) = 0;
+		if ((~A1 & A2 & A3))
+			(B => Y) = 0;
+		if ((~A1 & A2 & ~A3) | (~A1 & ~A2 & A3))
+			(B => Y) = 0;
+		if ((~A1 & ~A2 & ~A3))
+			(B => Y) = 0;
+		ifnone (B => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AO321x1_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, C);
+	output Y;
+	input A1, A2, A3, B1, B2, C;
+
+	// Function
+	wire int_fwire_0, int_fwire_1;
+
+	and (int_fwire_0, B1, B2);
+	and (int_fwire_1, A1, A2, A3);
+	or (Y, int_fwire_1, int_fwire_0, C);
+
+	// Timing
+	specify
+		if ((A2 & A3 & B1 & ~B2 & ~C))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & ~B1 & B2 & ~C))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & ~B1 & ~B2 & ~C))
+			(A1 => Y) = 0;
+		ifnone (A1 => Y) = 0;
+		if ((A1 & A3 & B1 & ~B2 & ~C))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & ~B1 & B2 & ~C))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & ~B1 & ~B2 & ~C))
+			(A2 => Y) = 0;
+		ifnone (A2 => Y) = 0;
+		if ((A1 & A2 & B1 & ~B2 & ~C))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & ~B1 & B2 & ~C))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & ~B1 & ~B2 & ~C))
+			(A3 => Y) = 0;
+		ifnone (A3 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B2 & ~C))
+			(B1 => Y) = 0;
+		if ((A1 & ~A2 & A3 & B2 & ~C))
+			(B1 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B2 & ~C))
+			(B1 => Y) = 0;
+		if ((~A1 & A2 & A3 & B2 & ~C))
+			(B1 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B2 & ~C) | (~A1 & ~A2 & A3 & B2 & ~C))
+			(B1 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B2 & ~C))
+			(B1 => Y) = 0;
+		ifnone (B1 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B1 & ~C))
+			(B2 => Y) = 0;
+		if ((A1 & ~A2 & A3 & B1 & ~C))
+			(B2 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~C))
+			(B2 => Y) = 0;
+		if ((~A1 & A2 & A3 & B1 & ~C))
+			(B2 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~C) | (~A1 & ~A2 & A3 & B1 & ~C))
+			(B2 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~C))
+			(B2 => Y) = 0;
+		ifnone (B2 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((A1 & A2 & ~A3 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((A1 & A2 & ~A3 & ~B1 & ~B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & A3 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & A3 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & A3 & ~B1 & ~B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & A3 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & A3 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & A3 & ~B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2) | (~A1 & ~A2 & A3 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & ~A3 & ~B1 & B2) | (~A1 & ~A2 & A3 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & ~A3 & ~B1 & ~B2) | (~A1 & ~A2 & A3 & ~B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2))
+			(C => Y) = 0;
+		ifnone (C => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AO321x2_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, C);
+	output Y;
+	input A1, A2, A3, B1, B2, C;
+
+	// Function
+	wire int_fwire_0, int_fwire_1;
+
+	and (int_fwire_0, B1, B2);
+	and (int_fwire_1, A1, A2, A3);
+	or (Y, int_fwire_1, int_fwire_0, C);
+
+	// Timing
+	specify
+		if ((A2 & A3 & B1 & ~B2 & ~C))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & ~B1 & B2 & ~C))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & ~B1 & ~B2 & ~C))
+			(A1 => Y) = 0;
+		ifnone (A1 => Y) = 0;
+		if ((A1 & A3 & B1 & ~B2 & ~C))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & ~B1 & B2 & ~C))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & ~B1 & ~B2 & ~C))
+			(A2 => Y) = 0;
+		ifnone (A2 => Y) = 0;
+		if ((A1 & A2 & B1 & ~B2 & ~C))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & ~B1 & B2 & ~C))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & ~B1 & ~B2 & ~C))
+			(A3 => Y) = 0;
+		ifnone (A3 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B2 & ~C))
+			(B1 => Y) = 0;
+		if ((A1 & ~A2 & A3 & B2 & ~C))
+			(B1 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B2 & ~C))
+			(B1 => Y) = 0;
+		if ((~A1 & A2 & A3 & B2 & ~C))
+			(B1 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B2 & ~C) | (~A1 & ~A2 & A3 & B2 & ~C))
+			(B1 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B2 & ~C))
+			(B1 => Y) = 0;
+		ifnone (B1 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B1 & ~C))
+			(B2 => Y) = 0;
+		if ((A1 & ~A2 & A3 & B1 & ~C))
+			(B2 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~C))
+			(B2 => Y) = 0;
+		if ((~A1 & A2 & A3 & B1 & ~C))
+			(B2 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~C) | (~A1 & ~A2 & A3 & B1 & ~C))
+			(B2 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~C))
+			(B2 => Y) = 0;
+		ifnone (B2 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((A1 & A2 & ~A3 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((A1 & A2 & ~A3 & ~B1 & ~B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & A3 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & A3 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & A3 & ~B1 & ~B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & A3 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & A3 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & A3 & ~B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2) | (~A1 & ~A2 & A3 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & ~A3 & ~B1 & B2) | (~A1 & ~A2 & A3 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & ~A3 & ~B1 & ~B2) | (~A1 & ~A2 & A3 & ~B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2))
+			(C => Y) = 0;
+		ifnone (C => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AO322x1_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, C1, C2);
 	output Y;
 	input A1, A2, A3, B1, B2, C1, C2;
 
@@ -677,11 +1256,11 @@ module AO322x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, C1, C2);
 			(B1 => Y) = 0;
 		if ((A1 & ~A2 & A3 & B2 & ~C1 & ~C2))
 			(B1 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B2 & C1 & ~C2))
+		if ((A1 & ~A2 & ~A3 & B2 & C1 & ~C2) | (~A1 & A2 & ~A3 & B2 & C1 & ~C2))
 			(B1 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B2 & ~C1 & C2))
+		if ((A1 & ~A2 & ~A3 & B2 & ~C1 & C2) | (~A1 & A2 & ~A3 & B2 & ~C1 & C2))
 			(B1 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B2 & ~C1 & ~C2))
+		if ((A1 & ~A2 & ~A3 & B2 & ~C1 & ~C2) | (~A1 & A2 & ~A3 & B2 & ~C1 & ~C2))
 			(B1 => Y) = 0;
 		if ((~A1 & A2 & A3 & B2 & C1 & ~C2))
 			(B1 => Y) = 0;
@@ -689,11 +1268,11 @@ module AO322x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, C1, C2);
 			(B1 => Y) = 0;
 		if ((~A1 & A2 & A3 & B2 & ~C1 & ~C2))
 			(B1 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B2 & C1 & ~C2) | (~A1 & ~A2 & A3 & B2 & C1 & ~C2))
+		if ((~A1 & ~A2 & A3 & B2 & C1 & ~C2))
 			(B1 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B2 & ~C1 & C2) | (~A1 & ~A2 & A3 & B2 & ~C1 & C2))
+		if ((~A1 & ~A2 & A3 & B2 & ~C1 & C2))
 			(B1 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B2 & ~C1 & ~C2) | (~A1 & ~A2 & A3 & B2 & ~C1 & ~C2))
+		if ((~A1 & ~A2 & A3 & B2 & ~C1 & ~C2))
 			(B1 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B2 & C1 & ~C2))
 			(B1 => Y) = 0;
@@ -714,11 +1293,11 @@ module AO322x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, C1, C2);
 			(B2 => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & ~C1 & ~C2))
 			(B2 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & C1 & ~C2))
+		if ((A1 & ~A2 & ~A3 & B1 & C1 & ~C2) | (~A1 & A2 & ~A3 & B1 & C1 & ~C2))
 			(B2 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & ~C1 & C2))
+		if ((A1 & ~A2 & ~A3 & B1 & ~C1 & C2) | (~A1 & A2 & ~A3 & B1 & ~C1 & C2))
 			(B2 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & ~C1 & ~C2))
+		if ((A1 & ~A2 & ~A3 & B1 & ~C1 & ~C2) | (~A1 & A2 & ~A3 & B1 & ~C1 & ~C2))
 			(B2 => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & C1 & ~C2))
 			(B2 => Y) = 0;
@@ -726,11 +1305,11 @@ module AO322x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, C1, C2);
 			(B2 => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & ~C1 & ~C2))
 			(B2 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & C1 & ~C2) | (~A1 & ~A2 & A3 & B1 & C1 & ~C2))
+		if ((~A1 & ~A2 & A3 & B1 & C1 & ~C2))
 			(B2 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & ~C1 & C2) | (~A1 & ~A2 & A3 & B1 & ~C1 & C2))
+		if ((~A1 & ~A2 & A3 & B1 & ~C1 & C2))
 			(B2 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & ~C1 & ~C2) | (~A1 & ~A2 & A3 & B1 & ~C1 & ~C2))
+		if ((~A1 & ~A2 & A3 & B1 & ~C1 & ~C2))
 			(B2 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & C1 & ~C2))
 			(B2 => Y) = 0;
@@ -743,27 +1322,27 @@ module AO322x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, C1, C2);
 			(C1 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & B2 & C2))
 			(C1 => Y) = 0;
-		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & C2))
+		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & C2) | (A1 & ~A2 & ~A3 & B1 & ~B2 & C2) | (~A1 & A2 & ~A3 & B1 & ~B2 & C2))
 			(C1 => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & ~B2 & C2))
 			(C1 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & B2 & C2))
 			(C1 => Y) = 0;
-		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & C2) | (A1 & ~A2 & ~A3 & ~B1 & B2 & C2))
+		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & C2) | (~A1 & ~A2 & A3 & B1 & ~B2 & C2))
 			(C1 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & C2))
+		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & C2) | (~A1 & A2 & ~A3 & ~B1 & B2 & C2))
 			(C1 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & C2))
+		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & C2) | (~A1 & A2 & ~A3 & ~B1 & ~B2 & C2))
 			(C1 => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & ~B2 & C2))
 			(C1 => Y) = 0;
 		if ((~A1 & A2 & A3 & ~B1 & B2 & C2))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & C2) | (~A1 & A2 & ~A3 & ~B1 & B2 & C2) | (~A1 & ~A2 & A3 & ~B1 & B2 & C2))
+		if ((~A1 & A2 & A3 & ~B1 & ~B2 & C2))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & ~B2 & C2) | (~A1 & ~A2 & A3 & B1 & ~B2 & C2))
+		if ((~A1 & ~A2 & A3 & ~B1 & B2 & C2))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & C2) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & C2))
+		if ((~A1 & ~A2 & A3 & ~B1 & ~B2 & C2))
 			(C1 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & C2))
 			(C1 => Y) = 0;
@@ -776,27 +1355,27 @@ module AO322x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, C1, C2);
 			(C2 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & B2 & C1))
 			(C2 => Y) = 0;
-		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & C1))
+		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & C1) | (A1 & ~A2 & ~A3 & B1 & ~B2 & C1) | (~A1 & A2 & ~A3 & B1 & ~B2 & C1))
 			(C2 => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & ~B2 & C1))
 			(C2 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & B2 & C1))
 			(C2 => Y) = 0;
-		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & C1) | (A1 & ~A2 & ~A3 & ~B1 & B2 & C1))
+		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & C1) | (~A1 & ~A2 & A3 & B1 & ~B2 & C1))
 			(C2 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & C1))
+		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & C1) | (~A1 & A2 & ~A3 & ~B1 & B2 & C1))
 			(C2 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & C1))
+		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & C1) | (~A1 & A2 & ~A3 & ~B1 & ~B2 & C1))
 			(C2 => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & ~B2 & C1))
 			(C2 => Y) = 0;
 		if ((~A1 & A2 & A3 & ~B1 & B2 & C1))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & C1) | (~A1 & A2 & ~A3 & ~B1 & B2 & C1) | (~A1 & ~A2 & A3 & ~B1 & B2 & C1))
+		if ((~A1 & A2 & A3 & ~B1 & ~B2 & C1))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & ~B2 & C1) | (~A1 & ~A2 & A3 & B1 & ~B2 & C1))
+		if ((~A1 & ~A2 & A3 & ~B1 & B2 & C1))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & C1) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & C1))
+		if ((~A1 & ~A2 & A3 & ~B1 & ~B2 & C1))
 			(C2 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & C1))
 			(C2 => Y) = 0;
@@ -812,7 +1391,225 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO32x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2);
+module AO322x2_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, C1, C2);
+	output Y;
+	input A1, A2, A3, B1, B2, C1, C2;
+
+	// Function
+	wire int_fwire_0, int_fwire_1, int_fwire_2;
+
+	and (int_fwire_0, C1, C2);
+	and (int_fwire_1, B1, B2);
+	and (int_fwire_2, A1, A2, A3);
+	or (Y, int_fwire_2, int_fwire_1, int_fwire_0);
+
+	// Timing
+	specify
+		if ((A2 & A3 & B1 & ~B2 & C1 & ~C2))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & B1 & ~B2 & ~C1 & C2))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & B1 & ~B2 & ~C1 & ~C2))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & ~B1 & B2 & C1 & ~C2))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & ~B1 & B2 & ~C1 & C2))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & ~B1 & B2 & ~C1 & ~C2))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & ~B1 & ~B2 & C1 & ~C2))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & ~B1 & ~B2 & ~C1 & C2))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & ~B1 & ~B2 & ~C1 & ~C2))
+			(A1 => Y) = 0;
+		ifnone (A1 => Y) = 0;
+		if ((A1 & A3 & B1 & ~B2 & C1 & ~C2))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & B1 & ~B2 & ~C1 & C2))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & B1 & ~B2 & ~C1 & ~C2))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & ~B1 & B2 & C1 & ~C2))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & ~B1 & B2 & ~C1 & C2))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & ~B1 & B2 & ~C1 & ~C2))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & ~B1 & ~B2 & C1 & ~C2))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & ~B1 & ~B2 & ~C1 & C2))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & ~B1 & ~B2 & ~C1 & ~C2))
+			(A2 => Y) = 0;
+		ifnone (A2 => Y) = 0;
+		if ((A1 & A2 & B1 & ~B2 & C1 & ~C2))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & B1 & ~B2 & ~C1 & C2))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & B1 & ~B2 & ~C1 & ~C2))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & ~B1 & B2 & C1 & ~C2))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & ~B1 & B2 & ~C1 & C2))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & ~B1 & B2 & ~C1 & ~C2))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & ~B1 & ~B2 & C1 & ~C2))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & ~B1 & ~B2 & ~C1 & C2))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & ~B1 & ~B2 & ~C1 & ~C2))
+			(A3 => Y) = 0;
+		ifnone (A3 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B2 & C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B2 & ~C1 & C2))
+			(B1 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B2 & ~C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((A1 & ~A2 & A3 & B2 & C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((A1 & ~A2 & A3 & B2 & ~C1 & C2))
+			(B1 => Y) = 0;
+		if ((A1 & ~A2 & A3 & B2 & ~C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B2 & C1 & ~C2) | (~A1 & A2 & ~A3 & B2 & C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B2 & ~C1 & C2) | (~A1 & A2 & ~A3 & B2 & ~C1 & C2))
+			(B1 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B2 & ~C1 & ~C2) | (~A1 & A2 & ~A3 & B2 & ~C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((~A1 & A2 & A3 & B2 & C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((~A1 & A2 & A3 & B2 & ~C1 & C2))
+			(B1 => Y) = 0;
+		if ((~A1 & A2 & A3 & B2 & ~C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((~A1 & ~A2 & A3 & B2 & C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((~A1 & ~A2 & A3 & B2 & ~C1 & C2))
+			(B1 => Y) = 0;
+		if ((~A1 & ~A2 & A3 & B2 & ~C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B2 & C1 & ~C2))
+			(B1 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B2 & ~C1 & C2))
+			(B1 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B2 & ~C1 & ~C2))
+			(B1 => Y) = 0;
+		ifnone (B1 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B1 & C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B1 & ~C1 & C2))
+			(B2 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B1 & ~C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((A1 & ~A2 & A3 & B1 & C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((A1 & ~A2 & A3 & B1 & ~C1 & C2))
+			(B2 => Y) = 0;
+		if ((A1 & ~A2 & A3 & B1 & ~C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & C1 & ~C2) | (~A1 & A2 & ~A3 & B1 & C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~C1 & C2) | (~A1 & A2 & ~A3 & B1 & ~C1 & C2))
+			(B2 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~C1 & ~C2) | (~A1 & A2 & ~A3 & B1 & ~C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((~A1 & A2 & A3 & B1 & C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((~A1 & A2 & A3 & B1 & ~C1 & C2))
+			(B2 => Y) = 0;
+		if ((~A1 & A2 & A3 & B1 & ~C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((~A1 & ~A2 & A3 & B1 & C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((~A1 & ~A2 & A3 & B1 & ~C1 & C2))
+			(B2 => Y) = 0;
+		if ((~A1 & ~A2 & A3 & B1 & ~C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & C1 & ~C2))
+			(B2 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~C1 & C2))
+			(B2 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~C1 & ~C2))
+			(B2 => Y) = 0;
+		ifnone (B2 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((A1 & A2 & ~A3 & ~B1 & B2 & C2))
+			(C1 => Y) = 0;
+		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & C2) | (A1 & ~A2 & ~A3 & B1 & ~B2 & C2) | (~A1 & A2 & ~A3 & B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((A1 & ~A2 & A3 & B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((A1 & ~A2 & A3 & ~B1 & B2 & C2))
+			(C1 => Y) = 0;
+		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & C2) | (~A1 & ~A2 & A3 & B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & C2) | (~A1 & A2 & ~A3 & ~B1 & B2 & C2))
+			(C1 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & C2) | (~A1 & A2 & ~A3 & ~B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & A2 & A3 & B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & A2 & A3 & ~B1 & B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & A2 & A3 & ~B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & ~A2 & A3 & ~B1 & B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & ~A2 & A3 & ~B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & C2))
+			(C1 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & C2))
+			(C1 => Y) = 0;
+		ifnone (C1 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((A1 & A2 & ~A3 & ~B1 & B2 & C1))
+			(C2 => Y) = 0;
+		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & C1) | (A1 & ~A2 & ~A3 & B1 & ~B2 & C1) | (~A1 & A2 & ~A3 & B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((A1 & ~A2 & A3 & B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((A1 & ~A2 & A3 & ~B1 & B2 & C1))
+			(C2 => Y) = 0;
+		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & C1) | (~A1 & ~A2 & A3 & B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & C1) | (~A1 & A2 & ~A3 & ~B1 & B2 & C1))
+			(C2 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & C1) | (~A1 & A2 & ~A3 & ~B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & A2 & A3 & B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & A2 & A3 & ~B1 & B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & A2 & A3 & ~B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & ~A2 & A3 & ~B1 & B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & ~A2 & A3 & ~B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & C1))
+			(C2 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & C1))
+			(C2 => Y) = 0;
+		ifnone (C2 => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AO32x1_ASAP7_6t_R (Y, A1, A2, A3, B1, B2);
 	output Y;
 	input A1, A2, A3, B1, B2;
 
@@ -879,7 +1676,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO32x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2);
+module AO32x2_ASAP7_6t_R (Y, A1, A2, A3, B1, B2);
 	output Y;
 	input A1, A2, A3, B1, B2;
 
@@ -946,7 +1743,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO331x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C);
+module AO331x1_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, B3, C);
 	output Y;
 	input A1, A2, A3, B1, B2, B3, C;
 
@@ -1105,7 +1902,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO331x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C);
+module AO331x2_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, B3, C);
 	output Y;
 	input A1, A2, A3, B1, B2, B3, C;
 
@@ -1264,7 +2061,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO332x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2);
+module AO332x1_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2);
 	output Y;
 	input A1, A2, A3, B1, B2, B3, C1, C2;
 
@@ -1629,7 +2426,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO332x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2);
+module AO332x2_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2);
 	output Y;
 	input A1, A2, A3, B1, B2, B3, C1, C2;
 
@@ -1994,7 +2791,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO333x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
+module AO333x1_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 	output Y;
 	input A1, A2, A3, B1, B2, B3, C1, C2, C3;
 
@@ -2024,59 +2821,47 @@ module AO333x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(A1 => Y) = 0;
 		if ((A2 & A3 & B1 & ~B2 & B3 & C1 & ~C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A2 & A3 & B1 & ~B2 & B3 & C1 & ~C2 & ~C3) | (A2 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & B1 & ~B2 & B3 & ~C1 & C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A2 & A3 & B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
+		if ((A2 & A3 & B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A2 & A3 & B1 & ~B2 & B3 & ~C1 & ~C2 & C3) | (A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2 & ~C3) | (A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2 & ~C3))
+		if ((A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2 & ~C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & C3) | (A2 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & C3))
+		if ((A2 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & ~C3))
+		if ((A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & C3) | (A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & C3))
-			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3) | (A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & C3))
-			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & ~C3))
+		if ((A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & B2 & B3 & C1 & C2 & ~C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & B2 & B3 & C1 & ~C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A2 & A3 & ~B1 & B2 & B3 & C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & C3) | (A2 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & B2 & B3 & ~C1 & C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & B2 & B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & C3))
+		if ((A2 & A3 & ~B1 & B2 & B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & C3) | (A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & C3) | (A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & ~C3))
+		if ((A2 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2 & ~C3))
+		if ((A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2 & ~C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & C3))
+		if ((A2 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & C3) | (A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & C3))
-			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
-			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3))
+		if ((A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2 & ~C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & ~C2 & C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3))
-			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
-			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3))
 			(A1 => Y) = 0;
@@ -2097,59 +2882,47 @@ module AO333x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(A2 => Y) = 0;
 		if ((A1 & A3 & B1 & ~B2 & B3 & C1 & ~C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A3 & B1 & ~B2 & B3 & C1 & ~C2 & ~C3) | (A1 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & B1 & ~B2 & B3 & ~C1 & C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A3 & B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
+		if ((A1 & A3 & B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A3 & B1 & ~B2 & B3 & ~C1 & ~C2 & C3) | (A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & ~B3 & C1 & C2 & ~C3) | (A1 & A3 & ~B1 & B2 & ~B3 & C1 & C2 & ~C3))
+		if ((A1 & A3 & B1 & ~B2 & ~B3 & C1 & C2 & ~C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & C3) | (A1 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & C3))
+		if ((A1 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & C3) | (A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & C3))
-			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3) | (A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & C3))
-			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & ~C3))
+		if ((A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & B2 & B3 & C1 & C2 & ~C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & B2 & B3 & C1 & ~C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A3 & ~B1 & B2 & B3 & C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & C3) | (A1 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & B2 & B3 & ~C1 & C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & C3))
+		if ((A1 & A3 & ~B1 & B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & C3) | (A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & C3) | (A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & ~C3))
+		if ((A1 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & B3 & C1 & C2 & ~C3))
+		if ((A1 & A3 & ~B1 & B2 & ~B3 & C1 & C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & B3 & C1 & C2 & ~C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & C3))
+		if ((A1 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & C3) | (A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & C3))
-			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
-			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3))
+		if ((A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2 & ~C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & C1 & ~C2 & C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3))
-			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
-			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3))
 			(A2 => Y) = 0;
@@ -2170,59 +2943,47 @@ module AO333x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(A3 => Y) = 0;
 		if ((A1 & A2 & B1 & ~B2 & B3 & C1 & ~C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A2 & B1 & ~B2 & B3 & C1 & ~C2 & ~C3) | (A1 & A2 & B1 & ~B2 & ~B3 & C1 & ~C2 & C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & B1 & ~B2 & B3 & ~C1 & C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A2 & B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
+		if ((A1 & A2 & B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A2 & B1 & ~B2 & B3 & ~C1 & ~C2 & C3) | (A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & ~B3 & C1 & C2 & ~C3) | (A1 & A2 & ~B1 & B2 & ~B3 & C1 & C2 & ~C3))
+		if ((A1 & A2 & B1 & ~B2 & ~B3 & C1 & C2 & ~C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & ~B3 & C1 & ~C2 & C3) | (A1 & A2 & ~B1 & B2 & ~B3 & C1 & ~C2 & C3))
+		if ((A1 & A2 & B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & B2 & ~B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & C2 & C3) | (A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & C2 & C3))
-			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3) | (A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & C3))
-			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & ~C3))
+		if ((A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & B2 & B3 & C1 & C2 & ~C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & B2 & B3 & C1 & ~C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A2 & ~B1 & B2 & B3 & C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & B2 & ~B3 & C1 & ~C2 & C3) | (A1 & A2 & ~B1 & ~B2 & B3 & C1 & ~C2 & C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & B2 & B3 & ~C1 & C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & B2 & B3 & ~C1 & ~C2 & C3))
+		if ((A1 & A2 & ~B1 & B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & B2 & B3 & ~C1 & ~C2 & C3) | (A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & C2 & C3) | (A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & B2 & B3 & ~C1 & ~C2 & ~C3))
+		if ((A1 & A2 & ~B1 & B2 & B3 & ~C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & B3 & C1 & C2 & ~C3))
+		if ((A1 & A2 & ~B1 & B2 & ~B3 & C1 & C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & B3 & C1 & C2 & ~C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & B3 & C1 & ~C2 & C3))
+		if ((A1 & A2 & ~B1 & B2 & ~B3 & C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & C3) | (A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & C2 & C3))
-			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
-			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3))
+		if ((A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & C1 & C2 & ~C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & C1 & ~C2 & C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3))
-			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
-			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3))
 			(A3 => Y) = 0;
@@ -2450,11 +3211,11 @@ module AO333x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C1 => Y) = 0;
 		if ((A1 & A2 & ~A3 & B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3) | (A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3))
+		if ((A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3))
+		if ((A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3) | (A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
@@ -2462,19 +3223,23 @@ module AO333x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C1 => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C2 & C3) | (A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C2 & C3) | (A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C2 & C3))
+		if ((A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C2 & C3) | (A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C2 & C3))
+		if ((A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C2 & C3) | (A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3) | (A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3))
+		if ((A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C2 & C3))
+			(C1 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C2 & C3))
+			(C1 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3))
+		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3) | (A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
@@ -2482,27 +3247,35 @@ module AO333x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C1 => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & A3 & B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & A2 & A3 & ~B1 & B2 & ~B3 & C2 & C3) | (~A1 & A2 & ~A3 & B1 & B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & B1 & B2 & ~B3 & C2 & C3))
+		if ((~A1 & A2 & A3 & B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((~A1 & A2 & A3 & ~B1 & B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & B3 & C2 & C3) | (~A1 & A2 & ~A3 & B1 & ~B2 & B3 & C2 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & B3 & C2 & C3))
+		if ((~A1 & A2 & A3 & ~B1 & B2 & ~B3 & C2 & C3) | (~A1 & A2 & A3 & ~B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C2 & C3))
+		if ((~A1 & A2 & A3 & ~B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C2 & C3))
+		if ((~A1 & A2 & ~A3 & B1 & B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & B1 & B2 & ~B3 & C2 & C3))
+			(C1 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2 & B3 & C2 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & B3 & C2 & C3))
+			(C1 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((~A1 & A2 & ~A3 & ~B1 & B2 & B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C2 & C3))
+		if ((~A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3) | (~A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3))
+		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C2 & C3))
+			(C1 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3))
+			(C1 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3))
+		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
@@ -2511,11 +3284,11 @@ module AO333x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C2 => Y) = 0;
 		if ((A1 & A2 & ~A3 & B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3) | (A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3))
+		if ((A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3))
+		if ((A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3) | (A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
@@ -2523,19 +3296,23 @@ module AO333x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C2 => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C3) | (A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C3) | (A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C3))
+		if ((A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C3) | (A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C1 & C3))
+		if ((A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C3) | (A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3) | (A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3))
+		if ((A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C3))
+			(C2 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C1 & C3))
+			(C2 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3))
+		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3) | (A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
@@ -2543,27 +3320,35 @@ module AO333x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C2 => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & A3 & B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & A2 & A3 & ~B1 & B2 & ~B3 & C1 & C3) | (~A1 & A2 & ~A3 & B1 & B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & B1 & B2 & ~B3 & C1 & C3))
+		if ((~A1 & A2 & A3 & B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((~A1 & A2 & A3 & ~B1 & B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & B3 & C1 & C3) | (~A1 & A2 & ~A3 & B1 & ~B2 & B3 & C1 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & B3 & C1 & C3))
+		if ((~A1 & A2 & A3 & ~B1 & B2 & ~B3 & C1 & C3) | (~A1 & A2 & A3 & ~B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C3))
+		if ((~A1 & A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C3))
+		if ((~A1 & A2 & ~A3 & B1 & B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & B1 & B2 & ~B3 & C1 & C3))
+			(C2 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2 & B3 & C1 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & B3 & C1 & C3))
+			(C2 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((~A1 & A2 & ~A3 & ~B1 & B2 & B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C3))
+		if ((~A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3) | (~A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3))
+		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C3))
+			(C2 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3))
+			(C2 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3))
+		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
@@ -2572,11 +3357,11 @@ module AO333x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C3 => Y) = 0;
 		if ((A1 & A2 & ~A3 & B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2) | (A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2))
+		if ((A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2))
+		if ((A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2) | (A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
@@ -2584,19 +3369,23 @@ module AO333x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C3 => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2) | (A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2) | (A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C2))
+		if ((A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2) | (A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C1 & C2))
+		if ((A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2) | (A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2) | (A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2))
+		if ((A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C2))
+			(C3 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C1 & C2))
+			(C3 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2))
+		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2) | (A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
@@ -2604,27 +3393,35 @@ module AO333x1_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C3 => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2) | (~A1 & A2 & ~A3 & B1 & B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & B1 & B2 & ~B3 & C1 & C2))
+		if ((~A1 & A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((~A1 & A2 & A3 & ~B1 & B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2) | (~A1 & A2 & ~A3 & B1 & ~B2 & B3 & C1 & C2) | (~A1 & ~A2 & A3 & B1 & ~B2 & B3 & C1 & C2))
+		if ((~A1 & A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2) | (~A1 & A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C2))
+		if ((~A1 & A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2))
+		if ((~A1 & A2 & ~A3 & B1 & B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & B1 & B2 & ~B3 & C1 & C2))
+			(C3 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2 & B3 & C1 & C2) | (~A1 & ~A2 & A3 & B1 & ~B2 & B3 & C1 & C2))
+			(C3 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((~A1 & A2 & ~A3 & ~B1 & B2 & B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2))
+		if ((~A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2) | (~A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2))
+		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2))
+			(C3 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2))
+			(C3 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2))
+		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
@@ -2636,7 +3433,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO333x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
+module AO333x2_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 	output Y;
 	input A1, A2, A3, B1, B2, B3, C1, C2, C3;
 
@@ -2666,59 +3463,47 @@ module AO333x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(A1 => Y) = 0;
 		if ((A2 & A3 & B1 & ~B2 & B3 & C1 & ~C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A2 & A3 & B1 & ~B2 & B3 & C1 & ~C2 & ~C3) | (A2 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & B1 & ~B2 & B3 & ~C1 & C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A2 & A3 & B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
+		if ((A2 & A3 & B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A2 & A3 & B1 & ~B2 & B3 & ~C1 & ~C2 & C3) | (A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2 & ~C3) | (A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2 & ~C3))
+		if ((A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2 & ~C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & C3) | (A2 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & C3))
+		if ((A2 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & ~C3))
+		if ((A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & C3) | (A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & C3))
-			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3) | (A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & C3))
-			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & ~C3))
+		if ((A2 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & B2 & B3 & C1 & C2 & ~C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & B2 & B3 & C1 & ~C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A2 & A3 & ~B1 & B2 & B3 & C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & C3) | (A2 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & B2 & B3 & ~C1 & C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & B2 & B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & C3))
+		if ((A2 & A3 & ~B1 & B2 & B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & C3) | (A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & C3) | (A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & ~C3))
+		if ((A2 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2 & ~C3))
+		if ((A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2 & ~C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & C3))
+		if ((A2 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & C3) | (A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & C3))
-			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
-			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3))
+		if ((A2 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2 & ~C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & ~C2 & C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3))
-			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
-			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A1 => Y) = 0;
 		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3))
 			(A1 => Y) = 0;
@@ -2739,59 +3524,47 @@ module AO333x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(A2 => Y) = 0;
 		if ((A1 & A3 & B1 & ~B2 & B3 & C1 & ~C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A3 & B1 & ~B2 & B3 & C1 & ~C2 & ~C3) | (A1 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & B1 & ~B2 & B3 & ~C1 & C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A3 & B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
+		if ((A1 & A3 & B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A3 & B1 & ~B2 & B3 & ~C1 & ~C2 & C3) | (A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & ~B3 & C1 & C2 & ~C3) | (A1 & A3 & ~B1 & B2 & ~B3 & C1 & C2 & ~C3))
+		if ((A1 & A3 & B1 & ~B2 & ~B3 & C1 & C2 & ~C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & C3) | (A1 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & C3))
+		if ((A1 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & C3) | (A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & C3))
-			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3) | (A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & C3))
-			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & ~C3))
+		if ((A1 & A3 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & B2 & B3 & C1 & C2 & ~C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & B2 & B3 & C1 & ~C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A3 & ~B1 & B2 & B3 & C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & C3) | (A1 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & B2 & B3 & ~C1 & C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & C3))
+		if ((A1 & A3 & ~B1 & B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & C3) | (A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & C3) | (A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & ~C3))
+		if ((A1 & A3 & ~B1 & B2 & B3 & ~C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & B3 & C1 & C2 & ~C3))
+		if ((A1 & A3 & ~B1 & B2 & ~B3 & C1 & C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & B3 & C1 & C2 & ~C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & C3))
+		if ((A1 & A3 & ~B1 & B2 & ~B3 & C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & C3) | (A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & C3))
-			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
-			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3))
+		if ((A1 & A3 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2 & ~C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & C1 & ~C2 & C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3))
-			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
-			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A2 => Y) = 0;
 		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3))
 			(A2 => Y) = 0;
@@ -2812,59 +3585,47 @@ module AO333x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(A3 => Y) = 0;
 		if ((A1 & A2 & B1 & ~B2 & B3 & C1 & ~C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A2 & B1 & ~B2 & B3 & C1 & ~C2 & ~C3) | (A1 & A2 & B1 & ~B2 & ~B3 & C1 & ~C2 & C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & B1 & ~B2 & B3 & ~C1 & C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A2 & B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
+		if ((A1 & A2 & B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A2 & B1 & ~B2 & B3 & ~C1 & ~C2 & C3) | (A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & ~B3 & C1 & C2 & ~C3) | (A1 & A2 & ~B1 & B2 & ~B3 & C1 & C2 & ~C3))
+		if ((A1 & A2 & B1 & ~B2 & ~B3 & C1 & C2 & ~C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & ~B3 & C1 & ~C2 & C3) | (A1 & A2 & ~B1 & B2 & ~B3 & C1 & ~C2 & C3))
+		if ((A1 & A2 & B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & B2 & ~B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & C2 & C3) | (A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & C2 & C3))
-			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3) | (A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & C3))
-			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & ~C3))
+		if ((A1 & A2 & B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & B2 & B3 & C1 & C2 & ~C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & B2 & B3 & C1 & ~C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A2 & ~B1 & B2 & B3 & C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & B2 & ~B3 & C1 & ~C2 & C3) | (A1 & A2 & ~B1 & ~B2 & B3 & C1 & ~C2 & C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & B2 & B3 & ~C1 & C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & B2 & B3 & ~C1 & ~C2 & C3))
+		if ((A1 & A2 & ~B1 & B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & B2 & B3 & ~C1 & ~C2 & C3) | (A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & C2 & C3) | (A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & B2 & B3 & ~C1 & ~C2 & ~C3))
+		if ((A1 & A2 & ~B1 & B2 & B3 & ~C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & B3 & C1 & C2 & ~C3))
+		if ((A1 & A2 & ~B1 & B2 & ~B3 & C1 & C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & B3 & C1 & C2 & ~C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & B3 & C1 & ~C2 & C3))
+		if ((A1 & A2 & ~B1 & B2 & ~B3 & C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & B3 & C1 & ~C2 & ~C3))
+		if ((A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & C3) | (A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & C2 & C3))
-			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & C3))
-			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3))
+		if ((A1 & A2 & ~B1 & B2 & ~B3 & ~C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & B3 & ~C1 & ~C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & C1 & C2 & ~C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & C1 & ~C2 & C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & C1 & ~C2 & ~C3))
-			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & C3))
-			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & C2 & ~C3) | (A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & C3))
 			(A3 => Y) = 0;
 		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1 & ~C2 & ~C3))
 			(A3 => Y) = 0;
@@ -3092,11 +3853,11 @@ module AO333x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C1 => Y) = 0;
 		if ((A1 & A2 & ~A3 & B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3) | (A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3))
+		if ((A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3))
+		if ((A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3) | (A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
@@ -3104,19 +3865,23 @@ module AO333x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C1 => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C2 & C3) | (A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C2 & C3) | (A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C2 & C3))
+		if ((A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C2 & C3) | (A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C2 & C3))
+		if ((A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C2 & C3) | (A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3) | (A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3))
+		if ((A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C2 & C3))
+			(C1 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C2 & C3))
+			(C1 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3))
+		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3) | (A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
@@ -3124,27 +3889,35 @@ module AO333x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C1 => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & A3 & B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & A2 & A3 & ~B1 & B2 & ~B3 & C2 & C3) | (~A1 & A2 & ~A3 & B1 & B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & B1 & B2 & ~B3 & C2 & C3))
+		if ((~A1 & A2 & A3 & B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((~A1 & A2 & A3 & ~B1 & B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & B3 & C2 & C3) | (~A1 & A2 & ~A3 & B1 & ~B2 & B3 & C2 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & B3 & C2 & C3))
+		if ((~A1 & A2 & A3 & ~B1 & B2 & ~B3 & C2 & C3) | (~A1 & A2 & A3 & ~B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C2 & C3))
+		if ((~A1 & A2 & A3 & ~B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C2 & C3))
+		if ((~A1 & A2 & ~A3 & B1 & B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & B1 & B2 & ~B3 & C2 & C3))
+			(C1 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2 & B3 & C2 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & B3 & C2 & C3))
+			(C1 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((~A1 & A2 & ~A3 & ~B1 & B2 & B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C2 & C3))
+		if ((~A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3) | (~A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3))
+		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C2 & C3))
+			(C1 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C2 & C3))
+			(C1 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
-		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3))
+		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C2 & C3) | (~A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C2 & C3))
 			(C1 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3 & C2 & C3))
 			(C1 => Y) = 0;
@@ -3153,11 +3926,11 @@ module AO333x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C2 => Y) = 0;
 		if ((A1 & A2 & ~A3 & B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3) | (A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3))
+		if ((A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3))
+		if ((A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3) | (A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
@@ -3165,19 +3938,23 @@ module AO333x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C2 => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C3) | (A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C3) | (A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C3))
+		if ((A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C3) | (A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C1 & C3))
+		if ((A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C3) | (A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3) | (A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3))
+		if ((A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C3))
+			(C2 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C1 & C3))
+			(C2 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3))
+		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3) | (A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
@@ -3185,27 +3962,35 @@ module AO333x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C2 => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & A3 & B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & A2 & A3 & ~B1 & B2 & ~B3 & C1 & C3) | (~A1 & A2 & ~A3 & B1 & B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & B1 & B2 & ~B3 & C1 & C3))
+		if ((~A1 & A2 & A3 & B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((~A1 & A2 & A3 & ~B1 & B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & B3 & C1 & C3) | (~A1 & A2 & ~A3 & B1 & ~B2 & B3 & C1 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & B3 & C1 & C3))
+		if ((~A1 & A2 & A3 & ~B1 & B2 & ~B3 & C1 & C3) | (~A1 & A2 & A3 & ~B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C3))
+		if ((~A1 & A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C3))
+		if ((~A1 & A2 & ~A3 & B1 & B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & B1 & B2 & ~B3 & C1 & C3))
+			(C2 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2 & B3 & C1 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & B3 & C1 & C3))
+			(C2 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((~A1 & A2 & ~A3 & ~B1 & B2 & B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C3))
+		if ((~A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3) | (~A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3))
+		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C3))
+			(C2 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C3))
+			(C2 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
-		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3))
+		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C3) | (~A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C3))
 			(C2 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C3))
 			(C2 => Y) = 0;
@@ -3214,11 +3999,11 @@ module AO333x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C3 => Y) = 0;
 		if ((A1 & A2 & ~A3 & B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2) | (A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2))
+		if ((A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2))
+		if ((A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2) | (A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
@@ -3226,19 +4011,23 @@ module AO333x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C3 => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2) | (A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2) | (A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C2))
+		if ((A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2) | (A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C1 & C2))
+		if ((A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2) | (A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2) | (A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2))
+		if ((A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C2))
+			(C3 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C1 & C2))
+			(C3 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2))
+		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2) | (A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
@@ -3246,27 +4035,35 @@ module AO333x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 			(C3 => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2) | (~A1 & A2 & ~A3 & B1 & B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & B1 & B2 & ~B3 & C1 & C2))
+		if ((~A1 & A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((~A1 & A2 & A3 & ~B1 & B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2) | (~A1 & A2 & ~A3 & B1 & ~B2 & B3 & C1 & C2) | (~A1 & ~A2 & A3 & B1 & ~B2 & B3 & C1 & C2))
+		if ((~A1 & A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2) | (~A1 & A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C2))
+		if ((~A1 & A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2))
+		if ((~A1 & A2 & ~A3 & B1 & B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & B1 & B2 & ~B3 & C1 & C2))
+			(C3 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2 & B3 & C1 & C2) | (~A1 & ~A2 & A3 & B1 & ~B2 & B3 & C1 & C2))
+			(C3 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((~A1 & A2 & ~A3 & ~B1 & B2 & B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2))
+		if ((~A1 & A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2) | (~A1 & A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2))
+		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3 & C1 & C2))
+			(C3 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3 & C1 & C2))
+			(C3 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
-		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2))
+		if ((~A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3 & C1 & C2) | (~A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3 & C1 & C2))
 			(C3 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3 & C1 & C2))
 			(C3 => Y) = 0;
@@ -3278,7 +4075,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AO33x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3);
+module AO33x1_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, B3);
 	output Y;
 	input A1, A2, A3, B1, B2, B3;
 
@@ -3334,11 +4131,11 @@ module AO33x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3);
 			(B1 => Y) = 0;
 		if ((A1 & ~A2 & A3 & B2 & B3))
 			(B1 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B2 & B3))
+		if ((A1 & ~A2 & ~A3 & B2 & B3) | (~A1 & ~A2 & A3 & B2 & B3))
 			(B1 => Y) = 0;
 		if ((~A1 & A2 & A3 & B2 & B3))
 			(B1 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B2 & B3) | (~A1 & ~A2 & A3 & B2 & B3))
+		if ((~A1 & A2 & ~A3 & B2 & B3))
 			(B1 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B2 & B3))
 			(B1 => Y) = 0;
@@ -3347,11 +4144,11 @@ module AO33x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3);
 			(B2 => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & B3))
 			(B2 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & B3))
+		if ((A1 & ~A2 & ~A3 & B1 & B3) | (~A1 & ~A2 & A3 & B1 & B3))
 			(B2 => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & B3))
 			(B2 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & B3) | (~A1 & ~A2 & A3 & B1 & B3))
+		if ((~A1 & A2 & ~A3 & B1 & B3))
 			(B2 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & B3))
 			(B2 => Y) = 0;
@@ -3360,11 +4157,11 @@ module AO33x2_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3);
 			(B3 => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & B2))
 			(B3 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & B2))
+		if ((A1 & ~A2 & ~A3 & B1 & B2) | (~A1 & ~A2 & A3 & B1 & B2))
 			(B3 => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & B2))
 			(B3 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & B2) | (~A1 & ~A2 & A3 & B1 & B2))
+		if ((~A1 & A2 & ~A3 & B1 & B2))
 			(B3 => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & B2))
 			(B3 => Y) = 0;
@@ -3376,252 +4173,136 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI211x1_ASAP7_75t_R (Y, A1, A2, B, C);
+module AO33x2_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, B3);
 	output Y;
-	input A1, A2, B, C;
+	input A1, A2, A3, B1, B2, B3;
 
 	// Function
-	wire A1__bar, A2__bar, B__bar;
-	wire C__bar, int_fwire_0, int_fwire_1;
-
-	not (C__bar, C);
-	not (B__bar, B);
-	not (A2__bar, A2);
-	and (int_fwire_0, A2__bar, B__bar, C__bar);
-	not (A1__bar, A1);
-	and (int_fwire_1, A1__bar, B__bar, C__bar);
-	or (Y, int_fwire_1, int_fwire_0);
-
-	// Timing
-	specify
-		(A1 => Y) = 0;
-		(A2 => Y) = 0;
-		if ((A1 & ~A2 & ~C))
-			(B => Y) = 0;
-		if ((~A1 & A2 & ~C))
-			(B => Y) = 0;
-		if ((~A1 & ~A2 & ~C))
-			(B => Y) = 0;
-		ifnone (B => Y) = 0;
-		if ((A1 & ~A2 & ~B))
-			(C => Y) = 0;
-		if ((~A1 & A2 & ~B))
-			(C => Y) = 0;
-		if ((~A1 & ~A2 & ~B))
-			(C => Y) = 0;
-		ifnone (C => Y) = 0;
-	endspecify
-endmodule
-`endcelldefine
-
-// type:  
-`timescale 1ns/10ps
-`celldefine
-module AOI211xp5_ASAP7_75t_R (Y, A1, A2, B, C);
-	output Y;
-	input A1, A2, B, C;
-
-	// Function
-	wire A1__bar, A2__bar, B__bar;
-	wire C__bar, int_fwire_0, int_fwire_1;
-
-	not (C__bar, C);
-	not (B__bar, B);
-	not (A2__bar, A2);
-	and (int_fwire_0, A2__bar, B__bar, C__bar);
-	not (A1__bar, A1);
-	and (int_fwire_1, A1__bar, B__bar, C__bar);
-	or (Y, int_fwire_1, int_fwire_0);
-
-	// Timing
-	specify
-		(A1 => Y) = 0;
-		(A2 => Y) = 0;
-		if ((A1 & ~A2 & ~C))
-			(B => Y) = 0;
-		if ((~A1 & A2 & ~C))
-			(B => Y) = 0;
-		if ((~A1 & ~A2 & ~C))
-			(B => Y) = 0;
-		ifnone (B => Y) = 0;
-		if ((A1 & ~A2 & ~B))
-			(C => Y) = 0;
-		if ((~A1 & A2 & ~B))
-			(C => Y) = 0;
-		if ((~A1 & ~A2 & ~B))
-			(C => Y) = 0;
-		ifnone (C => Y) = 0;
-	endspecify
-endmodule
-`endcelldefine
-
-// type:  
-`timescale 1ns/10ps
-`celldefine
-module AOI21x1_ASAP7_75t_R (Y, A1, A2, B);
-	output Y;
-	input A1, A2, B;
-
-	// Function
-	wire A1__bar, A2__bar, B__bar;
 	wire int_fwire_0, int_fwire_1;
 
-	not (B__bar, B);
-	not (A2__bar, A2);
-	and (int_fwire_0, A2__bar, B__bar);
-	not (A1__bar, A1);
-	and (int_fwire_1, A1__bar, B__bar);
+	and (int_fwire_0, B1, B2, B3);
+	and (int_fwire_1, A1, A2, A3);
 	or (Y, int_fwire_1, int_fwire_0);
 
 	// Timing
 	specify
-		(A1 => Y) = 0;
-		(A2 => Y) = 0;
-		if ((A1 & ~A2))
-			(B => Y) = 0;
-		if ((~A1 & A2))
-			(B => Y) = 0;
-		if ((~A1 & ~A2))
-			(B => Y) = 0;
-		ifnone (B => Y) = 0;
-	endspecify
-endmodule
-`endcelldefine
-
-// type:  
-`timescale 1ns/10ps
-`celldefine
-module AOI21xp33_ASAP7_75t_R (Y, A1, A2, B);
-	output Y;
-	input A1, A2, B;
-
-	// Function
-	wire A1__bar, A2__bar, B__bar;
-	wire int_fwire_0, int_fwire_1;
-
-	not (B__bar, B);
-	not (A2__bar, A2);
-	and (int_fwire_0, A2__bar, B__bar);
-	not (A1__bar, A1);
-	and (int_fwire_1, A1__bar, B__bar);
-	or (Y, int_fwire_1, int_fwire_0);
-
-	// Timing
-	specify
-		(A1 => Y) = 0;
-		(A2 => Y) = 0;
-		if ((A1 & ~A2))
-			(B => Y) = 0;
-		if ((~A1 & A2))
-			(B => Y) = 0;
-		if ((~A1 & ~A2))
-			(B => Y) = 0;
-		ifnone (B => Y) = 0;
-	endspecify
-endmodule
-`endcelldefine
-
-// type:  
-`timescale 1ns/10ps
-`celldefine
-module AOI21xp5_ASAP7_75t_R (Y, A1, A2, B);
-	output Y;
-	input A1, A2, B;
-
-	// Function
-	wire A1__bar, A2__bar, B__bar;
-	wire int_fwire_0, int_fwire_1;
-
-	not (B__bar, B);
-	not (A2__bar, A2);
-	and (int_fwire_0, A2__bar, B__bar);
-	not (A1__bar, A1);
-	and (int_fwire_1, A1__bar, B__bar);
-	or (Y, int_fwire_1, int_fwire_0);
-
-	// Timing
-	specify
-		(A1 => Y) = 0;
-		(A2 => Y) = 0;
-		if ((A1 & ~A2))
-			(B => Y) = 0;
-		if ((~A1 & A2))
-			(B => Y) = 0;
-		if ((~A1 & ~A2))
-			(B => Y) = 0;
-		ifnone (B => Y) = 0;
-	endspecify
-endmodule
-`endcelldefine
-
-// type:  
-`timescale 1ns/10ps
-`celldefine
-module AOI221x1_ASAP7_75t_R (Y, A1, A2, B1, B2, C);
-	output Y;
-	input A1, A2, B1, B2, C;
-
-	// Function
-	wire A1__bar, A2__bar, B1__bar;
-	wire B2__bar, C__bar, int_fwire_0;
-	wire int_fwire_1, int_fwire_2, int_fwire_3;
-
-	not (C__bar, C);
-	not (B2__bar, B2);
-	not (A2__bar, A2);
-	and (int_fwire_0, A2__bar, B2__bar, C__bar);
-	not (B1__bar, B1);
-	and (int_fwire_1, A2__bar, B1__bar, C__bar);
-	not (A1__bar, A1);
-	and (int_fwire_2, A1__bar, B2__bar, C__bar);
-	and (int_fwire_3, A1__bar, B1__bar, C__bar);
-	or (Y, int_fwire_3, int_fwire_2, int_fwire_1, int_fwire_0);
-
-	// Timing
-	specify
-		if ((A2 & B1 & ~B2 & ~C))
+		if ((A2 & A3 & B1 & B2 & ~B3))
 			(A1 => Y) = 0;
-		if ((A2 & ~B1 & B2 & ~C))
+		if ((A2 & A3 & B1 & ~B2 & B3))
 			(A1 => Y) = 0;
-		if ((A2 & ~B1 & ~B2 & ~C))
+		if ((A2 & A3 & B1 & ~B2 & ~B3))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & ~B1 & B2 & B3))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & ~B1 & B2 & ~B3) | (A2 & A3 & ~B1 & ~B2 & B3))
+			(A1 => Y) = 0;
+		if ((A2 & A3 & ~B1 & ~B2 & ~B3))
 			(A1 => Y) = 0;
 		ifnone (A1 => Y) = 0;
-		if ((A1 & B1 & ~B2 & ~C))
+		if ((A1 & A3 & B1 & B2 & ~B3))
 			(A2 => Y) = 0;
-		if ((A1 & ~B1 & B2 & ~C))
+		if ((A1 & A3 & B1 & ~B2 & B3))
 			(A2 => Y) = 0;
-		if ((A1 & ~B1 & ~B2 & ~C))
+		if ((A1 & A3 & B1 & ~B2 & ~B3))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & ~B1 & B2 & B3))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & ~B1 & B2 & ~B3) | (A1 & A3 & ~B1 & ~B2 & B3))
+			(A2 => Y) = 0;
+		if ((A1 & A3 & ~B1 & ~B2 & ~B3))
 			(A2 => Y) = 0;
 		ifnone (A2 => Y) = 0;
-		if ((A1 & ~A2 & B2 & ~C))
+		if ((A1 & A2 & B1 & B2 & ~B3))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & B1 & ~B2 & B3))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & B1 & ~B2 & ~B3))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & ~B1 & B2 & B3))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & ~B1 & B2 & ~B3) | (A1 & A2 & ~B1 & ~B2 & B3))
+			(A3 => Y) = 0;
+		if ((A1 & A2 & ~B1 & ~B2 & ~B3))
+			(A3 => Y) = 0;
+		ifnone (A3 => Y) = 0;
+		if ((A1 & A2 & ~A3 & B2 & B3))
 			(B1 => Y) = 0;
-		if ((~A1 & A2 & B2 & ~C))
+		if ((A1 & ~A2 & A3 & B2 & B3))
 			(B1 => Y) = 0;
-		if ((~A1 & ~A2 & B2 & ~C))
+		if ((A1 & ~A2 & ~A3 & B2 & B3) | (~A1 & ~A2 & A3 & B2 & B3))
+			(B1 => Y) = 0;
+		if ((~A1 & A2 & A3 & B2 & B3))
+			(B1 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B2 & B3))
+			(B1 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B2 & B3))
 			(B1 => Y) = 0;
 		ifnone (B1 => Y) = 0;
-		if ((A1 & ~A2 & B1 & ~C))
+		if ((A1 & A2 & ~A3 & B1 & B3))
 			(B2 => Y) = 0;
-		if ((~A1 & A2 & B1 & ~C))
+		if ((A1 & ~A2 & A3 & B1 & B3))
 			(B2 => Y) = 0;
-		if ((~A1 & ~A2 & B1 & ~C))
+		if ((A1 & ~A2 & ~A3 & B1 & B3) | (~A1 & ~A2 & A3 & B1 & B3))
+			(B2 => Y) = 0;
+		if ((~A1 & A2 & A3 & B1 & B3))
+			(B2 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & B3))
+			(B2 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & B3))
 			(B2 => Y) = 0;
 		ifnone (B2 => Y) = 0;
-		if ((A1 & ~A2 & B1 & ~B2))
+		if ((A1 & A2 & ~A3 & B1 & B2))
+			(B3 => Y) = 0;
+		if ((A1 & ~A2 & A3 & B1 & B2))
+			(B3 => Y) = 0;
+		if ((A1 & ~A2 & ~A3 & B1 & B2) | (~A1 & ~A2 & A3 & B1 & B2))
+			(B3 => Y) = 0;
+		if ((~A1 & A2 & A3 & B1 & B2))
+			(B3 => Y) = 0;
+		if ((~A1 & A2 & ~A3 & B1 & B2))
+			(B3 => Y) = 0;
+		if ((~A1 & ~A2 & ~A3 & B1 & B2))
+			(B3 => Y) = 0;
+		ifnone (B3 => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AOI211xp25_ASAP7_6t_R (Y, A1, A2, B, C);
+	output Y;
+	input A1, A2, B, C;
+
+	// Function
+	wire A1__bar, A2__bar, B__bar;
+	wire C__bar, int_fwire_0, int_fwire_1;
+
+	not (C__bar, C);
+	not (B__bar, B);
+	not (A2__bar, A2);
+	and (int_fwire_0, A2__bar, B__bar, C__bar);
+	not (A1__bar, A1);
+	and (int_fwire_1, A1__bar, B__bar, C__bar);
+	or (Y, int_fwire_1, int_fwire_0);
+
+	// Timing
+	specify
+		(A1 => Y) = 0;
+		(A2 => Y) = 0;
+		if ((A1 & ~A2 & ~C))
+			(B => Y) = 0;
+		if ((~A1 & A2 & ~C))
+			(B => Y) = 0;
+		if ((~A1 & ~A2 & ~C))
+			(B => Y) = 0;
+		ifnone (B => Y) = 0;
+		if ((A1 & ~A2 & ~B))
 			(C => Y) = 0;
-		if ((A1 & ~A2 & ~B1 & B2))
+		if ((~A1 & A2 & ~B))
 			(C => Y) = 0;
-		if ((A1 & ~A2 & ~B1 & ~B2))
-			(C => Y) = 0;
-		if ((~A1 & A2 & B1 & ~B2))
-			(C => Y) = 0;
-		if ((~A1 & A2 & ~B1 & B2))
-			(C => Y) = 0;
-		if ((~A1 & A2 & ~B1 & ~B2) | (~A1 & ~A2 & ~B1 & B2))
-			(C => Y) = 0;
-		if ((~A1 & ~A2 & B1 & ~B2))
-			(C => Y) = 0;
-		if ((~A1 & ~A2 & ~B1 & ~B2))
+		if ((~A1 & ~A2 & ~B))
 			(C => Y) = 0;
 		ifnone (C => Y) = 0;
 	endspecify
@@ -3631,7 +4312,147 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI221xp5_ASAP7_75t_R (Y, A1, A2, B1, B2, C);
+module AOI211xp5_ASAP7_6t_R (Y, A1, A2, B, C);
+	output Y;
+	input A1, A2, B, C;
+
+	// Function
+	wire A1__bar, A2__bar, B__bar;
+	wire C__bar, int_fwire_0, int_fwire_1;
+
+	not (C__bar, C);
+	not (B__bar, B);
+	not (A2__bar, A2);
+	and (int_fwire_0, A2__bar, B__bar, C__bar);
+	not (A1__bar, A1);
+	and (int_fwire_1, A1__bar, B__bar, C__bar);
+	or (Y, int_fwire_1, int_fwire_0);
+
+	// Timing
+	specify
+		(A1 => Y) = 0;
+		(A2 => Y) = 0;
+		if ((A1 & ~A2 & ~C))
+			(B => Y) = 0;
+		if ((~A1 & A2 & ~C))
+			(B => Y) = 0;
+		if ((~A1 & ~A2 & ~C))
+			(B => Y) = 0;
+		ifnone (B => Y) = 0;
+		if ((A1 & ~A2 & ~B))
+			(C => Y) = 0;
+		if ((~A1 & A2 & ~B))
+			(C => Y) = 0;
+		if ((~A1 & ~A2 & ~B))
+			(C => Y) = 0;
+		ifnone (C => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AOI21x1_ASAP7_6t_R (Y, A1, A2, B);
+	output Y;
+	input A1, A2, B;
+
+	// Function
+	wire A1__bar, A2__bar, B__bar;
+	wire int_fwire_0, int_fwire_1;
+
+	not (B__bar, B);
+	not (A2__bar, A2);
+	and (int_fwire_0, A2__bar, B__bar);
+	not (A1__bar, A1);
+	and (int_fwire_1, A1__bar, B__bar);
+	or (Y, int_fwire_1, int_fwire_0);
+
+	// Timing
+	specify
+		(A1 => Y) = 0;
+		(A2 => Y) = 0;
+		if ((A1 & ~A2))
+			(B => Y) = 0;
+		if ((~A1 & A2))
+			(B => Y) = 0;
+		if ((~A1 & ~A2))
+			(B => Y) = 0;
+		ifnone (B => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AOI21xp25_ASAP7_6t_R (Y, A1, A2, B);
+	output Y;
+	input A1, A2, B;
+
+	// Function
+	wire A1__bar, A2__bar, B__bar;
+	wire int_fwire_0, int_fwire_1;
+
+	not (B__bar, B);
+	not (A2__bar, A2);
+	and (int_fwire_0, A2__bar, B__bar);
+	not (A1__bar, A1);
+	and (int_fwire_1, A1__bar, B__bar);
+	or (Y, int_fwire_1, int_fwire_0);
+
+	// Timing
+	specify
+		(A1 => Y) = 0;
+		(A2 => Y) = 0;
+		if ((A1 & ~A2))
+			(B => Y) = 0;
+		if ((~A1 & A2))
+			(B => Y) = 0;
+		if ((~A1 & ~A2))
+			(B => Y) = 0;
+		ifnone (B => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AOI21xp5_ASAP7_6t_R (Y, A1, A2, B);
+	output Y;
+	input A1, A2, B;
+
+	// Function
+	wire A1__bar, A2__bar, B__bar;
+	wire int_fwire_0, int_fwire_1;
+
+	not (B__bar, B);
+	not (A2__bar, A2);
+	and (int_fwire_0, A2__bar, B__bar);
+	not (A1__bar, A1);
+	and (int_fwire_1, A1__bar, B__bar);
+	or (Y, int_fwire_1, int_fwire_0);
+
+	// Timing
+	specify
+		(A1 => Y) = 0;
+		(A2 => Y) = 0;
+		if ((A1 & ~A2))
+			(B => Y) = 0;
+		if ((~A1 & A2))
+			(B => Y) = 0;
+		if ((~A1 & ~A2))
+			(B => Y) = 0;
+		ifnone (B => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AOI221xp25_ASAP7_6t_R (Y, A1, A2, B1, B2, C);
 	output Y;
 	input A1, A2, B1, B2, C;
 
@@ -3707,7 +4528,83 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI222xp33_ASAP7_75t_R (Y, A1, A2, B1, B2, C1, C2);
+module AOI221xp5_ASAP7_6t_R (Y, A1, A2, B1, B2, C);
+	output Y;
+	input A1, A2, B1, B2, C;
+
+	// Function
+	wire A1__bar, A2__bar, B1__bar;
+	wire B2__bar, C__bar, int_fwire_0;
+	wire int_fwire_1, int_fwire_2, int_fwire_3;
+
+	not (C__bar, C);
+	not (B2__bar, B2);
+	not (A2__bar, A2);
+	and (int_fwire_0, A2__bar, B2__bar, C__bar);
+	not (B1__bar, B1);
+	and (int_fwire_1, A2__bar, B1__bar, C__bar);
+	not (A1__bar, A1);
+	and (int_fwire_2, A1__bar, B2__bar, C__bar);
+	and (int_fwire_3, A1__bar, B1__bar, C__bar);
+	or (Y, int_fwire_3, int_fwire_2, int_fwire_1, int_fwire_0);
+
+	// Timing
+	specify
+		if ((A2 & B1 & ~B2 & ~C))
+			(A1 => Y) = 0;
+		if ((A2 & ~B1 & B2 & ~C))
+			(A1 => Y) = 0;
+		if ((A2 & ~B1 & ~B2 & ~C))
+			(A1 => Y) = 0;
+		ifnone (A1 => Y) = 0;
+		if ((A1 & B1 & ~B2 & ~C))
+			(A2 => Y) = 0;
+		if ((A1 & ~B1 & B2 & ~C))
+			(A2 => Y) = 0;
+		if ((A1 & ~B1 & ~B2 & ~C))
+			(A2 => Y) = 0;
+		ifnone (A2 => Y) = 0;
+		if ((A1 & ~A2 & B2 & ~C))
+			(B1 => Y) = 0;
+		if ((~A1 & A2 & B2 & ~C))
+			(B1 => Y) = 0;
+		if ((~A1 & ~A2 & B2 & ~C))
+			(B1 => Y) = 0;
+		ifnone (B1 => Y) = 0;
+		if ((A1 & ~A2 & B1 & ~C))
+			(B2 => Y) = 0;
+		if ((~A1 & A2 & B1 & ~C))
+			(B2 => Y) = 0;
+		if ((~A1 & ~A2 & B1 & ~C))
+			(B2 => Y) = 0;
+		ifnone (B2 => Y) = 0;
+		if ((A1 & ~A2 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((A1 & ~A2 & ~B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((~A1 & A2 & ~B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & ~A2 & B1 & ~B2))
+			(C => Y) = 0;
+		if ((~A1 & ~A2 & ~B1 & B2))
+			(C => Y) = 0;
+		if ((~A1 & ~A2 & ~B1 & ~B2))
+			(C => Y) = 0;
+		ifnone (C => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AOI222xp25_ASAP7_6t_R (Y, A1, A2, B1, B2, C1, C2);
 	output Y;
 	input A1, A2, B1, B2, C1, C2;
 
@@ -3853,7 +4750,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI22x1_ASAP7_75t_R (Y, A1, A2, B1, B2);
+module AOI22xp25_ASAP7_6t_R (Y, A1, A2, B1, B2);
 	output Y;
 	input A1, A2, B1, B2;
 
@@ -3909,7 +4806,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI22xp33_ASAP7_75t_R (Y, A1, A2, B1, B2);
+module AOI22xp5_ASAP7_6t_R (Y, A1, A2, B1, B2);
 	output Y;
 	input A1, A2, B1, B2;
 
@@ -3965,63 +4862,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI22xp5_ASAP7_75t_R (Y, A1, A2, B1, B2);
-	output Y;
-	input A1, A2, B1, B2;
-
-	// Function
-	wire A1__bar, A2__bar, B1__bar;
-	wire B2__bar, int_fwire_0, int_fwire_1;
-	wire int_fwire_2, int_fwire_3;
-
-	not (B2__bar, B2);
-	not (A2__bar, A2);
-	and (int_fwire_0, A2__bar, B2__bar);
-	not (B1__bar, B1);
-	and (int_fwire_1, A2__bar, B1__bar);
-	not (A1__bar, A1);
-	and (int_fwire_2, A1__bar, B2__bar);
-	and (int_fwire_3, A1__bar, B1__bar);
-	or (Y, int_fwire_3, int_fwire_2, int_fwire_1, int_fwire_0);
-
-	// Timing
-	specify
-		if ((A2 & B1 & ~B2))
-			(A1 => Y) = 0;
-		if ((A2 & ~B1 & B2))
-			(A1 => Y) = 0;
-		if ((A2 & ~B1 & ~B2))
-			(A1 => Y) = 0;
-		ifnone (A1 => Y) = 0;
-		if ((A1 & B1 & ~B2))
-			(A2 => Y) = 0;
-		if ((A1 & ~B1 & B2))
-			(A2 => Y) = 0;
-		if ((A1 & ~B1 & ~B2))
-			(A2 => Y) = 0;
-		ifnone (A2 => Y) = 0;
-		if ((A1 & ~A2 & B2))
-			(B1 => Y) = 0;
-		if ((~A1 & A2 & B2))
-			(B1 => Y) = 0;
-		if ((~A1 & ~A2 & B2))
-			(B1 => Y) = 0;
-		ifnone (B1 => Y) = 0;
-		if ((A1 & ~A2 & B1))
-			(B2 => Y) = 0;
-		if ((~A1 & A2 & B1))
-			(B2 => Y) = 0;
-		if ((~A1 & ~A2 & B1))
-			(B2 => Y) = 0;
-		ifnone (B2 => Y) = 0;
-	endspecify
-endmodule
-`endcelldefine
-
-// type:  
-`timescale 1ns/10ps
-`celldefine
-module AOI311xp33_ASAP7_75t_R (Y, A1, A2, A3, B, C);
+module AOI311xp33_ASAP7_6t_R (Y, A1, A2, A3, B, C);
 	output Y;
 	input A1, A2, A3, B, C;
 
@@ -4078,7 +4919,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI31xp33_ASAP7_75t_R (Y, A1, A2, A3, B);
+module AOI31xp33_ASAP7_6t_R (Y, A1, A2, A3, B);
 	output Y;
 	input A1, A2, A3, B;
 
@@ -4121,7 +4962,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI31xp67_ASAP7_75t_R (Y, A1, A2, A3, B);
+module AOI31xp67_ASAP7_6t_R (Y, A1, A2, A3, B);
 	output Y;
 	input A1, A2, A3, B;
 
@@ -4164,7 +5005,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI321xp33_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, C);
+module AOI321xp17_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, C);
 	output Y;
 	input A1, A2, A3, B1, B2, C;
 
@@ -4281,7 +5122,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI322xp5_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, C1, C2);
+module AOI322xp17_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, C1, C2);
 	output Y;
 	input A1, A2, A3, B1, B2, C1, C2;
 
@@ -4521,7 +5362,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI32xp33_ASAP7_75t_R (Y, A1, A2, A3, B1, B2);
+module AOI32xp33_ASAP7_6t_R (Y, A1, A2, A3, B1, B2);
 	output Y;
 	input A1, A2, A3, B1, B2;
 
@@ -4600,177 +5441,177 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI331xp33_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1);
+module AOI331xp17_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, B3, C);
 	output Y;
-	input A1, A2, A3, B1, B2, B3, C1;
+	input A1, A2, A3, B1, B2, B3, C;
 
 	// Function
 	wire A1__bar, A2__bar, A3__bar;
 	wire B1__bar, B2__bar, B3__bar;
-	wire C1__bar, int_fwire_0, int_fwire_1;
+	wire C__bar, int_fwire_0, int_fwire_1;
 	wire int_fwire_2, int_fwire_3, int_fwire_4;
 	wire int_fwire_5, int_fwire_6, int_fwire_7;
 	wire int_fwire_8;
 
-	not (C1__bar, C1);
+	not (C__bar, C);
 	not (B3__bar, B3);
 	not (A3__bar, A3);
-	and (int_fwire_0, A3__bar, B3__bar, C1__bar);
+	and (int_fwire_0, A3__bar, B3__bar, C__bar);
 	not (B2__bar, B2);
-	and (int_fwire_1, A3__bar, B2__bar, C1__bar);
+	and (int_fwire_1, A3__bar, B2__bar, C__bar);
 	not (B1__bar, B1);
-	and (int_fwire_2, A3__bar, B1__bar, C1__bar);
+	and (int_fwire_2, A3__bar, B1__bar, C__bar);
 	not (A2__bar, A2);
-	and (int_fwire_3, A2__bar, B3__bar, C1__bar);
-	and (int_fwire_4, A2__bar, B2__bar, C1__bar);
-	and (int_fwire_5, A2__bar, B1__bar, C1__bar);
+	and (int_fwire_3, A2__bar, B3__bar, C__bar);
+	and (int_fwire_4, A2__bar, B2__bar, C__bar);
+	and (int_fwire_5, A2__bar, B1__bar, C__bar);
 	not (A1__bar, A1);
-	and (int_fwire_6, A1__bar, B3__bar, C1__bar);
-	and (int_fwire_7, A1__bar, B2__bar, C1__bar);
-	and (int_fwire_8, A1__bar, B1__bar, C1__bar);
+	and (int_fwire_6, A1__bar, B3__bar, C__bar);
+	and (int_fwire_7, A1__bar, B2__bar, C__bar);
+	and (int_fwire_8, A1__bar, B1__bar, C__bar);
 	or (Y, int_fwire_8, int_fwire_7, int_fwire_6, int_fwire_5, int_fwire_4, int_fwire_3, int_fwire_2, int_fwire_1, int_fwire_0);
 
 	// Timing
 	specify
-		if ((A2 & A3 & B1 & B2 & ~B3 & ~C1))
+		if ((A2 & A3 & B1 & B2 & ~B3 & ~C))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & B3 & ~C1))
+		if ((A2 & A3 & B1 & ~B2 & B3 & ~C))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & B1 & ~B2 & ~B3 & ~C1))
+		if ((A2 & A3 & B1 & ~B2 & ~B3 & ~C))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & B2 & B3 & ~C1))
+		if ((A2 & A3 & ~B1 & B2 & B3 & ~C))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & B2 & ~B3 & ~C1) | (A2 & A3 & ~B1 & ~B2 & B3 & ~C1))
+		if ((A2 & A3 & ~B1 & B2 & ~B3 & ~C) | (A2 & A3 & ~B1 & ~B2 & B3 & ~C))
 			(A1 => Y) = 0;
-		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & ~C1))
+		if ((A2 & A3 & ~B1 & ~B2 & ~B3 & ~C))
 			(A1 => Y) = 0;
 		ifnone (A1 => Y) = 0;
-		if ((A1 & A3 & B1 & B2 & ~B3 & ~C1))
+		if ((A1 & A3 & B1 & B2 & ~B3 & ~C))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & B3 & ~C1))
+		if ((A1 & A3 & B1 & ~B2 & B3 & ~C))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & B1 & ~B2 & ~B3 & ~C1))
+		if ((A1 & A3 & B1 & ~B2 & ~B3 & ~C))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & B2 & B3 & ~C1))
+		if ((A1 & A3 & ~B1 & B2 & B3 & ~C))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & B2 & ~B3 & ~C1) | (A1 & A3 & ~B1 & ~B2 & B3 & ~C1))
+		if ((A1 & A3 & ~B1 & B2 & ~B3 & ~C) | (A1 & A3 & ~B1 & ~B2 & B3 & ~C))
 			(A2 => Y) = 0;
-		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & ~C1))
+		if ((A1 & A3 & ~B1 & ~B2 & ~B3 & ~C))
 			(A2 => Y) = 0;
 		ifnone (A2 => Y) = 0;
-		if ((A1 & A2 & B1 & B2 & ~B3 & ~C1))
+		if ((A1 & A2 & B1 & B2 & ~B3 & ~C))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & B3 & ~C1))
+		if ((A1 & A2 & B1 & ~B2 & B3 & ~C))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & B1 & ~B2 & ~B3 & ~C1))
+		if ((A1 & A2 & B1 & ~B2 & ~B3 & ~C))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & B2 & B3 & ~C1))
+		if ((A1 & A2 & ~B1 & B2 & B3 & ~C))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & B2 & ~B3 & ~C1) | (A1 & A2 & ~B1 & ~B2 & B3 & ~C1))
+		if ((A1 & A2 & ~B1 & B2 & ~B3 & ~C) | (A1 & A2 & ~B1 & ~B2 & B3 & ~C))
 			(A3 => Y) = 0;
-		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & ~C1))
+		if ((A1 & A2 & ~B1 & ~B2 & ~B3 & ~C))
 			(A3 => Y) = 0;
 		ifnone (A3 => Y) = 0;
-		if ((A1 & A2 & ~A3 & B2 & B3 & ~C1))
+		if ((A1 & A2 & ~A3 & B2 & B3 & ~C))
 			(B1 => Y) = 0;
-		if ((A1 & ~A2 & A3 & B2 & B3 & ~C1))
+		if ((A1 & ~A2 & A3 & B2 & B3 & ~C))
 			(B1 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B2 & B3 & ~C1))
+		if ((A1 & ~A2 & ~A3 & B2 & B3 & ~C))
 			(B1 => Y) = 0;
-		if ((~A1 & A2 & A3 & B2 & B3 & ~C1))
+		if ((~A1 & A2 & A3 & B2 & B3 & ~C))
 			(B1 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B2 & B3 & ~C1) | (~A1 & ~A2 & A3 & B2 & B3 & ~C1))
+		if ((~A1 & A2 & ~A3 & B2 & B3 & ~C) | (~A1 & ~A2 & A3 & B2 & B3 & ~C))
 			(B1 => Y) = 0;
-		if ((~A1 & ~A2 & ~A3 & B2 & B3 & ~C1))
+		if ((~A1 & ~A2 & ~A3 & B2 & B3 & ~C))
 			(B1 => Y) = 0;
 		ifnone (B1 => Y) = 0;
-		if ((A1 & A2 & ~A3 & B1 & B3 & ~C1))
+		if ((A1 & A2 & ~A3 & B1 & B3 & ~C))
 			(B2 => Y) = 0;
-		if ((A1 & ~A2 & A3 & B1 & B3 & ~C1))
+		if ((A1 & ~A2 & A3 & B1 & B3 & ~C))
 			(B2 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & B3 & ~C1))
+		if ((A1 & ~A2 & ~A3 & B1 & B3 & ~C))
 			(B2 => Y) = 0;
-		if ((~A1 & A2 & A3 & B1 & B3 & ~C1))
+		if ((~A1 & A2 & A3 & B1 & B3 & ~C))
 			(B2 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & B3 & ~C1) | (~A1 & ~A2 & A3 & B1 & B3 & ~C1))
+		if ((~A1 & A2 & ~A3 & B1 & B3 & ~C) | (~A1 & ~A2 & A3 & B1 & B3 & ~C))
 			(B2 => Y) = 0;
-		if ((~A1 & ~A2 & ~A3 & B1 & B3 & ~C1))
+		if ((~A1 & ~A2 & ~A3 & B1 & B3 & ~C))
 			(B2 => Y) = 0;
 		ifnone (B2 => Y) = 0;
-		if ((A1 & A2 & ~A3 & B1 & B2 & ~C1))
+		if ((A1 & A2 & ~A3 & B1 & B2 & ~C))
 			(B3 => Y) = 0;
-		if ((A1 & ~A2 & A3 & B1 & B2 & ~C1))
+		if ((A1 & ~A2 & A3 & B1 & B2 & ~C))
 			(B3 => Y) = 0;
-		if ((A1 & ~A2 & ~A3 & B1 & B2 & ~C1))
+		if ((A1 & ~A2 & ~A3 & B1 & B2 & ~C))
 			(B3 => Y) = 0;
-		if ((~A1 & A2 & A3 & B1 & B2 & ~C1))
+		if ((~A1 & A2 & A3 & B1 & B2 & ~C))
 			(B3 => Y) = 0;
-		if ((~A1 & A2 & ~A3 & B1 & B2 & ~C1) | (~A1 & ~A2 & A3 & B1 & B2 & ~C1))
+		if ((~A1 & A2 & ~A3 & B1 & B2 & ~C) | (~A1 & ~A2 & A3 & B1 & B2 & ~C))
 			(B3 => Y) = 0;
-		if ((~A1 & ~A2 & ~A3 & B1 & B2 & ~C1))
+		if ((~A1 & ~A2 & ~A3 & B1 & B2 & ~C))
 			(B3 => Y) = 0;
 		ifnone (B3 => Y) = 0;
 		if ((A1 & A2 & ~A3 & B1 & B2 & ~B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & A2 & ~A3 & B1 & ~B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & A2 & ~A3 & B1 & ~B2 & ~B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & B2 & ~B3) | (A1 & A2 & ~A3 & ~B1 & ~B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & B2 & ~B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & ~B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & ~A2 & A3 & B1 & ~B2 & ~B3) | (A1 & ~A2 & ~A3 & B1 & ~B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & B2 & ~B3) | (A1 & ~A2 & A3 & ~B1 & ~B2 & B3) | (A1 & ~A2 & ~A3 & ~B1 & B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & B1 & B2 & ~B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3) | (A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & B2 & ~B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & ~B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & A2 & A3 & B1 & ~B2 & ~B3) | (~A1 & A2 & ~A3 & B1 & ~B2 & B3) | (~A1 & ~A2 & A3 & B1 & ~B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & A2 & A3 & ~B1 & B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & A2 & A3 & ~B1 & B2 & ~B3) | (~A1 & A2 & A3 & ~B1 & ~B2 & B3) | (~A1 & A2 & ~A3 & ~B1 & B2 & B3) | (~A1 & ~A2 & A3 & ~B1 & B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & A2 & A3 & ~B1 & ~B2 & ~B3) | (~A1 & ~A2 & ~A3 & ~B1 & B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & A2 & ~A3 & B1 & B2 & ~B3) | (~A1 & ~A2 & A3 & B1 & B2 & ~B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & A2 & ~A3 & B1 & ~B2 & ~B3) | (~A1 & ~A2 & A3 & B1 & ~B2 & ~B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & A2 & ~A3 & ~B1 & B2 & ~B3) | (~A1 & A2 & ~A3 & ~B1 & ~B2 & B3) | (~A1 & ~A2 & A3 & ~B1 & B2 & ~B3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & A2 & ~A3 & ~B1 & ~B2 & ~B3) | (~A1 & ~A2 & A3 & ~B1 & ~B2 & ~B3) | (~A1 & ~A2 & ~A3 & ~B1 & B2 & ~B3) | (~A1 & ~A2 & ~A3 & ~B1 & ~B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & B2 & ~B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & B1 & ~B2 & ~B3))
-			(C1 => Y) = 0;
+			(C => Y) = 0;
 		if ((~A1 & ~A2 & ~A3 & ~B1 & ~B2 & ~B3))
-			(C1 => Y) = 0;
-		ifnone (C1 => Y) = 0;
+			(C => Y) = 0;
+		ifnone (C => Y) = 0;
 	endspecify
 endmodule
 `endcelldefine
@@ -4778,7 +5619,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI332xp33_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2);
+module AOI332xp17_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2);
 	output Y;
 	input A1, A2, A3, B1, B2, B3, C1, C2;
 
@@ -5174,7 +6015,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI333xp33_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
+module AOI333xp17_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, B3, C1, C2, C3);
 	output Y;
 	input A1, A2, A3, B1, B2, B3, C1, C2, C3;
 
@@ -5860,7 +6701,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AOI33xp33_ASAP7_75t_R (Y, A1, A2, A3, B1, B2, B3);
+module AOI33xp33_ASAP7_6t_R (Y, A1, A2, A3, B1, B2, B3);
 	output Y;
 	input A1, A2, A3, B1, B2, B3;
 

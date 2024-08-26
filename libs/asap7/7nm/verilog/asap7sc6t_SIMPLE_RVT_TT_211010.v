@@ -1,9 +1,455 @@
-// Verilog for library /home/bvemired/asap7/PDKrundir/asap7_rundir/Liberate/Verilog/asap7sc7p5t_SIMPLE_RVT_TT_08302018 created by Liberate 16.1.0.530 on Thu Aug 30 22:16:07 MST 2018 for SDF version 2.1
+// BSD 3-Clause License
+// 
+// Copyright 2021 Lawrence T. Clark, Vinay Vashishtha, or Arizona State
+// University
+// 
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+// 
+// 1. Redistributions of source code must retain the above copyright notice,
+// this list of conditions and the following disclaimer.
+// 
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+// 
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived from this
+// software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+
+// Verilog for library /home/anolas19/Liberate/Verilog/asap7sc6t_NAND5xp2R_RVT_TT_211010 created by Liberate 18.1.0.293 on Sun Oct 10 14:14:10 MST 2021 for SDF version 2.1
 
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AND2x2_ASAP7_75t_R (Y, A, B);
+module NAND5xp2R_ASAP7_6t_R (Y, A, B, C, D, E);
+	output Y;
+	input A, B, C, D, E;
+
+	// Function
+	wire A__bar, B__bar, C__bar;
+	wire D__bar, E__bar;
+
+	not (E__bar, E);
+	not (D__bar, D);
+	not (C__bar, C);
+	not (B__bar, B);
+	not (A__bar, A);
+	or (Y, A__bar, B__bar, C__bar, D__bar, E__bar);
+
+	// Timing
+	specify
+		(A => Y) = 0;
+		(B => Y) = 0;
+		(C => Y) = 0;
+		(D => Y) = 0;
+		(E => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+
+`ifdef _udp_def_altos_latch_
+`else
+`define _udp_def_altos_latch_
+primitive altos_latch (q, v, clk, d);
+	output q;
+	reg q;
+	input v, clk, d;
+
+	table
+		* ? ? : ? : x;
+		? 1 0 : ? : 0;
+		? 1 1 : ? : 1;
+		? x 0 : 0 : -;
+		? x 1 : 1 : -;
+		? 0 ? : ? : -;
+	endtable
+endprimitive
+`endif
+
+`ifdef _udp_def_altos_dff_err_
+`else
+`define _udp_def_altos_dff_err_
+primitive altos_dff_err (q, clk, d);
+	output q;
+	reg q;
+	input clk, d;
+
+	table
+		(0x) ? : ? : 0;
+		(1x) ? : ? : 1;
+	endtable
+endprimitive
+`endif
+
+`ifdef _udp_def_altos_dff_
+`else
+`define _udp_def_altos_dff_
+primitive altos_dff (q, v, clk, d, xcr);
+	output q;
+	reg q;
+	input v, clk, d, xcr;
+
+	table
+		*  ?   ? ? : ? : x;
+		? (x1) 0 0 : ? : 0;
+		? (x1) 1 0 : ? : 1;
+		? (x1) 0 1 : 0 : 0;
+		? (x1) 1 1 : 1 : 1;
+		? (x1) ? x : ? : -;
+		? (bx) 0 ? : 0 : -;
+		? (bx) 1 ? : 1 : -;
+		? (x0) b ? : ? : -;
+		? (x0) ? x : ? : -;
+		? (01) 0 ? : ? : 0;
+		? (01) 1 ? : ? : 1;
+		? (10) ? ? : ? : -;
+		?  b   * ? : ? : -;
+		?  ?   ? * : ? : -;
+	endtable
+endprimitive
+`endif
+
+`ifdef _udp_def_altos_dff_r_err_
+`else
+`define _udp_def_altos_dff_r_err_
+primitive altos_dff_r_err (q, clk, d, r);
+	output q;
+	reg q;
+	input clk, d, r;
+
+	table
+		 ?   0 (0x) : ? : -;
+		 ?   0 (x0) : ? : -;
+		(0x) ?  0   : ? : 0;
+		(0x) 0  x   : ? : 0;
+		(1x) ?  0   : ? : 1;
+		(1x) 0  x   : ? : 1;
+	endtable
+endprimitive
+`endif
+
+`ifdef _udp_def_altos_dff_r_
+`else
+`define _udp_def_altos_dff_r_
+primitive altos_dff_r (q, v, clk, d, r, xcr);
+	output q;
+	reg q;
+	input v, clk, d, r, xcr;
+
+	table
+		*  ?   ?  ?   ? : ? : x;
+		?  ?   ?  1   ? : ? : 0;
+		?  b   ? (1?) ? : 0 : -;
+		?  x   0 (1?) ? : 0 : -;
+		?  ?   ? (10) ? : ? : -;
+		?  ?   ? (x0) ? : ? : -;
+		?  ?   ? (0x) ? : 0 : -;
+		? (x1) 0  ?   0 : ? : 0;
+		? (x1) 1  0   0 : ? : 1;
+		? (x1) 0  ?   1 : 0 : 0;
+		? (x1) 1  0   1 : 1 : 1;
+		? (x1) ?  ?   x : ? : -;
+		? (bx) 0  ?   ? : 0 : -;
+		? (bx) 1  0   ? : 1 : -;
+		? (x0) 0  ?   ? : ? : -;
+		? (x0) 1  0   ? : ? : -;
+		? (x0) ?  0   x : ? : -;
+		? (01) 0  ?   ? : ? : 0;
+		? (01) 1  0   ? : ? : 1;
+		? (10) ?  ?   ? : ? : -;
+		?  b   *  ?   ? : ? : -;
+		?  ?   ?  ?   * : ? : -;
+	endtable
+endprimitive
+`endif
+
+`ifdef _udp_def_altos_dff_s_err_
+`else
+`define _udp_def_altos_dff_s_err_
+primitive altos_dff_s_err (q, clk, d, s);
+	output q;
+	reg q;
+	input clk, d, s;
+
+	table
+		 ?   1 (0x) : ? : -;
+		 ?   1 (x0) : ? : -;
+		(0x) ?  0   : ? : 0;
+		(0x) 1  x   : ? : 0;
+		(1x) ?  0   : ? : 1;
+		(1x) 1  x   : ? : 1;
+	endtable
+endprimitive
+`endif
+
+`ifdef _udp_def_altos_dff_s_
+`else
+`define _udp_def_altos_dff_s_
+primitive altos_dff_s (q, v, clk, d, s, xcr);
+	output q;
+	reg q;
+	input v, clk, d, s, xcr;
+
+	table
+		*  ?   ?  ?   ? : ? : x;
+		?  ?   ?  1   ? : ? : 1;
+		?  b   ? (1?) ? : 1 : -;
+		?  x   1 (1?) ? : 1 : -;
+		?  ?   ? (10) ? : ? : -;
+		?  ?   ? (x0) ? : ? : -;
+		?  ?   ? (0x) ? : 1 : -;
+		? (x1) 0  0   0 : ? : 0;
+		? (x1) 1  ?   0 : ? : 1;
+		? (x1) 1  ?   1 : 1 : 1;
+		? (x1) 0  0   1 : 0 : 0;
+		? (x1) ?  ?   x : ? : -;
+		? (bx) 1  ?   ? : 1 : -;
+		? (bx) 0  0   ? : 0 : -;
+		? (x0) 1  ?   ? : ? : -;
+		? (x0) 0  0   ? : ? : -;
+		? (x0) ?  0   x : ? : -;
+		? (01) 1  ?   ? : ? : 1;
+		? (01) 0  0   ? : ? : 0;
+		? (10) ?  ?   ? : ? : -;
+		?  b   *  ?   ? : ? : -;
+		?  ?   ?  ?   * : ? : -;
+	endtable
+endprimitive
+`endif
+
+`ifdef _udp_def_altos_dff_sr_err_
+`else
+`define _udp_def_altos_dff_sr_err_
+primitive altos_dff_sr_err (q, clk, d, s, r);
+	output q;
+	reg q;
+	input clk, d, s, r;
+
+	table
+		 ?   1 (0x)  ?   : ? : -;
+		 ?   0  ?   (0x) : ? : -;
+		 ?   0  ?   (x0) : ? : -;
+		(0x) ?  0    0   : ? : 0;
+		(0x) 1  x    0   : ? : 0;
+		(0x) 0  0    x   : ? : 0;
+		(1x) ?  0    0   : ? : 1;
+		(1x) 1  x    0   : ? : 1;
+		(1x) 0  0    x   : ? : 1;
+	endtable
+endprimitive
+`endif
+
+`ifdef _udp_def_altos_dff_sr_0
+`else
+`define _udp_def_altos_dff_sr_0
+primitive altos_dff_sr_0 (q, v, clk, d, s, r, xcr);
+	output q;
+	reg q;
+	input v, clk, d, s, r, xcr;
+
+	table
+	//	v,  clk, d, s, r : q' : q;
+
+		*  ?   ?   ?   ?   ? : ? : x;
+		?  ?   ?   ?   1   ? : ? : 0;
+		?  ?   ?   1   0   ? : ? : 1;
+		?  b   ? (1?)  0   ? : 1 : -;
+		?  x   1 (1?)  0   ? : 1 : -;
+		?  ?   ? (10)  0   ? : ? : -;
+		?  ?   ? (x0)  0   ? : ? : -;
+		?  ?   ? (0x)  0   ? : 1 : -;
+		?  b   ?  0   (1?) ? : 0 : -;
+		?  x   0  0   (1?) ? : 0 : -;
+		?  ?   ?  0   (10) ? : ? : -;
+		?  ?   ?  0   (x0) ? : ? : -;
+		?  ?   ?  0   (0x) ? : 0 : -;
+		? (x1) 0  0    ?   0 : ? : 0;
+		? (x1) 1  ?    0   0 : ? : 1;
+		? (x1) 0  0    ?   1 : 0 : 0;
+		? (x1) 1  ?    0   1 : 1 : 1;
+		? (x1) ?  ?    0   x : ? : -;
+		? (x1) ?  0    ?   x : ? : -;
+		? (1x) 0  0    ?   ? : 0 : -;
+		? (1x) 1  ?    0   ? : 1 : -;
+		? (x0) 0  0    ?   ? : ? : -;
+		? (x0) 1  ?    0   ? : ? : -;
+		? (x0) ?  0    0   x : ? : -;
+		? (0x) 0  0    ?   ? : 0 : -;
+		? (0x) 1  ?    0   ? : 1 : -;
+		? (01) 0  0    ?   ? : ? : 0;
+		? (01) 1  ?    0   ? : ? : 1;
+		? (10) ?  0    ?   ? : ? : -;
+		? (10) ?  ?    0   ? : ? : -;
+		?  b   *  0    ?   ? : ? : -;
+		?  b   *  ?    0   ? : ? : -;
+		?  ?   ?  ?    ?   * : ? : -;
+	endtable
+endprimitive
+`endif
+
+`ifdef _udp_def_altos_dff_sr_1
+`else
+`define _udp_def_altos_dff_sr_1
+primitive altos_dff_sr_1 (q, v, clk, d, s, r, xcr);
+	output q;
+	reg q;
+	input v, clk, d, s, r, xcr;
+
+	table
+	//	v,  clk, d, s, r : q' : q;
+
+		*  ?   ?   ?   ?   ? : ? : x;
+		?  ?   ?   0   1   ? : ? : 0;
+		?  ?   ?   1   ?   ? : ? : 1;
+		?  b   ? (1?)  0   ? : 1 : -;
+		?  x   1 (1?)  0   ? : 1 : -;
+		?  ?   ? (10)  0   ? : ? : -;
+		?  ?   ? (x0)  0   ? : ? : -;
+		?  ?   ? (0x)  0   ? : 1 : -;
+		?  b   ?  0   (1?) ? : 0 : -;
+		?  x   0  0   (1?) ? : 0 : -;
+		?  ?   ?  0   (10) ? : ? : -;
+		?  ?   ?  0   (x0) ? : ? : -;
+		?  ?   ?  0   (0x) ? : 0 : -;
+		? (x1) 0  0    ?   0 : ? : 0;
+		? (x1) 1  ?    0   0 : ? : 1;
+		? (x1) 0  0    ?   1 : 0 : 0;
+		? (x1) 1  ?    0   1 : 1 : 1;
+		? (x1) ?  ?    0   x : ? : -;
+		? (x1) ?  0    ?   x : ? : -;
+		? (1x) 0  0    ?   ? : 0 : -;
+		? (1x) 1  ?    0   ? : 1 : -;
+		? (x0) 0  0    ?   ? : ? : -;
+		? (x0) 1  ?    0   ? : ? : -;
+		? (x0) ?  0    0   x : ? : -;
+		? (0x) 0  0    ?   ? : 0 : -;
+		? (0x) 1  ?    0   ? : 1 : -;
+		? (01) 0  0    ?   ? : ? : 0;
+		? (01) 1  ?    0   ? : ? : 1;
+		? (10) ?  0    ?   ? : ? : -;
+		? (10) ?  ?    0   ? : ? : -;
+		?  b   *  0    ?   ? : ? : -;
+		?  b   *  ?    0   ? : ? : -;
+		?  ?   ?  ?    ?   * : ? : -;
+	endtable
+endprimitive
+`endif
+
+`ifdef _udp_def_altos_latch_r_
+`else
+`define _udp_def_altos_latch_r_
+primitive altos_latch_r (q, v, clk, d, r);
+	output q;
+	reg q;
+	input v, clk, d, r;
+
+	table
+		* ? ? ? : ? : x;
+		? ? ? 1 : ? : 0;
+		? 0 ? 0 : ? : -;
+		? 0 ? x : 0 : -;
+		? 1 0 0 : ? : 0;
+		? 1 0 x : ? : 0;
+		? 1 1 0 : ? : 1;
+		? x 0 0 : 0 : -;
+		? x 0 x : 0 : -;
+		? x 1 0 : 1 : -;
+	endtable
+endprimitive
+`endif
+
+`ifdef _udp_def_altos_latch_s_
+`else
+`define _udp_def_altos_latch_s_
+primitive altos_latch_s (q, v, clk, d, s);
+	output q;
+	reg q;
+	input v, clk, d, s;
+
+	table
+		* ? ? ? : ? : x;
+		? ? ? 1 : ? : 1;
+		? 0 ? 0 : ? : -;
+		? 0 ? x : 1 : -;
+		? 1 1 0 : ? : 1;
+		? 1 1 x : ? : 1;
+		? 1 0 0 : ? : 0;
+		? x 1 0 : 1 : -;
+		? x 1 x : 1 : -;
+		? x 0 0 : 0 : -;
+	endtable
+endprimitive
+`endif
+
+`ifdef _udp_def_altos_latch_sr_0
+`else
+`define _udp_def_altos_latch_sr_0
+primitive altos_latch_sr_0 (q, v, clk, d, s, r);
+	output q;
+	reg q;
+	input v, clk, d, s, r;
+
+	table
+		* ? ? ? ? : ? : x;
+		? 1 1 ? 0 : ? : 1;
+		? 1 0 0 ? : ? : 0;
+		? ? ? 1 0 : ? : 1;
+		? ? ? ? 1 : ? : 0;
+		? 0 * ? ? : ? : -;
+		? 0 ? * 0 : 1 : 1;
+		? 0 ? 0 * : 0 : 0;
+		? * 1 ? 0 : 1 : 1;
+		? * 0 0 ? : 0 : 0;
+		? ? 1 * 0 : 1 : 1;
+		? ? 0 0 * : 0 : 0;
+	endtable
+endprimitive
+`endif
+
+`ifdef _udp_def_altos_latch_sr_1
+`else
+`define _udp_def_altos_latch_sr_1
+primitive altos_latch_sr_1 (q, v, clk, d, s, r);
+	output q;
+	reg q;
+	input v, clk, d, s, r;
+
+	table
+		* ? ? ? ? : ? : x;
+		? 1 1 ? 0 : ? : 1;
+		? 1 0 0 ? : ? : 0;
+		? ? ? 1 ? : ? : 1;
+		? ? ? 0 1 : ? : 0;
+		? 0 * ? ? : ? : -;
+		? 0 ? * 0 : 1 : 1;
+		? 0 ? 0 * : 0 : 0;
+		? * 1 ? 0 : 1 : 1;
+		? * 0 0 ? : 0 : 0;
+		? ? 1 * 0 : 1 : 1;
+		? ? 0 0 * : 0 : 0;
+	endtable
+endprimitive
+`endif
+// Verilog for library /home/anolas19/Liberate/Verilog/asap7sc6t_SIMPLE_RVT_TT_210905 created by Liberate 18.1.0.293 on Mon Sep  6 15:24:42 MST 2021 for SDF version 2.1
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module AND2x2_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -21,7 +467,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AND2x4_ASAP7_75t_R (Y, A, B);
+module AND2x4_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -39,7 +485,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AND2x6_ASAP7_75t_R (Y, A, B);
+module AND2x6_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -57,7 +503,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AND3x1_ASAP7_75t_R (Y, A, B, C);
+module AND3x1_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -76,7 +522,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AND3x2_ASAP7_75t_R (Y, A, B, C);
+module AND3x2_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -95,7 +541,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AND3x4_ASAP7_75t_R (Y, A, B, C);
+module AND3x4_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -114,7 +560,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AND4x1_ASAP7_75t_R (Y, A, B, C, D);
+module AND4x1_ASAP7_6t_R (Y, A, B, C, D);
 	output Y;
 	input A, B, C, D;
 
@@ -134,7 +580,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AND4x2_ASAP7_75t_R (Y, A, B, C, D);
+module AND4x2_ASAP7_6t_R (Y, A, B, C, D);
 	output Y;
 	input A, B, C, D;
 
@@ -154,7 +600,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AND5x1_ASAP7_75t_R (Y, A, B, C, D, E);
+module AND5x1_ASAP7_6t_R (Y, A, B, C, D, E);
 	output Y;
 	input A, B, C, D, E;
 
@@ -175,7 +621,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module AND5x2_ASAP7_75t_R (Y, A, B, C, D, E);
+module AND5x2_ASAP7_6t_R (Y, A, B, C, D, E);
 	output Y;
 	input A, B, C, D, E;
 
@@ -196,7 +642,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module FAx1_ASAP7_75t_R (CON, SN, A, B, CI);
+module FAxp33_ASAP7_6t_R (CON, SN, A, B, CI);
 	output CON, SN;
 	input A, B, CI;
 
@@ -263,51 +709,6 @@ module FAx1_ASAP7_75t_R (CON, SN, A, B, CI);
 			(CI => SN) = 0;
 		if ((~A & ~B))
 			(CI => SN) = 0;
-
-
-
-                if ((A & B & ~CI))
-                        (A => SN) = 0;
-                if ((A & ~B & CI))
-                        (A => SN) = 0;
-                if ((A & ~B & ~CI))
-                        (A => SN) = 0;
-                if ((~A & B & CI))
-                        (A => SN) = 0;
-                if ((~A & B & ~CI))
-                        (A => SN) = 0;
-                if ((~A & ~B & CI))
-                        (A => SN) = 0;
-
-
-                if ((A & B & ~CI))
-                        (B => SN) = 0;
-                if ((A & ~B & CI))
-                        (B => SN) = 0;
-                if ((A & ~B & ~CI))
-                        (B => SN) = 0;
-                if ((~A & B & CI))
-                        (B => SN) = 0;
-                if ((~A & B & ~CI))
-                        (B => SN) = 0;
-                if ((~A & ~B & CI))
-                        (B => SN) = 0;
-
-
-
-
-                if ((A & B & ~CI))
-                        (CI => SN) = 0;
-                if ((A & ~B & CI))
-                        (CI => SN) = 0;
-                if ((A & ~B & ~CI))
-                        (CI => SN) = 0;
-                if ((~A & B & CI))
-                        (CI => SN) = 0;
-                if ((~A & B & ~CI))
-                        (CI => SN) = 0;
-		if ((~A & ~B & CI))
-                        (CI => SN) = 0;
 	endspecify
 endmodule
 `endcelldefine
@@ -315,7 +716,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module HAxp5_ASAP7_75t_R (CON, SN, A, B);
+module HAxp5_ASAP7_6t_R (CON, SN, A, B);
 	output CON, SN;
 	input A, B;
 
@@ -349,7 +750,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module MAJIxp5_ASAP7_75t_R (Y, A, B, C);
+module MAJIxp5_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -389,7 +790,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module MAJx2_ASAP7_75t_R (Y, A, B, C);
+module MAJx1_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -425,7 +826,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module MAJx3_ASAP7_75t_R (Y, A, B, C);
+module MAJx2_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -461,7 +862,43 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NAND2x1_ASAP7_75t_R (Y, A, B);
+module MAJx3_ASAP7_6t_R (Y, A, B, C);
+	output Y;
+	input A, B, C;
+
+	// Function
+	wire int_fwire_0, int_fwire_1, int_fwire_2;
+
+	and (int_fwire_0, B, C);
+	and (int_fwire_1, A, C);
+	and (int_fwire_2, A, B);
+	or (Y, int_fwire_2, int_fwire_1, int_fwire_0);
+
+	// Timing
+	specify
+		if ((B & ~C))
+			(A => Y) = 0;
+		if ((~B & C))
+			(A => Y) = 0;
+		ifnone (A => Y) = 0;
+		if ((A & ~C))
+			(B => Y) = 0;
+		if ((~A & C))
+			(B => Y) = 0;
+		ifnone (B => Y) = 0;
+		if ((A & ~B))
+			(C => Y) = 0;
+		if ((~A & B))
+			(C => Y) = 0;
+		ifnone (C => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module NAND2x1_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -483,7 +920,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NAND2x1p5_ASAP7_75t_R (Y, A, B);
+module NAND2x1p5_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -505,7 +942,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NAND2x2_ASAP7_75t_R (Y, A, B);
+module NAND2x2_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -527,7 +964,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NAND2xp33_ASAP7_75t_R (Y, A, B);
+module NAND2xp5R_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -549,7 +986,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NAND2xp5_ASAP7_75t_R (Y, A, B);
+module NAND2xp5_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -571,29 +1008,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NAND2xp67_ASAP7_75t_R (Y, A, B);
-	output Y;
-	input A, B;
-
-	// Function
-	wire A__bar, B__bar;
-
-	not (B__bar, B);
-	not (A__bar, A);
-	or (Y, A__bar, B__bar);
-
-	// Timing
-	specify
-		(A => Y) = 0;
-		(B => Y) = 0;
-	endspecify
-endmodule
-`endcelldefine
-
-// type:  
-`timescale 1ns/10ps
-`celldefine
-module NAND3x1_ASAP7_75t_R (Y, A, B, C);
+module NAND3x1_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -617,7 +1032,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NAND3x2_ASAP7_75t_R (Y, A, B, C);
+module NAND3x2_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -641,7 +1056,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NAND3xp33_ASAP7_75t_R (Y, A, B, C);
+module NAND3xp33R_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -665,7 +1080,31 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NAND4xp25_ASAP7_75t_R (Y, A, B, C, D);
+module NAND3xp33_ASAP7_6t_R (Y, A, B, C);
+	output Y;
+	input A, B, C;
+
+	// Function
+	wire A__bar, B__bar, C__bar;
+
+	not (C__bar, C);
+	not (B__bar, B);
+	not (A__bar, A);
+	or (Y, A__bar, B__bar, C__bar);
+
+	// Timing
+	specify
+		(A => Y) = 0;
+		(B => Y) = 0;
+		(C => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module NAND4xp25R_ASAP7_6t_R (Y, A, B, C, D);
 	output Y;
 	input A, B, C, D;
 
@@ -692,7 +1131,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NAND4xp75_ASAP7_75t_R (Y, A, B, C, D);
+module NAND4xp25_ASAP7_6t_R (Y, A, B, C, D);
 	output Y;
 	input A, B, C, D;
 
@@ -719,7 +1158,34 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NAND5xp2_ASAP7_75t_R (Y, A, B, C, D, E);
+module NAND4xp75_ASAP7_6t_R (Y, A, B, C, D);
+	output Y;
+	input A, B, C, D;
+
+	// Function
+	wire A__bar, B__bar, C__bar;
+	wire D__bar;
+
+	not (D__bar, D);
+	not (C__bar, C);
+	not (B__bar, B);
+	not (A__bar, A);
+	or (Y, A__bar, B__bar, C__bar, D__bar);
+
+	// Timing
+	specify
+		(A => Y) = 0;
+		(B => Y) = 0;
+		(C => Y) = 0;
+		(D => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module NAND5xp2_ASAP7_6t_R (Y, A, B, C, D, E);
 	output Y;
 	input A, B, C, D, E;
 
@@ -748,7 +1214,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NOR2x1_ASAP7_75t_R (Y, A, B);
+module NOR2x1_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -770,7 +1236,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NOR2x1p5_ASAP7_75t_R (Y, A, B);
+module NOR2x2R_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -792,7 +1258,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NOR2x2_ASAP7_75t_R (Y, A, B);
+module NOR2x2_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -814,7 +1280,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NOR2xp33_ASAP7_75t_R (Y, A, B);
+module NOR2xp5_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -836,29 +1302,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NOR2xp67_ASAP7_75t_R (Y, A, B);
-	output Y;
-	input A, B;
-
-	// Function
-	wire A__bar, B__bar;
-
-	not (B__bar, B);
-	not (A__bar, A);
-	and (Y, A__bar, B__bar);
-
-	// Timing
-	specify
-		(A => Y) = 0;
-		(B => Y) = 0;
-	endspecify
-endmodule
-`endcelldefine
-
-// type:  
-`timescale 1ns/10ps
-`celldefine
-module NOR3x1_ASAP7_75t_R (Y, A, B, C);
+module NOR3x1_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -882,7 +1326,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NOR3x2_ASAP7_75t_R (Y, A, B, C);
+module NOR3x1f_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -906,7 +1350,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NOR3xp33_ASAP7_75t_R (Y, A, B, C);
+module NOR3x2_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -930,7 +1374,28 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NOR4xp25_ASAP7_75t_R (Y, A, B, C, D);
+module NOR3xp33_ASAP7_6t_R (Y, A, B, C);
+	output Y;
+	input A, B, C;
+
+	// Function
+	wire A__bar, B__bar, C__bar;
+
+	not (C__bar, C);
+	not (B__bar, B);
+	not (A__bar, A);
+	and (Y, A__bar, B__bar, C__bar);
+
+	// Timing
+	specify
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module NOR4x3f_ASAP7_6t_R (Y, A, B, C, D);
 	output Y;
 	input A, B, C, D;
 
@@ -946,10 +1411,6 @@ module NOR4xp25_ASAP7_75t_R (Y, A, B, C, D);
 
 	// Timing
 	specify
-		(A => Y) = 0;
-		(B => Y) = 0;
-		(C => Y) = 0;
-		(D => Y) = 0;
 	endspecify
 endmodule
 `endcelldefine
@@ -957,7 +1418,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NOR4xp75_ASAP7_75t_R (Y, A, B, C, D);
+module NOR4xp25_ASAP7_6t_R (Y, A, B, C, D);
 	output Y;
 	input A, B, C, D;
 
@@ -973,10 +1434,6 @@ module NOR4xp75_ASAP7_75t_R (Y, A, B, C, D);
 
 	// Timing
 	specify
-		(A => Y) = 0;
-		(B => Y) = 0;
-		(C => Y) = 0;
-		(D => Y) = 0;
 	endspecify
 endmodule
 `endcelldefine
@@ -984,7 +1441,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module NOR5xp2_ASAP7_75t_R (Y, A, B, C, D, E);
+module NOR5x1f_ASAP7_6t_R (Y, A, B, C, D, E);
 	output Y;
 	input A, B, C, D, E;
 
@@ -1013,7 +1470,31 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module OR2x2_ASAP7_75t_R (Y, A, B);
+module NOR5xp2_ASAP7_6t_R (Y, A, B, C, D, E);
+	output Y;
+	input A, B, C, D, E;
+
+	// Function
+	wire A__bar, B__bar, C__bar;
+	wire D__bar, E__bar;
+
+	not (E__bar, E);
+	not (D__bar, D);
+	not (C__bar, C);
+	not (B__bar, B);
+	not (A__bar, A);
+	and (Y, A__bar, B__bar, C__bar, D__bar, E__bar);
+
+	// Timing
+	specify
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module OR2x2_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -1031,7 +1512,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module OR2x4_ASAP7_75t_R (Y, A, B);
+module OR2x3R_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -1049,7 +1530,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module OR2x6_ASAP7_75t_R (Y, A, B);
+module OR2x4_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -1067,7 +1548,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module OR3x1_ASAP7_75t_R (Y, A, B, C);
+module OR3x1_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -1086,7 +1567,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module OR3x2_ASAP7_75t_R (Y, A, B, C);
+module OR3x2_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -1105,7 +1586,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module OR3x4_ASAP7_75t_R (Y, A, B, C);
+module OR3x4_ASAP7_6t_R (Y, A, B, C);
 	output Y;
 	input A, B, C;
 
@@ -1124,18 +1605,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module OR4x1_ASAP7_75t_R (A, B, C, D);
-	input A, B, C, D;
-	// Timing
-	specify
-	endspecify
-endmodule
-`endcelldefine
-
-// type:  
-`timescale 1ns/10ps
-`celldefine
-module OR4x2_ASAP7_75t_R (Y, A, B, C, D);
+module OR4x1_ASAP7_6t_R (Y, A, B, C, D);
 	output Y;
 	input A, B, C, D;
 
@@ -1155,7 +1625,27 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module OR5x1_ASAP7_75t_R (Y, A, B, C, D, E);
+module OR4x2_ASAP7_6t_R (Y, A, B, C, D);
+	output Y;
+	input A, B, C, D;
+
+	// Function
+	or (Y, A, B, C, D);
+
+	// Timing
+	specify
+		(A => Y) = 0;
+		(B => Y) = 0;
+		(C => Y) = 0;
+		(D => Y) = 0;
+	endspecify
+endmodule
+`endcelldefine
+
+// type:  
+`timescale 1ns/10ps
+`celldefine
+module OR5x1_ASAP7_6t_R (Y, A, B, C, D, E);
 	output Y;
 	input A, B, C, D, E;
 
@@ -1176,7 +1666,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module OR5x2_ASAP7_75t_R (Y, A, B, C, D, E);
+module OR5x2_ASAP7_6t_R (Y, A, B, C, D, E);
 	output Y;
 	input A, B, C, D, E;
 
@@ -1197,7 +1687,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module TIEHIx1_ASAP7_75t_R (H);
+module TIEHIxp5_ASAP7_6t_R (H);
 	output H;
 
 	// Function
@@ -1212,7 +1702,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module TIELOx1_ASAP7_75t_R (L);
+module TIELOxp5_ASAP7_6t_R (L);
 	output L;
 
 	// Function
@@ -1227,7 +1717,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module XNOR2x1_ASAP7_75t_R (Y, A, B);
+module XNOR2x2_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -1258,7 +1748,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module XNOR2x2_ASAP7_75t_R (Y, A, B);
+module XNOR2xp5_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -1289,7 +1779,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module XNOR2xp5_ASAP7_75t_R (Y, A, B);
+module XNOR2xp5f_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -1320,7 +1810,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module XOR2x1_ASAP7_75t_R (Y, A, B);
+module XOR2x2_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -1351,7 +1841,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module XOR2x2_ASAP7_75t_R (Y, A, B);
+module XOR2xp5_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 
@@ -1382,7 +1872,7 @@ endmodule
 // type:  
 `timescale 1ns/10ps
 `celldefine
-module XOR2xp5_ASAP7_75t_R (Y, A, B);
+module XOR2xp5r_ASAP7_6t_R (Y, A, B);
 	output Y;
 	input A, B;
 

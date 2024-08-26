@@ -1,6 +1,6 @@
 #!/bin/bash
 
-paste -d'\t' $1 $2 | awk '
+paste -d'\t' $1 $2 | perl -pe 's/\b[01]+\b/oct "0b" . $&/ge' | awk '
 BEGIN {
 sum=0;
 }
