@@ -1,0 +1,2 @@
+NetlID,Lib,SynClk,SimClk,Area,Delay,Power,ErrorRate,MRE,MED,NMED,MinError,MaxError,ErrorRange,Variance
+-1,asap7,0.0,312.13,50.108544,312.134,4.417e-07,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
