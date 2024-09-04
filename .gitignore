@@ -38,6 +38,7 @@ latest_log_file
 **/allrtl/
 **/allrtls/
 **/allnetlists/
+**/.ipynb_checkpoints/
 
 # libraries / library interm objects
 libs/*.so

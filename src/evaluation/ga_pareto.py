@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 def open_population_file(experiment_dir, generation=-1):
     """Open the GA results population file"""
-    gen_results = glob(f"{experiment_dir}/population*.pkl")
+    gen_results = glob(f"{experiment_dir}/populations/population*.pkl")
     max_gen = max([int(re.search("population(\d+).pkl", resfile).group(1)) for resfile in gen_results])
     # get experiment name
     exper = re.search(
@@ -31,7 +31,7 @@ def open_population_file(experiment_dir, generation=-1):
 
     # figure out population file based on arguments
     if generation == -1:
-        if os.path.exists(experiment_dir + 'final_population.pkl'):
+        if os.path.exists(os.path.join(experiment_dir, 'populations', 'final_population.pkl')):
             popfile = 'final_population.pkl'
             gen_str = 'the final generation'
         else:
@@ -42,9 +42,8 @@ def open_population_file(experiment_dir, generation=-1):
         gen_str = f'generation {generation}'
 
     logger.info(f"Evaluating the pareto front from {gen_str} of experiment {exper}...\n")
-    logger.info(f'Opening file: {experiment_dir + popfile}')
-    slash = '/' if experiment_dir[-1] != '/' else ''
-    with open(experiment_dir + slash + popfile, 'rb') as f:
+    logger.info(f'Opening file: {os.path.join(experiment_dir, "populations", popfile)}')
+    with open(os.path.join(experiment_dir, 'populations', popfile), 'rb') as f:
         population = pickle.load(f)
     return population
 

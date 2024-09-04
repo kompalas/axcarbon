@@ -5,14 +5,15 @@ set -eou pipefail
 set -x
 
 expdir=${1?"Specify the directory at which GA results are stored"}
-which_gen="${2:--1}"
+library=${2:--"asap7"}
+which_gen="${3:--1}"
 
 maindir="$HOME/axcarbon"
 testdir="$maindir"
-library="asap7"
-synclk="0.0"
+synclk="1.0"
 top_design="top"
 get_error_from="gate_level_simulations"  # options: gate_level_simulations, c_simulations
+use_eval_inputs="true"  # if "true", the evaluation inputs will be used (instead of the ones used during optimization) 
 
 ############## Custom Functions ###################
 
@@ -110,8 +111,8 @@ function getMaxError() {
     } {
         if ($1 ~ /x/ || $2 ~ /x/) next;
         if ($1 != $2) {
-           diff = $1 - $2; 
-           if (diff < 0)
+            diff = $1 - $2; 
+            if (diff < 0)
                 diff = -diff;
             if (diff > max_error)
                 max_error = diff;
@@ -204,12 +205,17 @@ fi
 cp $maindir/libs/$library/c/library* $maindir/libs/
 rm -f $maindir/libs/library.o $maindir/libs/_library.so
 
-# prepare testbench, inputs and true outputs for simulation
-cp $circdir/tb.v $testdir/sim/top_tb.v
 # simulation clock is given by the delay of each exact circuit
 simclk="$(awk 'NR==2 {printf("%.2f", $2)}' $maindir/results/baseline/$circuit.txt)"
-awk -F'_' '{for (i=1; i<NF; i++) {printf("%s", $i); if(i<NF-1) printf("_")} printf("\n")}' $circdir/inputs_eval.txt > $testdir/sim/inputs.txt
-awk -F'_' '{print $NF}' $circdir/inputs_eval.txt > $testdir/sim/expected.txt
+# prepare testbench, inputs and true outputs for simulation
+cp $circdir/tb.v $testdir/sim/top_tb.v
+if [[ "$use_eval_inputs" == "true" ]]; then
+    suffix="_eval"
+else
+    suffix=""
+fi
+awk -F'_' '{for (i=1; i<NF; i++) {printf("%s", $i); if(i<NF-1) printf("_")} printf("\n")}' $circdir/inputs${suffix}.txt > $testdir/sim/inputs.txt
+awk -F'_' '{print $NF}' $circdir/inputs${suffix}.txt > $testdir/sim/expected.txt
 sed -i "/parameter PERIOD=/ c\parameter PERIOD=$simclk;" $testdir/sim/top_tb.v
 num_inputs="$(wc -l $testdir/sim/inputs.txt | awk '{print $1}')"
 sed -i "/parameter NUM_INPUTS=/ c\parameter NUM_INPUTS=$num_inputs;" $testdir/sim/top_tb.v

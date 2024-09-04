@@ -11,6 +11,7 @@ __all__ = [
     'get_candidates', 'reduce_candidates',
     'sanity_test',
     'crossover_param_type',
+    'ApproxType', 'str_to_approx_type_map', 'approx_type_arg',
     'GeneType', 'str_to_gene_type_map', 'gene_type_arg',
     'ErrorMetric', 'str_to_error_metric_map', 'error_metric_arg',
     'HW_Metric', 'str_to_hw_metric_map', 'hw_metric_arg',

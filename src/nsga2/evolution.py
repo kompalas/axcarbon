@@ -227,7 +227,8 @@ class Evolution:
     def on_start(self):
         """Utility function at beginning of evolution"""
         os.makedirs(self.problem.resdir, exist_ok=True)
-        files_to_rm = glob(f"{self.problem.resdir}/population*.pkl")
+        os.makedirs(os.path.join(self.problem.resdir, 'populations'), exist_ok=True)
+        files_to_rm = glob(f"{self.problem.resdir}/populations/population*.pkl")
         for file_to_rm in files_to_rm:
             os.remove(file_to_rm)
 
@@ -241,7 +242,7 @@ class Evolution:
         """Utility function at the end of each generation"""
         # save population to file
         if self.save_frequency != -1 and generation % self.save_frequency == 0:
-            with open(self.problem.resdir + f'/population{generation}.pkl', 'wb') as f:
+            with open(os.path.join(self.problem.resdir, 'populations', f'population{generation}.pkl'), 'wb') as f:
                 # save only the chromosomes and objective values
                 simplified_fronts = []
                 for front in population.fronts:
@@ -252,7 +253,7 @@ class Evolution:
                     simplified_fronts.append([features, objectives])
 
                 pickle.dump(simplified_fronts, f)
-            logger.debug(f"Saving current population in {self.problem.resdir}/population{generation}.pkl")
+            logger.debug(f"Saving current population in {self.problem.resdir}/populations/population{generation}.pkl")
 
         # log information
         logger.info(f"Pareto front contains {len(population.fronts[0])} solutions")
@@ -279,7 +280,7 @@ class Evolution:
         logger.info("------------------------------------")
 
         if self.save_frequency != -1:
-            with open(self.problem.resdir + f'/final_population.pkl', 'wb') as f:
+            with open(os.path.join(self.problem.resdir, 'populations', f'final_population.pkl'), 'wb') as f:
                 # save only the chromosomes and objective values
                 simplified_fronts = []
                 for front in population.fronts:
@@ -291,7 +292,7 @@ class Evolution:
 
                 pickle.dump(simplified_fronts, f)
 
-        logger.info(f"Saved final population in {self.problem.resdir}/final_population.pkl")
+        logger.info(f"Saved final population in {self.problem.resdir}/populations/final_population.pkl")
 
     def load_initial_population(self, file):
         """Load initial population from a given pickle file"""
@@ -578,7 +579,4 @@ class Evolution:
 
     def __choose_with_prob(self, prob):
         """Assess if a given probability exceeds a randomly obtained one"""
-        if random.random() <= prob:
-            return True
-        return False
-
+        return random.random() <= prob
