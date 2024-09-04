@@ -46,6 +46,7 @@ if [ "$exstatus" -ne 0 ]; then
 fi
 
 vcs -full64 -kdb -lca -debug_access ${ENV_TB_NAME} -sdf max:${ENV_TB_NAME}.${ENV_DUT_NAME}:./gate/${ENV_TOP_DESIGN}.sdf -o ${simv} -l ./logs/vcs_gate.log
+# vcs -full64 -kdb -lca +nottimingchecks -debug_access ${ENV_TB_NAME} -o ${simv} -l ./logs/vcs_gate.log
 exstatus="$?"
 err="$(grep -E -o '[0-9]+[ ]*error' ./logs/vcs_gate.log | grep -E -o '[0-9]+')"
 err=${err:=0}

@@ -88,7 +88,7 @@ def extract_fronts(population, to_keep, use_all_fronts=False):
     return all_fronts, pareto
 
 
-def prepare(circuit, libfile):
+def prepare(circuit, libfile, approx_type):
     gates_dict = get_gates_dict(libfile=libfile + '.v')
     netlist = Netlist(circuit, gates_dict)
     gates, wires = translate_netlist_to_gates_and_wires(netlist)
@@ -97,7 +97,7 @@ def prepare(circuit, libfile):
     graph = DAG(name=netlist.circuit, nodes=nodes, edges=edges,
                 output_wires=netlist.netlist_data['outputs'])
     netlist.build_cfile(graph)
-    candidates, variables_range = get_candidates(netlist, graph, candidate_type=None, reduced=False)
+    candidates, variables_range = get_candidates(netlist, approx_type=approx_type)
     cancel_dict = get_cancel_dict(gates_dict)
     return netlist, graph, candidates, cancel_dict, variables_range
 
@@ -126,10 +126,6 @@ def logger_cfg(logfile=None):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser('Evaluating pareto front from GA')
-    parser.add_argument("--circuit", "-c", choices=ALL_CIRCUITS,
-                        help=f"Select circuit. Possible options: {' | '.join(ALL_CIRCUITS)}")
-    parser.add_argument("--libfile", "--lf", default='nangate45',
-                        help="Select verilog library for standard cells. Default: 'nangate45'")
     parser.add_argument('--experiment', '-e', dest='exp_dir',
                         help='Directory where experimental results are stored')
     parser.add_argument('--results-directory', '-rd', dest='results_dir',
@@ -141,24 +137,23 @@ if __name__ == "__main__":
                         help="Set the amount of pareto solutions to keep, from the lowest error and upwards")
     parser.add_argument("--use-all-fronts", '-a', action='store_true', dest='use_all_fronts',
                         help="Set to combine all fronts and pick 'pareto' as the solutions with lowest error")
-    parser.add_argument("--error-metric", dest="error_metric", type=error_metric_arg, default='nmed',
-                        help="Choose the error metric as one of the objectives for the GA. Choices: "
-                             f"{' | '.join(str_to_error_metric_map)}. Default is NMED")
-    parser.add_argument("--hw-metric", dest="hw_metric", type=hw_metric_arg, default='delay',
-                        help="Choose the hardware metric as one of the objectives for the GA. Choices: "
-                             f"{' | '.join(str_to_hw_metric_map)}. Default is delay")
     args = parser.parse_args()
 
     # configure experiment and results directory
     expdir = args.exp_dir + '/' if args.exp_dir[-1] != '/' else args.exp_dir
+    # gather experiment command-line arguments
+    with open(os.path.join(expdir, 'args.pkl'), 'rb') as f:
+        exp_args = pickle.load(f)
+    
     # get experiment name
     exper = re.search(".*/(.*?)/$", expdir + '/' if expdir[-1] != '/' else expdir).group(1)
     if args.results_dir is not None and not os.path.exists(args.results_dir):
         os.mkdir(args.results_dir)
 
     # initialize logging
-    logger_cfg(logfile=os.path.join(expdir, f'pareto__{args.circuit}_{exper}.log'))
+    logger_cfg(logfile=os.path.join(expdir, f'pareto__{exp_args.circuit}_{exper}.log'))
     logger.info(f"Command line args: {args.__dict__}")
+    logger.info(f"Experiment args: {exp_args}")
 
     pop = open_population_file(experiment_dir=expdir, generation=args.gen)
     logger.info("----------------------------------")
@@ -218,7 +213,9 @@ if __name__ == "__main__":
         logger.info("----------------------------------")
 
         logger.info("Creating pareto netlists...")
-        netlist, graph, candidates, cancel_dict, variables_range = prepare(args.circuit, args.libfile)
+        netlist, graph, candidates, cancel_dict, variables_range = prepare(exp_args.circuit,
+                                                                           exp_args.libfile,
+                                                                           exp_args.approx_type)
 
         # if len(pareto[0].features) != len(netlist.netlist_data['wires'] + netlist.netlist_data['outputs']):
         if len(pareto[0].features) != len(candidates):
@@ -239,8 +236,8 @@ if __name__ == "__main__":
                 cancel_dict=cancel_dict,
                 netlist=netlist,
                 graph=graph,
-                error_metric=args.error_metric,
-                hw_metric=args.hw_metric,
+                error_metric=exp_args.error_metric,
+                hw_metric=exp_args.hw_metric,
                 write_verilog_to=f'{args.results_dir}/approx{idx}.sv'
                     if args.results_dir is not None else None,
                 )

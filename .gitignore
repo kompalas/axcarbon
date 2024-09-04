@@ -20,7 +20,8 @@ latest_log_file
 **/.nfs*
 **/ucli.key
 **/verdi_config_file
-lc_output.txt
+**/verdILog
+**/lc_output.txt
 
 # unecessary folders
 **/__pycache__/

@@ -103,7 +103,7 @@ while true; do
    rm -rf tech_lib/
 
    make gate_sim
-   error="$(./scripts/med.sh ./sim/expected.txt ./sim/output.txt)"
+   error="$(./scripts/errors/med.sh ./sim/expected.txt ./sim/output.txt)"
    if [ 1 -eq "$(awk -v e=$error 'BEGIN {if (e>0) print "1"; else print "0"}')" ]; then
        delay="$(awk -v d=$delay -v incr=$incr 'BEGIN { print d + incr }')"
    else

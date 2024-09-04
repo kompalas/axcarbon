@@ -38,7 +38,7 @@ class Problem:
 
         self.variable_weights = self.get_variable_weights() if weighted_variables else None
         self.biased_indices = biased_indices
-        self.initial_weight = initial_weight
+        self.initial_weight = initial_weight if initial_weight is not None else 0
         self.overrides = overrides
 
         # configure function to generate new random individuals

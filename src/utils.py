@@ -545,6 +545,7 @@ def create_shared_cfile(circuit, written_in=None):
 
 def build_c_netlist_text_main_structure(netlist, graph):
     """Build main part of C-netlist file, based on the graph topological ordering"""
+    # TODO: Inputs are not taken into account in the C-netlist file. Fix!
     netl_c = ''
     null_counter = 0
 

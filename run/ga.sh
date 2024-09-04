@@ -8,17 +8,17 @@ maindir="$HOME/axcarbon"
 
 python3 $maindir/main.py \
 	--circuit $circuit \
-	--libfile asap7 \
+	--libfile fdsoi28 \
         --name ga_${circuit} \
         --ga \
         --generations 20 \
-        --population-size 200 \
+        --population-size 100 \
         --tournament-participants 0.05 \
         --tournament-probability 0.8 \
         --error-metric variance \
         --hw-metric area \
         --gene-type discrete \
-        --candidate-type constant \
+        --approximation-type glp \
         --initial-weight 10 \
         --threads 10 \
         --save-frequency 5 \

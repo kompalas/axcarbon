@@ -18,7 +18,7 @@
             "program": "${workspaceFolder}/main.py",
             "args": [
                 "--circuit", "mac",
-                "--libfile", "asap7",
+                "--libfile", "fdsoi28",
                 "--name", "ga_mac",
                 "--ga",
                 "--generations", "10",
@@ -26,7 +26,7 @@
                 "--tournament-participants", "0.05",
                 "--tournament-probability", "0.9",
                 "--error-metric", "variance",
-                "--hw-metric", "delay",
+                "--hw-metric", "area",
                 "--gene-type", "discrete",
                 "--candidate-type", "constant",
                 "--initial-weight", "20",

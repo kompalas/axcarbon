@@ -46,7 +46,7 @@ class Netlist:
 
     def update_net_id_with_inputs(self):
         """Add the input wires to the dictionary with wire id"""
-        # TODO: Don't know if this causes a mismatch between wires and their index in the C-file
+        # TODO: This step has no impact in the C-file. Does this causes a mismatch between wires and their index in the C-file?
         already_logged = len(self.net_id)
         self.net_id.update({
             net: id_num + already_logged for id_num, net in enumerate(self.netlist_data['inputs'])

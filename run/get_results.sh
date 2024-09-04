@@ -9,7 +9,7 @@ which_gen="${2:--1}"
 
 maindir="$HOME/axcarbon"
 testdir="$maindir"
-library="variability14"
+library="fdsoi28"
 synclk="0.0"
 top_design="top"
 get_error_from="gate_level_simulations"  # options: gate_level_simulations, c_simulations
@@ -168,7 +168,9 @@ circdir="$maindir/circuits/$circuit"
 mkdir -p $expdir/reports
 mkdir -p $expdir/netlists
 resfile="$expdir/eval_results.csv"
+if [[ ! -f $resfile ]]; then
 echo "NetlID,Lib,SynClk,SimClk,Area,Delay,Power,ErrorRate,MRE,MED,NMED,MinError,MaxError,ErrorRange,Variance" > $resfile
+fi
 
 # set up libraries
 if [[ $library == "asap7" ]]; then
@@ -186,8 +188,14 @@ elif [[ $library == "variability14" ]]; then
     libverilog="$maindir/libs/variability14/verilog"
     lib="predicted_0.db"
     tunit="ns"
+elif [[ $library == "fdsoi28" ]]; then
+    libpath="$maindir/libs/fdsoi28/db"
+    libcpath="$maindir/libs/fdsoi28/c"
+    libverilog="$maindir/libs/fdsoi28/verilog"
+    lib="28nm_FDSOI_0.9V_300K.db"
+    tunit="ns"
 else
-    echo "Invalid library option. Options are: asap7, variability14, nangate45"
+    echo "Invalid library option. Options are: asap7, variability14, fdsoi28, nangate45"
     exit 1
 fi
 
@@ -195,7 +203,7 @@ fi
 cp $circdir/tb.v $testdir/sim/top_tb.v
 # simulation clock is given by the delay of each exact circuit
 simclk="$(awk 'NR==2 {printf("%.2f", $2)}' $maindir/results/baseline/$circuit.txt)"
-awk -F'_' '{for (i=1; i<NF; i++) {printf("%s", $i); if(i<NF-1) printf("_")} printf("\n")}' $circdir/inputs_eval.txt > ./sim/inputs.txt
+awk -F'_' '{for (i=1; i<NF; i++) {printf("%s", $i); if(i<NF-1) printf("_")} printf("\n")}' $circdir/inputs_eval.txt > $testdir/sim/inputs.txt
 awk -F'_' '{print $NF}' $circdir/inputs_eval.txt > $testdir/sim/expected.txt
 sed -i "/parameter PERIOD=/ c\parameter PERIOD=$simclk;" $testdir/sim/top_tb.v
 num_inputs="$(wc -l $testdir/sim/inputs.txt | awk '{print $1}')"
@@ -230,13 +238,8 @@ error_metric="$(grep -oP "(?<=error_metric': <ErrorMetric.)[^:]*" "$exp_logfile"
 
 # create approximate netlists from GA results and evaluate them
 python3 $maindir/src/evaluation/ga_pareto.py \
-    --libfile $library \
-    --circuit $circuit \
     --experiment $expdir \
     --results-directory $expdir/netlists \
-    --hw-metric $hw_metric \
-    --error-metric $error_metric \
-    --use-all-fronts \
     --generation $which_gen
 
 # iterate over each approximate netlist

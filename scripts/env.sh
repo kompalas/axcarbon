@@ -4,11 +4,11 @@
 # asap7/7nm/db/asap7.db
 
 #set the library path
-export ENV_LIBRARY_PATH="/home/balaskas/axcarbon/libs/asap7/7nm/db"
+export ENV_LIBRARY_PATH="/home/balaskas/axcarbon/libs/fdsoi28/db"
 #set the library name
-export ENV_LIBRARY_DB="asap7.db"
+export ENV_LIBRARY_DB="28nm_FDSOI_0.9V_300K.db"
 #set library verilog path
-export ENV_LIBRARY_VERILOG_PATH="/home/balaskas/axcarbon/libs/asap7/7nm/verilog"
+export ENV_LIBRARY_VERILOG_PATH="/home/balaskas/axcarbon/libs/fdsoi28/verilog"
 
 #set the top design name
 export ENV_TOP_DESIGN="top"

@@ -20,10 +20,9 @@ class EvolutionWrapper:
         baseline_data_file = os.path.join(project_dir, 'results', 'baseline', args.circuit + '.txt')
 
         candidates, variables_range = get_candidates(
-            netlist=netlist, graph=graph,
-            candidate_type=args.candidate_type,
+            netlist=netlist,
+            approx_type=args.approx_type,
             results_dir=resdir,
-            reduced=args.reduced
         )
         logger.info(f"Total approximation candidates: {len(candidates)}")
         logger.debug(f"Candidates: {candidates}")
@@ -46,7 +45,7 @@ class EvolutionWrapper:
             variable_type=args.gene_type,
             baseline_data_file=baseline_data_file,
             weighted_variables=args.weighted_genes,
-            biased_indices=get_cp_net_indices(graph, candidates) if not args.unweighted_new_individuals else None,
+            biased_indices=get_cp_net_indices(graph, candidates) if args.initial_weight is not None else None,
             initial_weight=args.initial_weight,
             overrides=get_overrides(args.circuit, netlist, candidates) if args.override else None
         )

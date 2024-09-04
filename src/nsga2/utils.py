@@ -41,15 +41,9 @@ def ga_args(parser):
     ga_args.add_argument("--save-frequency", '--sf', type=int, default=1, dest='save_frequency',
                          help="Specify the frequency of saving the population results, in terms of generations."
                               " Default is 1 for saving every generation")
-    ga_args.add_argument("--candidate-type", "--ct", dest="candidate_type", type=str, choices=['constant', 'constant_best', 'all', 'all_best'],
-                         help="Define the type of approximation candidates (and genes). Possbile choices: constant: "
-                              "Replace each wire with '0' or '1' | constant_all: Replace each wire with its most "
-                              "frequent constant value ('0' or '1'), depending on its toggle count | all: Replace "
-                              "each wire with '0', '1' or with another wire with maximum time similarity | all_best: "
-                              "Replace each wire with the option of highest time similarity: either the value of its "
-                              "maximum toggle count ('0' or '1') or with the wire closest in time similarity")
-    ga_args.add_argument("--reduced", action='store_true',
-                         help="Set to use reduced chromosomes with probabilistic critical path participation")
+    ga_args.add_argument("--approximation-type", dest="approx_type", type=approx_type_arg,
+                         help="Define the type of approximation techniques. Possbile choices are gate-level pruning (glp) "
+                              "or gate-level pruning with precision scaling (glp-pc)")
     ga_args.add_argument("--constrained", type=int, default=1,
                          help="Set the dividing factor to the maximum baseline error as a constraint. Solutions of "   
                               "error higher than the constraint will not be considered")
@@ -60,16 +54,11 @@ def ga_args(parser):
                          help="Set for applying a weight to each gene of the chromosome. The weight acts as "
                               "another probability during mutation, so that highly weighted genes are mutated"
                               "less often. Weights increase gradually towards the output of the DAG")
-    ga_args.add_argument("--unweighted-individuals", '--uwi', dest='unweighted_new_individuals', action='store_false',
-                         help="Set for NOT applying weights to newly generated individuals (weights are applied"
-                              " by default). Weights encourage wires comprised in the critical path of the DAG to"
-                              " be approximated during chromosome initialization.")
     ga_args.add_argument("--override", "--ov", action='store_true',
                          help="Set to use the best precision scaling result, including the standard random "
                               "approximations at every stage where a new individual is created")
-    ga_args.add_argument("--initial-weight", '-iw', dest='initial_weight', type=int, default=50,
-                         help='Set the initial weight towards non-approximated wires as an integer '
-                              '(default is 50:1 weight)')
+    ga_args.add_argument("--initial-weight", dest='initial_weight', type=int,
+                         help='Set the initial weight towards non-approximated wires as an integer (default is unweighted wires)')
     ga_args.add_argument("--error-metric", dest="error_metric", type=error_metric_arg,
                          help="Choose the error metric as one of the objectives for the GA. Choices: "
                               "{' | '.join(str_to_error_metric_map)}. Default is NMED")
@@ -110,20 +99,17 @@ def validate_ga_args(args):
         f" the number of generations ({args.generations})"
 
 
-def get_candidates(netlist, graph, candidate_type='constant', reduced=True, results_dir=None):
-    """Get approximation candidates from netlist"""
-    # candidates is a list of strings, including selected wires of the netlist
+def get_candidates(netlist, approx_type=None, results_dir=None):
+    """Get approximation candidates from netlist. Candidates is a list of strings, including selected wires of the netlist
+    """
     # NOTE: if using ctypes for error calculation, make sure netlist.net_id follows the same order of wires!
-    if candidate_type is None:
+    if approx_type == ApproxType.GLP:
         candidates = netlist.netlist_data['wires'] + netlist.netlist_data['outputs']
-    elif candidate_type == 'constant':
+    elif approx_type == ApproxType.GLP_PC:
+        raise NotImplementedError("Precision scaling in the C simulation has errors. Needs fixing")
         candidates = netlist.netlist_data['wires'] + netlist.netlist_data['outputs'] + netlist.netlist_data['inputs']
         netlist.update_net_id_with_inputs()
-    else:
-        raise NotImplementedError
 
-    if reduced:
-        candidates = reduce_candidates(candidates, netlist, graph)
     variables_range = [(0, 1, -1) for _ in range(len(candidates))]
 
     # if results_dir is not None and len(candidates) != len(netlist.netlist_data['wires'] + netlist.netlist_data['outputs']):
@@ -133,20 +119,6 @@ def get_candidates(netlist, graph, candidate_type='constant', reduced=True, resu
         logger.info(f"Saved candidates in {results_dir}/candidates.pkl")
 
     return candidates, variables_range
-
-
-def reduce_candidates(candidates, netlist, graph):
-    """Reduce candidates by taking into account the probability that a node can
-    participate in the critical path"""
-    # TODO: find a way to reduce the chromosome
-    graph.cp_probability_assignment()
-    unlikely_nodes = [graph.get_node[n] for n in graph.top_sort if graph.cp_prob[n] <= 0.01]
-    nets_of_unlikely_nodes = [outnet for node in unlikely_nodes for outnet in node.output_wires]
-    reduced_candidates = [net for net in candidates if net not in nets_of_unlikely_nodes]
-
-    raise NotImplementedError
-    netlist.update_net_id_with_inputs()
-    return reduced_candidates
 
 
 def sanity_test(objective_function, variables_range):
@@ -183,6 +155,24 @@ def gene_type_arg(gene_str):
     except KeyError:
         raise argparse.ArgumentTypeError('--gene-type argument must be one of {0} (received {1})'.format(
             list(str_to_gene_type_map.keys()), gene_str
+        ))
+
+
+class ApproxType(Enum):
+    GLP = 0
+    GLP_PC = 1
+
+str_to_approx_type_map = {
+    'glp': ApproxType.GLP,  # GLP: Gate-Level Pruning
+    'glppc': ApproxType.GLP_PC  # GLP_PC: Gate-Level Pruning & Precision Scaling
+}
+
+def approx_type_arg(approx_str):
+    try:
+        return str_to_approx_type_map[approx_str.lower().replace('_', '').replace('-', '')]
+    except KeyError:
+        raise argparse.ArgumentTypeError('--approx-type argument must be one of {0} (received {1})'.format(
+            list(str_to_approx_type_map.keys()), approx_str
         ))
 
 
