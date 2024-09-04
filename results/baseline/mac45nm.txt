@@ -1,0 +1,2 @@
+Area	Delay	Error	Power
+564.983999	0.869	0.000e+00	1.400e-03

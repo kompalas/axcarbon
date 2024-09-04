@@ -22,8 +22,8 @@ synclk="0.0"
 
 # set up libraries and environment
 if [[ $library == "asap7" ]]; then
-    libpath="$maindir/libs/asap7/7nm/db"
-    libverilog="$maindir/libs/asap7/7nm/verilog"
+    libpath="$maindir/libs/asap7/db"
+    libverilog="$maindir/libs/asap7/verilog"
     lib="asap7.db"
     tunit="ps"
     libfile_python="asap7"

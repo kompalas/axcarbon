@@ -655,7 +655,7 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
     insize = max(netlist.netlist_data['bits_per_unique_input'].values())
     outsize = max(netlist.netlist_data['bits_per_unique_output'].values())
 
-    # this is only used for debugging, not really import to automate
+    # this is only used for debugging, not really important to automate
     chromosome_length = len(netlist.netlist_data['wires'] + netlist.netlist_data['outputs'] + netlist.netlist_data['inputs'])
 
     signed_inputs = netlist.netlist_data['signed_inputs']

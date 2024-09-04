@@ -4,7 +4,7 @@ from src.graph import DAG
 from src.utils import translate_netlist_to_gates_and_wires, gates_to_nodes, wires_to_edges
 from src.utils import get_cancel_dict, get_gates_dict
 from src.nsga2.objectives import calc_fitness
-from src.nsga2.utils import get_candidates
+from src.nsga2.utils import get_candidates, ApproxType
 from tqdm import tqdm
 import pandas as pd
 import random
@@ -47,9 +47,8 @@ def prepare(circuit_name, libfile):
                 output_wires=netlist.netlist_data['outputs'])
     netlist.build_cfile(graph)
 
-    candidates, variables_range = get_candidates(netlist, graph,
-                                                 candidate_type=None,
-                                                 reduced=False)
+    candidates, variables_range = get_candidates(netlist,
+                                                 approx_type=ApproxType.GLP)
     cancel_dict = get_cancel_dict(gates_dict)
     logger.debug(f"Candidates: {candidates}")
     logger.debug(f"Variables range: {variables_range}")

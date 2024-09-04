@@ -2,8 +2,8 @@
 # Merge the extracted files into a single lib file
 
 maindir="$HOME/axcarbon"
-libdir="$maindir/libs/asap7/7nm/libfiles"
-merged_lib="$maindir/libs/asap7/7nm/asap7_all.lib"
+libdir="$maindir/libs/asap7/libfiles"
+merged_lib="$maindir/libs/asap7/asap7_all.lib"
 libfiles=($(find $libdir -name "*.lib"))
 
 counter=0

@@ -9,7 +9,7 @@ circuit=${1?"Specify the circuit as first positional argument"}
 # if inputs already exist, leave the second positional argument unset
 inputs_exist=${2:-"True"}
 
-library="fdsoi28"
+library="nangate45"
 
 maindir="$HOME/axcarbon"
 circdir="$maindir/circuits/$circuit"

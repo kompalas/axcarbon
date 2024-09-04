@@ -42,7 +42,7 @@ latest_log_file
 # libraries / library interm objects
 libs/*.so
 libs/*.o
-libs/asap7/7nm/libfiles/
+libs/asap7/libfiles/
 tech_lib/
 **/gate_simv.daidir/
 **/rtl_simv.daidir/

@@ -1,14 +1,12 @@
 #libsPath="$HOME/synLibs"
 # libsPath="/usr/local/eda/synLibs"
 libsPath="$HOME/libs"
-# asap7/7nm/db/asap7.db
-
 #set the library path
-export ENV_LIBRARY_PATH="/home/balaskas/axcarbon/libs/fdsoi28/db"
+export ENV_LIBRARY_PATH="/home/balaskas/axcarbon/libs/nangate45/db"
 #set the library name
-export ENV_LIBRARY_DB="28nm_FDSOI_0.9V_300K.db"
+export ENV_LIBRARY_DB="nangate45.db"
 #set library verilog path
-export ENV_LIBRARY_VERILOG_PATH="/home/balaskas/axcarbon/libs/fdsoi28/verilog"
+export ENV_LIBRARY_VERILOG_PATH="/home/balaskas/axcarbon/libs/nangate45/verilog"
 
 #set the top design name
 export ENV_TOP_DESIGN="top"

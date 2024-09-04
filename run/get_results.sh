@@ -9,7 +9,7 @@ which_gen="${2:--1}"
 
 maindir="$HOME/axcarbon"
 testdir="$maindir"
-library="fdsoi28"
+library="asap7"
 synclk="0.0"
 top_design="top"
 get_error_from="gate_level_simulations"  # options: gate_level_simulations, c_simulations
@@ -167,6 +167,7 @@ circdir="$maindir/circuits/$circuit"
 # results directory and file
 mkdir -p $expdir/reports
 mkdir -p $expdir/netlists
+mkdir -p $expdir/gate
 resfile="$expdir/eval_results.csv"
 if [[ ! -f $resfile ]]; then
 echo "NetlID,Lib,SynClk,SimClk,Area,Delay,Power,ErrorRate,MRE,MED,NMED,MinError,MaxError,ErrorRange,Variance" > $resfile
@@ -174,8 +175,8 @@ fi
 
 # set up libraries
 if [[ $library == "asap7" ]]; then
-    libpath="$maindir/libs/asap7/7nm/db"
-    libverilog="$maindir/libs/asap7/7nm/verilog"
+    libpath="$maindir/libs/asap7/db"
+    libverilog="$maindir/libs/asap7/verilog"
     lib="asap7.db"
     tunit="ps"
 elif [[ $library == "nangate45" ]]; then
@@ -198,6 +199,10 @@ else
     echo "Invalid library option. Options are: asap7, variability14, fdsoi28, nangate45"
     exit 1
 fi
+
+# copy library c files into the libs/ directory
+cp $maindir/libs/$library/c/library* $maindir/libs/
+rm -f $maindir/libs/library.o $maindir/libs/_library.so
 
 # prepare testbench, inputs and true outputs for simulation
 cp $circdir/tb.v $testdir/sim/top_tb.v
@@ -322,6 +327,9 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
     # move reports to the appropriate directory
     rm -rf $expdir/reports/approx${netl_id}
     mv $testdir/reports $expdir/reports/approx${netl_id}
+    # move netlist to the appropriate directory
+    rm -rf $expdir/gate/approx${netl_id}
+    mv $testdir/gate $expdir/gate/approx${netl_id}
 
 done
 

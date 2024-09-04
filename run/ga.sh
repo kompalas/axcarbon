@@ -2,16 +2,21 @@
 set -eou pipefail
 
 circuit="${1?Specify the circuit as the first positional argument}"
+library="${2?Specify the library as the second positional argument}"
 
 scriptdir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 maindir="$HOME/axcarbon"
 
+# copy library c files into the libs/ directory
+cp $maindir/libs/$library/c/library* $maindir/libs/
+rm -f $maindir/libs/library.o $maindir/libs/_library.so
+
 python3 $maindir/main.py \
 	--circuit $circuit \
-	--libfile fdsoi28 \
+	--libfile $library \
         --name ga_${circuit} \
         --ga \
-        --generations 20 \
+        --generations 100 \
         --population-size 100 \
         --tournament-participants 0.05 \
         --tournament-probability 0.8 \
