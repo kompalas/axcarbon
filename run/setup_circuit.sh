@@ -6,10 +6,9 @@ set -euo pipefail
 set -x
 
 circuit=${1?"Specify the circuit as first positional argument"}
+library=${2?"Specify the library as the second positional argument"}
 # if inputs already exist, leave the second positional argument unset
-inputs_exist=${2:-"True"}
-
-library="nangate45"
+inputs_exist=${3:-"True"}
 
 maindir="$HOME/axcarbon"
 circdir="$maindir/circuits/$circuit"

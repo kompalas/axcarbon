@@ -2,7 +2,7 @@
 # Get delay statistics for every gate over a specified number of approximate netlists
 
 set -eou pipefail
-#set -x
+set -x
 
 mkdir -p logs/
 mkdir -p hdl/
@@ -18,7 +18,6 @@ circdir="$maindir/circuits/$circuit"
 testdir="$maindir/test/cp_delay_stats"
 
 top_design="top"
-synclk="0.0"
 
 # set up libraries and environment
 if [[ $library == "asap7" ]]; then
@@ -63,6 +62,8 @@ reports_dir="$reports_dir/$circuit"
 mkdir -p $reports_dir
 rm -rf $reports_dir/timing_report_*
 
+# get the synthesis clock period
+synclk="$(awk -F"\t" 'NR==1 {for (i=1; i<=NF; i++) if ($i=="SynClk") foi=i;} NR==2 {print $foi}' $maindir/results/baseline/${circuit}.txt)"
 delay_rpt="reports/${top_design}_${synclk}${tunit}.timing.pt.rpt"
 logfile="$testdir/logs/delay_stats_${circuit}.log"
 

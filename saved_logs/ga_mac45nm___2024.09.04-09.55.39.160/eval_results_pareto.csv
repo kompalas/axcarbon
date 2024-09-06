@@ -1,3 +1,0 @@
-NetlID,Lib,SynClk,SimClk,Area,Delay,Power,ErrorRate,MRE,MED,NMED,MinError,MaxError,ErrorRange,Variance
--1,nangate45,0.0,0.87,564.983999,0.869,1.400e-03,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-8,nangate45,0.0,0.87,0.0,0.002,0.0,1.0,0.4281,22350.0,5.204e-06,0.0,4295000000.0,4295000000.0,36890000000000.0

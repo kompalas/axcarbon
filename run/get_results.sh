@@ -10,7 +10,6 @@ which_gen="${3:--1}"
 
 maindir="$HOME/axcarbon"
 testdir="$maindir"
-synclk="1.0"
 top_design="top"
 get_error_from="gate_level_simulations"  # options: gate_level_simulations, c_simulations
 use_eval_inputs="true"  # if "true", the evaluation inputs will be used (instead of the ones used during optimization) 
@@ -200,13 +199,10 @@ else
     echo "Invalid library option. Options are: asap7, variability14, fdsoi28, nangate45"
     exit 1
 fi
-
 # copy library c files into the libs/ directory
 cp $maindir/libs/$library/c/library* $maindir/libs/
 rm -f $maindir/libs/library.o $maindir/libs/_library.so
 
-# simulation clock is given by the delay of each exact circuit
-simclk="$(awk 'NR==2 {printf("%.2f", $2)}' $maindir/results/baseline/$circuit.txt)"
 # prepare testbench, inputs and true outputs for simulation
 cp $circdir/tb.v $testdir/sim/top_tb.v
 if [[ "$use_eval_inputs" == "true" ]]; then
@@ -214,6 +210,7 @@ if [[ "$use_eval_inputs" == "true" ]]; then
 else
     suffix=""
 fi
+simclk="$(getBaselineMeasurement $circuit Delay)"
 awk -F'_' '{for (i=1; i<NF; i++) {printf("%s", $i); if(i<NF-1) printf("_")} printf("\n")}' $circdir/inputs${suffix}.txt > $testdir/sim/inputs.txt
 awk -F'_' '{print $NF}' $circdir/inputs${suffix}.txt > $testdir/sim/expected.txt
 sed -i "/parameter PERIOD=/ c\parameter PERIOD=$simclk;" $testdir/sim/top_tb.v
@@ -221,6 +218,7 @@ num_inputs="$(wc -l $testdir/sim/inputs.txt | awk '{print $1}')"
 sed -i "/parameter NUM_INPUTS=/ c\parameter NUM_INPUTS=$num_inputs;" $testdir/sim/top_tb.v
 
 # setup environment
+synclk="$(getBaselineMeasurement $circuit SynClk)"
 sed -i "/ENV_LIBRARY_PATH=/ c\export ENV_LIBRARY_PATH=\"$libpath\"" $testdir/scripts/env.sh
 sed -i "/ENV_LIBRARY_DB=/ c\export ENV_LIBRARY_DB=\"$lib\"" $testdir/scripts/env.sh
 sed -i "/ENV_LIBRARY_VERILOG_PATH=/ c\export ENV_LIBRARY_VERILOG_PATH=\"$libverilog\"" $testdir/scripts/env.sh

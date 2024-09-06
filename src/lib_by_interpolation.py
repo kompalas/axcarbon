@@ -184,7 +184,7 @@ def find_similar_key(key, key_list):
 
 if __name__ == '__main__':
     master_lib_file = os.path.join(project_dir, 'libs', 'variability14', 'lib', 'Final_Lib_with_variation_lvf_LibFile.lib')
-    slave_lib_file = os.path.join(project_dir, 'libs', 'asap7', '7nm', 'libfiles', 'asap7.lib')
+    slave_lib_file = os.path.join(project_dir, 'libs', 'asap7', 'libfiles', 'asap7_short.lib')
 
     master_lib = parse_libfile(master_lib_file)
     slave_lib = parse_libfile(slave_lib_file)
