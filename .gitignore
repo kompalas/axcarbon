@@ -43,7 +43,7 @@ latest_log_file
 # libraries / library interm objects
 libs/*.so
 libs/*.o
-libs/asap7/libfiles/
+libs/asap7/lib/
 tech_lib/
 **/gate_simv.daidir/
 **/rtl_simv.daidir/
