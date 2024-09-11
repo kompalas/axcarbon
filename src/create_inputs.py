@@ -42,7 +42,7 @@ if len(args.safety_bits) == 0:
 elif len(args.safety_bits) == 1:
     args.safety_bits = args.safety_bits * len(args.bits)
 elif len(args.safety_bits) != len(args.bits):
-    raise ValueError("The '--safety-bits' must be empty, have one argument, or have"
+    raise ValueError("The '--safety-bits' must be empty, have one argument, or have "
                      "as many arguments asthe number of bitwidths")
 
 input_vectors = []

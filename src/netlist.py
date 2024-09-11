@@ -73,11 +73,15 @@ class Netlist:
         create_shared_cfile(self.circuit, write_to)
 
     def build_vfile(self, approximations, write_to=None):
-        """Write verilog file of the netlist from the current state of a graph"""
-        init_netlist = self.netlist_data['raw']
-        outports = ["Z", "ZN", "S", "CO"]
+        """Write verilog file of the approximate netlist"""
+        # TODO: This is hard-coded to the 5 output ports below.
+        outports = ["Z", "ZN", "S", "CO", "Y"]
         final_netlist = ''
         replaced_wires = dict(approximations)
+
+        if 'normalized' not in self.netlist_data:
+            self.normalize_multiline_gate_descriptions()
+        init_netlist = self.netlist_data['normalized']
 
         for line in init_netlist.split('\n'):
             newline = line
@@ -86,19 +90,48 @@ class Netlist:
                 found_outport = re.search(rf"[.]{port}\((.+?)\)", newline)
                 if found_outport:
                     if found_outport.group(1) in replaced_wires:
-                        newline = newline.replace(found_outport.group(), "." + port + "()")
+                        newline = newline.replace(found_outport.group(), f".{port}()")
             final_netlist += newline + "\n"
 
         replacements = '\n'.join([
             f"  assign {net} = 1'b{value};" for net, value in replaced_wires.items()
         ])
-        final_netlist = re.sub("endmodule", f"{replacements}\nendmodule", final_netlist)
+        final_netlist = re.sub("endmodule", f"\n{replacements}\nendmodule", final_netlist)
 
         write_to = self.netlist_data['vfile'].replace('.sv', '_approx.sv') \
             if write_to is None else write_to
 
         with open(write_to, 'w') as f:
             f.write(final_netlist)
+
+    def normalize_multiline_gate_descriptions(self):
+        """Normalize multi-line gate descriptions into single lines."""
+        normalized_netlist = ""
+        last_match_end = 0  # Keep track of where the last regex match ended
+        netlist = self.netlist_data['raw']
+
+        # Iterate through all gate matches using the provided regex
+        for match in self.netlist_data['gates_regex'].finditer(netlist):
+            # Append any content before the current gate match
+            normalized_netlist += netlist[last_match_end:match.start()]
+            
+            # Extract the gate and its full description
+            gate_full = match.group(0)
+            gate_type = match.group('gate_type')
+            gate_name = match.group('gate_name')
+            gate_info = re.sub('[,.]|\n\s*', '', match.group('info')).split(' ')
+            gate_info = ', '.join(['.' + assignment for assignment in gate_info])
+            
+            # Rebuild the gate into a single line
+            gate_single_line = f"{gate_type} {gate_name} ({gate_info});"
+            normalized_netlist += gate_single_line
+            
+            # Update last match end to the end of the current match
+            last_match_end = match.end()
+        
+        # Append any remaining content after the last gate
+        normalized_netlist += netlist[last_match_end:]
+        self.netlist_data['normalized'] = normalized_netlist
 
     def __str__(self):
         return 'Netlist for ' + self.circuit
@@ -241,6 +274,7 @@ def parse_verilog_netlist(netlist_data, netlist_file):
     # NOTE: if any following process fails because of a parsing error, check this first
     #  This could also be the cause of a KeyError in the DAG (or DAG translation)
     gates_regex = re.compile(r"""(?P<gate_type>[\w\d_]+?) (?P<gate_name>[\w\d_]*?) \(\s+?[.](?P<info>.*?)\s+?\);""", re.DOTALL)
+    netlist_data['gates_regex'] = gates_regex
 
     gates = []
     for gate in re.finditer(gates_regex, netlist_str):

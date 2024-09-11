@@ -98,7 +98,7 @@ while true; do
     delay="$(getDelay)"
 
     if [ 1 -eq "$(awk -v d=$delay -v s=$synclk 'BEGIN {if (d>s) print "1"; else print "0"}')" ]; then
-        synclk="$(echo $delay | awk '{printf "%.2f\n", $1}')"
+        synclk="$(echo $delay | awk '{printf "%.2f\n", $1 + 0.005}')"
         continue
     fi
 

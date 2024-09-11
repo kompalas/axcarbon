@@ -24,7 +24,7 @@ cp $circdir/top.v hdl/
 
 # create initial inputs file, if input bitwidth is specified
 if [[ ! "$inputs_exist" == "True" ]]; then
-    bits_num=$(($#-1))
+    bits_num=$(($#-2))
 
     safety_bits_array=()
     for ((i=0; i<$bits_num; i++)); do
@@ -52,7 +52,7 @@ if [[ ! "$inputs_exist" == "True" ]]; then
         --deterministic \
         --type binary \
         --separator underscore \
-        --bits ${@:2:$bits_num} \
+        --bits ${@:3:$bits_num} \
         --safety-bits ${safety_bits_array[@]} \
         --out-file sim/inputs.txt \
         $signed
@@ -81,7 +81,7 @@ if [[ ! "$inputs_exist" == "True" ]]; then
         --deterministic \
         --type binary \
         --separator underscore \
-        --bits ${@:2:$bits_num} \
+        --bits ${@:3:$bits_num} \
         --safety-bits ${safety_bits_array[@]} \
         --out-file sim/inputs.txt \
         $signed
@@ -122,30 +122,30 @@ fi
 source $maindir/src/bash/annotate_gates.sh $circuit $delay_rpt
 
 # get delay stats if test folder is not used. Decided by user input
-while :
-do
-    read -p "Ready to extract delay stats? (Y/N) : " -N 1 -t 120 input
-    echo ""
+# while :
+# do
+#     read -p "Ready to extract delay stats? (Y/N) : " -N 1 -t 120 input
+#     echo ""
 
-    case $input in
-        # execute test to extract delay stats from 500 approximate netlists
-        [yY]*)
+#     case $input in
+#         # execute test to extract delay stats from 500 approximate netlists
+#         [yY]*)
             cd $maindir/test/cp_delay_stats
             rm -f $circdir/gate_delay_stats.pkl
             ./run.sh $circuit 100 $library
-            break
-            ;;
+#             break
+#             ;;
 
-        # abort executing the test
-        [nN]*)
-            echo "Test aborted. Please remember to extract delay stats later."
-            break
-            ;;
+#         # abort executing the test
+#         [nN]*)
+#             echo "Test aborted. Please remember to extract delay stats later."
+#             break
+#             ;;
 
-        # continue to ask for a valid input
-        *) echo "Invalid input. Please enter Y/y or N/n"
-            ;;
-    esac
-done
+#         # continue to ask for a valid input
+#         *) echo "Invalid input. Please enter Y/y or N/n"
+#             ;;
+#     esac
+# done
 
 

@@ -546,6 +546,8 @@ def create_shared_cfile(circuit, written_in=None):
 def build_c_netlist_text_main_structure(netlist, graph):
     """Build main part of C-netlist file, based on the graph topological ordering"""
     # TODO: Inputs are not taken into account in the C-netlist file. Fix!
+    # TODO: Order of written IO pins depends on the netlist, but it may not be the same order
+    #       as the one in the C libary. If the sanity test fails, check this also.
     netl_c = ''
     null_counter = 0
 
@@ -656,7 +658,7 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
     outsize = max(netlist.netlist_data['bits_per_unique_output'].values())
 
     # this is only used for debugging, not really important to automate
-    chromosome_length = len(netlist.netlist_data['wires'] + netlist.netlist_data['outputs'] + netlist.netlist_data['inputs'])
+    chromosome_length = len(netlist.netlist_data['wires'] + netlist.netlist_data['outputs'])  # + netlist.netlist_data['inputs'])
 
     signed_inputs = netlist.netlist_data['signed_inputs']
     signed_outputs = netlist.netlist_data['signed_outputs']
@@ -924,9 +926,9 @@ void main(int argc, char *argv[]) {{
 
     int pruned_num = argc - 1;
     int ax_values[pruned_num];
-    double error[5];
+    double error[9];
     int i;
-    for (i=0; i<5; i++) error[i]=0.0;
+    for (i=0; i<9; i++) error[i]=0.0;
 
     for (i=1; i<argc; i++) {{
         ax_values[i-1] = atoi(argv[i]);

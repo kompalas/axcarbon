@@ -260,10 +260,18 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
 
     # synthesis to get area
     make dcsyn
+    if grep -qi "^error" $testdir/logs/dcsyn.log; then
+        echo "Error: Synthesis failed"
+        exit 1
+    fi
     area="$(awk '/Total cell area/ {print $NF}' $area_rpt)"
 
     # STA to get delay
     make sta
+    if grep -qi "^error" $testdir/logs/ptsta.log; then
+        echo "Error: STA failed"
+        exit 1
+    fi
     delay="$(grep "data arrival time" $delay_rpt | awk 'NR==1 {print $NF}')"
 
     # gate level simulation to get errors
@@ -277,7 +285,17 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
         error_rate="$(getErrorRate)"
         mre="$(getMRE)"
         med="$(getMED)"
-        outwidth="$(grep "parameter OUT_WIDTH" ./sim/top_tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
+        if grep -q "parameter OUT_WIDTH" ./sim/top_tb.v; then
+            p="OUT_WIDTH"
+        elif grep -q "parameter outwidth" ./sim/top_tb.v; then
+            p="outwidth"
+        elif grep -q "parameter BIT_WIDTH" ./sim/top_tb.v; then
+            p="BIT_WIDTH"
+        else
+            echo "Error: Could not find the output width parameter in the testbench"
+            exit 1
+        fi
+        outwidth="$(grep "parameter $p" ./sim/top_tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
         nmed="$(awk -v a=$med -v b=$outwidth 'BEGIN {printf "%.3e", a/(2**b)}')"
         min_error="$(getMinError)"
         max_error="$(getMaxError)"

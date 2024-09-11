@@ -25,7 +25,8 @@ set symbol_library [list ${LIB_SDB_NAME}]
 #read files
 set verilog_files $::env(ENV_VERILOG_FILES)
 set top_design $::env(ENV_TOP_DESIGN)
-set_dont_use {asap7/FAxp33_ASAP7_6t_R}
+
+# exit 1
 
 analyze -f Verilog $verilog_files
 elaborate $top_design
@@ -34,6 +35,12 @@ link
 set auto_wire_load_selection true
 set_max_area 0
 # set_dynamic_optimization true
+
+# list_libs
+# report_lib 
+if {[string match "*asap7*" $LIB_DB_PATH]} {
+	set_dont_use {asap7/FAxp33_ASAP7_6t_R}
+}
 
 #sdc
 source ./scripts/sdc.tcl

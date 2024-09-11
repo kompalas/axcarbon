@@ -17,9 +17,9 @@
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "args": [
-                "--circuit", "mac",
+                "--circuit", "fpmac16b28nm",
                 "--libfile", "fdsoi28",
-                "--name", "ga_mac",
+                "--name", "ga_test",
                 "--ga",
                 "--generations", "10",
                 "--population-size", "20",
@@ -27,8 +27,8 @@
                 "--tournament-probability", "0.9",
                 "--error-metric", "variance",
                 "--hw-metric", "area",
+                "--approximation-type", "glp",
                 "--gene-type", "discrete",
-                "--candidate-type", "constant",
                 "--initial-weight", "20",
                 "--threads", "10",
                 "--save-frequency", "5"
