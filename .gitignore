@@ -6,6 +6,7 @@
 latest_log_dir
 latest_log_file
 *.log
+results/latest_ga_results.csv
 
 # files left my Design Compiler
 **/extracted_model_constr.pt

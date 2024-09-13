@@ -49,21 +49,24 @@ void AND4_X4 ( int A1, int A2, int A3, int A4, int* ZN){
 void ANTENNA_X1 ( int A){
 }
 
-void AOI211_X1 ( int A, int B, int C1, int C2, int* ZN){
+// void AOI211_X1 ( int A, int B, int C1, int C2, int* ZN){
+void AOI211_X1 ( int C1, int C2, int A, int B, int* ZN){
  int i_14 = C1 & C2;
  int i_13 = i_14 | B;
  int i_12 = i_13 | A;
  *ZN = 1 ^ i_12;
 }
 
-void AOI211_X2 ( int A, int B, int C1, int C2, int* ZN){
+// void AOI211_X2 ( int A, int B, int C1, int C2, int* ZN){
+void AOI211_X2 ( int C1, int C2, int A, int B, int* ZN){
  int i_14 = C1 & C2;
  int i_13 = i_14 | B;
  int i_12 = i_13 | A;
  *ZN = 1 ^ i_12;
 }
 
-void AOI211_X4 ( int A, int B, int C1, int C2, int* ZN){
+// void AOI211_X4 ( int A, int B, int C1, int C2, int* ZN){
+void AOI211_X4 ( int C1, int C2, int A, int B, int* ZN){
  int i_24 = C1 & C2;
  int i_23 = i_24 | B;
  int i_22 = i_23 | A;
