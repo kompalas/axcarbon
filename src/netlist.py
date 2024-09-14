@@ -62,7 +62,9 @@ class Netlist:
             "Cannot write C-file without the topological ordering of the graph. Please annotate first"
 
         main_structure = build_c_netlist_text_main_structure(self, graph)
-        final_netl_c = build_c_netlist_text(self, main_structure, input_file_separator='_')
+        final_netl_c = build_c_netlist_text(self, main_structure, input_file_separator='_',
+                                            add_accumulate_func='mac' in self.circuit.lower(),
+                                            add_multiply_func='mult' in self.circuit.lower())
 
         with open(write_to or self.cfile, "w") as f:
             f.write(final_netl_c)

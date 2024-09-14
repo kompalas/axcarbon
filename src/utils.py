@@ -650,7 +650,7 @@ def build_c_netlist_text_main_structure(netlist, graph):
     return netl_c
 
 
-def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='_'):
+def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='_', add_accumulate_func=False, add_multiply_func=False):
     """Create the text structure outline of the C-netlist file"""
     unique_io = netlist.netlist_data['unique_inputs'] + netlist.netlist_data['unique_outputs']
     io_pointers = ', '.join(natsorted('int* ' + io for io in unique_io))
@@ -947,7 +947,33 @@ void main(int argc, char *argv[]) {{
     printf("Variance: %.3e\\n", error[8]);
 
 }}
+"""    
+
+    # TODO: Add the functions for accumulate and multiply
+    if add_accumulate_func:
+        data += f"""
+{outp_uint_type} ACCUMULATE({inp_uints}) {{
+    {outp_uint_type} res;
+    int signed_inputs={signed_inputs_value};
+    int signed_outputs={signed_outputs_value};
+    // int ax_values[{chromosome_length}] = {{-1}};
+    res = top_{netlist.circuit}(ax_values, {', '.join(netlist.netlist_data['unique_inputs'])}, signed_inputs, signed_outputs);
+    return res;
+}}
 """
+
+    elif add_multiply_func:
+                data += f"""
+{outp_uint_type} MULTIPLY({inp_uints}) {{
+    {outp_uint_type} res;
+    int signed_inputs={signed_inputs_value};
+    int signed_outputs={signed_outputs_value};
+    // int ax_values[{chromosome_length}] = {{-1}};
+    res = top_{netlist.circuit}(ax_values, {', '.join(netlist.netlist_data['unique_inputs'])}, signed_inputs, signed_outputs);
+    return res;
+}}
+"""
+
     return data
 
 
