@@ -22,7 +22,7 @@ python3 $maindir/main.py \
         --hw-metric area \
         --gene-type discrete \
         --approximation-type glp \
-        --initial-weight 40 \
+        --initial-weight 100 \
         --threads 10 \
         --save-frequency 5 \
         --tournament-participants 0.2 \

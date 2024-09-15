@@ -66,4 +66,5 @@ circuits/*/*txt
 
 # test intermediate files
 test/**/*.sv
+test/ga_*
 

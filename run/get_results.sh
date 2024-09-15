@@ -9,10 +9,20 @@ library=${2:--"asap7"}
 which_gen="${3:--1}"
 
 maindir="$HOME/axcarbon"
-testdir="$maindir"
 top_design="top"
 get_error_from="gate_level_simulations"  # options: gate_level_simulations, c_simulations
 use_eval_inputs="true"  # if "true", the evaluation inputs will be used (instead of the ones used during optimization) 
+
+
+############## Test Directory ###################
+
+mkdir -p $maindir/test
+testdir="$maindir/test/$(basename $expdir)"
+if ! [ -d "$testdir" ]; then
+    tar -xzvf $maindir/test/eval.tar.gz -C $maindir/test
+    mv $maindir/test/eval $testdir
+fi
+# exit 0
 
 ############## Custom Functions ###################
 
@@ -154,6 +164,9 @@ function getErrorVariance() {
 
 ################# Setup ######################
 
+# get full path of the experiment directory
+# NOTE: This is specific for Linux with GNU readlink
+expdir="$(readlink -f $expdir)"
 # if the last character of expdir is a slash, remove it
 if [[ ${expdir: -1} == "/" ]]; then
     len=$((${#expdir}-1))
@@ -285,17 +298,17 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
         error_rate="$(getErrorRate)"
         mre="$(getMRE)"
         med="$(getMED)"
-        if grep -q "parameter OUT_WIDTH" ./sim/top_tb.v; then
+        if grep -q "parameter OUT_WIDTH" $testdir/sim/top_tb.v; then
             p="OUT_WIDTH"
-        elif grep -q "parameter outwidth" ./sim/top_tb.v; then
+        elif grep -q "parameter outwidth" $testdir/sim/top_tb.v; then
             p="outwidth"
-        elif grep -q "parameter BIT_WIDTH" ./sim/top_tb.v; then
+        elif grep -q "parameter BIT_WIDTH" $testdir/sim/top_tb.v; then
             p="BIT_WIDTH"
         else
             echo "Error: Could not find the output width parameter in the testbench"
             exit 1
         fi
-        outwidth="$(grep "parameter $p" ./sim/top_tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
+        outwidth="$(grep "parameter $p" $testdir/sim/top_tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
         nmed="$(awk -v a=$med -v b=$outwidth 'BEGIN {printf "%.3e", a/(2**b)}')"
         min_error="$(getMinError)"
         max_error="$(getMaxError)"
@@ -319,7 +332,7 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
 
         # compile the C netlist and execute using the chromosome as arguments
         gcc -I${maindir}/libs ${maindir}/libs/library.c $cfile -o $ofile
-        $ofile ${chromosome[@]} &> tmp
+        $ofile ${chromosome[@]} &> $testdir/tmp
 
         # get error measurements from the output
         error_rate="$(awk '/Error Rate:/ {print $NF}' tmp)"
@@ -331,7 +344,7 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
         range="$(awk -v max=$max_error -v min=$min_error 'BEGIN {printf "%.3e", max-min}')"
         variance="$(awk '/Variance:/ {print $NF}' tmp)"
         # clean up
-        rm -f tmp
+        rm -f $testdir/tmp
         rm -f $ofile
 
     else
@@ -360,6 +373,3 @@ python3 $maindir/src/evaluation/filter_pareto_csv.py \
     --input-csv-file $resfile \
     --hw-metric $hw_metric \
     --error-metric $error_metric
-
-# keep a copy of the latest resutls for easy access
-cp $resfile $maindir/results/latest_ga_results.csv
