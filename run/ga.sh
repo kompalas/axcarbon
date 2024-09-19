@@ -18,7 +18,7 @@ python3 $maindir/main.py \
         --ga \
         --generations 50 \
         --population-size 100 \
-        --error-metric nmed \
+        --error-metric mre \
         --hw-metric area \
         --gene-type discrete \
         --approximation-type glp \

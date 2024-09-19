@@ -10,7 +10,7 @@ which_gen="${3:--1}"
 
 maindir="$HOME/axcarbon"
 top_design="top"
-get_error_from="gate_level_simulations"  # options: gate_level_simulations, c_simulations
+get_error_from="gate_level_simulations_ieee754"  # options: gate_level_simulations, c_simulations, gate_level_simulations_ieee754
 use_eval_inputs="true"  # if "true", the evaluation inputs will be used (instead of the ones used during optimization) 
 
 
@@ -347,8 +347,59 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
         rm -f $testdir/tmp
         rm -f $ofile
 
+    elif [[ "$get_error_from" == "gate_level_simulations_ieee754" ]]; then
+
+        # get the FP format
+        bits="$(grep "parameter BIT_WIDTH" $testdir/sim/top_tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
+        if [[ $bits -eq 32 ]]; then
+            format="FP32"
+        elif [[ $bits -eq 16 ]]; then
+            format="bfloat16"
+        else
+            echo "Error: Unsupported bit width: $bits"
+            exit 1
+        fi
+
+        # convert outputs and expected outputs to IEEE754 format
+        python3 $maindir/src/evaluation/convert_ieee754.py \
+            --format $format \
+            --input-file $testdir/sim/output.txt \
+            --output-file $testdir/sim/output_ieee754.txt
+        python3 $maindir/src/evaluation/convert_ieee754.py \
+            --format $format \
+            --input-file $testdir/sim/expected.txt \
+            --output-file $testdir/sim/expected_ieee754.txt
+
+        # get the output width
+        if grep -q "parameter OUT_WIDTH" $testdir/sim/top_tb.v; then
+            p="OUT_WIDTH"
+        elif grep -q "parameter outwidth" $testdir/sim/top_tb.v; then
+            p="outwidth"
+        elif grep -q "parameter BIT_WIDTH" $testdir/sim/top_tb.v; then
+            p="BIT_WIDTH"
+        else
+            echo "Error: Could not find the output width parameter in the testbench"
+            exit 1
+        fi
+        outwidth="$(grep "parameter $p" $testdir/sim/top_tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
+
+        # get error measurements from the output
+        python3 $maindir/src/evaluation/errors.py \
+            --output-file $testdir/sim/output_ieee754.txt \
+            --expected-file $testdir/sim/expected_ieee754.txt \
+            --output-width $outwidth 2>&1 | tee $expdir/errors_${netl_id}.txt
+
+        error_rate="$(awk '/Error Rate:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
+        mre="$(awk '/MRE:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
+        med="$(awk '/^MED:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
+        nmed="$(awk '/NMED:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
+        min_error="$(awk '/Min Error:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
+        max_error="$(awk '/Max Error:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
+        range="$(awk -v max=$max_error -v min=$min_error 'BEGIN {printf "%.3e", max-min}')"
+        variance="$(awk '/Variance:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
+
     else
-        echo "Wrong variable: get_error_from is set to $get_error_from. Options are: gate_level_simulations, c_simulations"
+        echo "Wrong variable: get_error_from is set to $get_error_from. Options are: gate_level_simulations, c_simulations, c_simulations_ieee754"
         exit 1
     fi
 

@@ -38,7 +38,6 @@ __all__ = [
     'get_overrides', 'get_cp_net_indices',
     'forward',
     'get_mult_table',
-    'binary_to_decimal',
 ]
 
 logger = logging.getLogger(__name__)
@@ -1166,45 +1165,3 @@ def get_mult_table(netlist, graph):
             logger.info(f"{input1} x {input2} = {res} ({input1*input2})")
 
     return table
-
-
-def binary_to_decimal(input_binary_file, output_decimal_file, input_separator='\t', output_separator='\t'):    
-    with open(input_binary_file, 'r') as f:
-        inputs = f.readlines()
-    
-    with open(output_decimal_file, 'w') as f:
-        for line in inputs:
-            decimal_line = output_separator.join(
-                str(int(x, 2))
-                for x in line.strip().split(input_separator)
-            )
-            f.write(decimal_line)
-            f.write('\n')
-
-
-if __name__ == '__main__':
-        
-    parser = argparse.ArgumentParser(description='Convert binary file to decimal file.')
-    parser.add_argument('--input-binary-file', type=str, required=True, help='Path to the input binary file (required)')
-    parser.add_argument('--output-decimal-file', type=str, required=True, help='Path to the output decimal file (required)')
-    parser.add_argument('--input-separator', choices=["tab", "space", "underscore", "none"], default='tab', help='Separator used in the input binary file')
-    parser.add_argument('--output-separator', choices=["tab", "space", "underscore", "none"], default='tab', help='Separator used in the output decimal file')
-    args = parser.parse_args()
-
-    args.input_separator = {
-        "tab": '\t',
-        "space": ' ',
-        "underscore": '_',
-        "none": '',
-        "nothing": ''
-    }.get(args.input_separator)
-    args.output_separator = {
-        "tab": '\t',
-        "space": ' ',
-        "underscore": '_',
-        "none": '',
-        "nothing": ''
-    }.get(args.output_separator)
-
-    binary_to_decimal(args.input_binary_file, args.output_decimal_file,
-                        args.input_separator, args.output_separator)

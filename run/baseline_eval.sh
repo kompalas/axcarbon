@@ -23,6 +23,12 @@ function getPower {
     awk '/Total Power/ {print $4}' $testdir/reports/${top_design}_${synclk}${tunit}.power.ptpx.rpt
 }
 
+# check if the circuit is floating-point
+is_floating_point="false"
+if echo $circuit | grep -q "^fp"; then
+    is_floating_point="true"
+fi
+
 # set up libraries and environment
 if [[ $library == "asap7" ]]; then
     libpath="$maindir/libs/asap7/db"
@@ -88,6 +94,32 @@ awk -F'_' '{print $NF}' $circdir/inputs.txt > ./sim/expected.txt
 
 synclk="0.0"
 delay_incr="0.01"
+
+if [ $is_floating_point == "true" ]; then
+        # get the input width
+    if grep -q "parameter INP_WIDTH" $circdir/tb.v; then
+        param="INP_WIDTH"
+    elif grep -q "parameter inpwidth" $circdir/tb.v; then
+        param="inpwidth"
+    elif grep -q "parameter BIT_WIDTH" $circdir/tb.v; then
+        param="BIT_WIDTH"
+    else
+        echo "Error: Could not find the output width parameter in the testbench"
+        exit 1
+    fi
+    # get the FP format
+    bits="$(grep "parameter $param" $circdir/tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
+    if [[ $bits -eq 32 ]]; then
+        format="FP32"
+    elif [[ $bits -eq 16 ]]; then
+        format="bfloat16"
+    else
+        echo "Error: Unsupported bit width: $bits"
+        exit 1
+    fi
+    fp_format="--ieee754-format $format"
+fi
+
 while true; do
 
     # Iteratively, perform synthesis and STA to find the minimum clock period that the circuit can match
@@ -112,7 +144,30 @@ while true; do
     rm -rf tech_lib/
 
     make gate_sim
-    error="$(./scripts/errors/med.sh ./sim/expected.txt ./sim/output.txt)"
+
+    if [ $is_floating_point == "true" ]; then
+        python3 $maindir/src/numerical_conversion.py \
+            --mode convert \
+            --convert-from binary \
+            --convert-to ieee754 \
+            --input-file sim/expected.txt \
+            --output-file sim/expected.txt \
+            --input-separator underscore \
+            --output-separator underscore \
+            --ieee754-format $format
+        python3 $maindir/src/numerical_conversion.py \
+            --mode convert \
+            --convert-from binary \
+            --convert-to ieee754 \
+            --input-file sim/output.txt \
+            --output-file sim/output.txt \
+            --input-separator underscore \
+            --output-separator underscore \
+            --ieee754-format $format
+        error="$(./scripts/errors/decimal/med.sh ./sim/expected.txt ./sim/output.txt)"
+    else
+        error="$(./scripts/errors/binary/med.sh ./sim/expected.txt ./sim/output.txt)"
+    fi
 
     if [ 1 -eq "$(awk -v e=$error 'BEGIN {if (e>0) print "1"; else print "0"}')" ]; then
         synclk="$(awk -v d=$delay -v incr=$delay_incr 'BEGIN {print d+incr}' | awk '{printf "%.2f\n", $1}')"
