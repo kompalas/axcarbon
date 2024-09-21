@@ -1,13 +1,12 @@
 """All utilities to parse verilog into python objects"""
 import re
 import logging
-import ctypes
-import subprocess
 import os.path
+from collections import OrderedDict
 from time import time
 from copy import deepcopy
 from src import project_dir
-from src.utils import build_c_netlist_text, build_c_netlist_text_main_structure, create_shared_cfile
+from src.cfile import build_c_netlist_text, build_c_netlist_text_main_structure, create_shared_cfile
 from src.utils import signed_io_verilog
 
 __all__ = ['Netlist', 'parse_verilog_netlist']
@@ -23,7 +22,6 @@ class Netlist:
         self.gate_dict = deepcopy(gates_dict)
         self.netlist_data = {}
 
-
         # figure out if inputs and/or outputs are signed (only from a non-given netlist file)
         if netlist_file is None:
             netlist_file = f"{project_dir}/circuits/{self.circuit}/top.sv"
@@ -34,23 +32,40 @@ class Netlist:
         parse_verilog_netlist(netlist_data=self.netlist_data,
                               netlist_file=netlist_file)
 
+        # figure out if the circuit is floating point
+        floating_point_dict = {}
+        floating_point_dict['is_fp'] = re.search('^fp', circuit.lower()) is not None
+        if floating_point_dict['is_fp']:
+            bits = set(self.netlist_data['bits_per_unique_input'].values()).pop()
+            assert bits in [16, 32], "Floating point bit width must be 16 or 32"
+            floating_point_dict['bits'] = bits
+            # NOTE: FP16 may be included in the future
+            floating_point_dict['format'] = 'FP32' if bits == 32 else 'bfloat16'
+            floating_point_dict['sign_bits'] = 1
+            floating_point_dict['exponent_bits'] = 8
+            floating_point_dict['mantissa_bits'] = bits - floating_point_dict['sign_bits'] - floating_point_dict['exponent_bits']
+        self.netlist_data['floating_point'] = floating_point_dict
+
         # create initial description in c
         self.cfile = os.path.join(project_dir, 'circuits', self.circuit, f'top.c')
         # NOTE: DO NOT SORT the wires + outputs
-        self.net_id = {
-            net: id_num for id_num, net in enumerate(
+        self.net_id = OrderedDict([
+            (net, id_num) for id_num, net in enumerate(
                 self.netlist_data['wires'] + self.netlist_data['outputs']
             )
-        }
+        ])
         logger.info(f'Initialized netlist in {time() - t:.3f}s')
 
     def update_net_id_with_inputs(self):
         """Add the input wires to the dictionary with wire id"""
         # TODO: This step has no impact in the C-file. Does this causes a mismatch between wires and their index in the C-file?
         already_logged = len(self.net_id)
-        self.net_id.update({
-            net: id_num + already_logged for id_num, net in enumerate(self.netlist_data['inputs'])
-        })
+        self.net_id.update(
+            OrderedDict([
+                (net, id_num + already_logged)
+                for id_num, net in enumerate(self.netlist_data['inputs'])
+            ])
+        )
 
     def contains(self):
         """Return all the contents recorded during Verilog parsing"""
