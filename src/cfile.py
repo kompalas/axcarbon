@@ -170,7 +170,7 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
         inp_int_type = 'long long int' if signed_inputs else 'unsigned long long int'
         inp_int_parse_format = 'lld' if signed_inputs else 'llu'
 
-    inp_type = inp_int_type
+    inp_type = inp_from_file_type = inp_int_type
     inp_parse_format = inp_int_parse_format
     outp_type = outp_int_type
     outp_parse_format = outp_int_parse_format
@@ -178,11 +178,10 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
     # define floating-point variables
     defines=""
     inputs_filename = "inputs_decimal.txt"
-    outp_float_type = 'float'
-    outp_float_parse_format = 'f'
-    inp_float_type = 'float'
-    inp_float_parse_format = 'f'
-    store_float_type = 'float'
+    outp_float_type = 'double'
+    outp_float_parse_format = 'lf'
+    inp_float_type = 'float'  # has to be double and %lf to parse inputs correctly
+    inp_float_parse_format = 'lf'
     store_float_type_bits = 'unsigned int'
     floattobinary_conversion = f"{store_float_type_bits} value = data.bits;"
 
@@ -195,16 +194,13 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
         mant_bits = netlist.netlist_data['floating_point']['mantissa_bits']
         inputs_filename = "inputs_ieee754.txt"
         inp_type = inp_float_type
+        inp_from_file_type = 'double'
         inp_parse_format = inp_float_parse_format
         outp_type = outp_float_type
         outp_parse_format = outp_float_parse_format
         bfloat_conversion = ""
-        binarytofloat_conversion = ""
 
-        if netlist.netlist_data['floating_point']['format'] == 'bfloat16':
-            binarytofloat_conversion = "data.bits = (sign << 31) | (exponent << 23) | (mantissa << 16);  // Reconstruct FP32 bits"
-
-        elif netlist.netlist_data['floating_point']['format'] == 'FP16':
+        if netlist.netlist_data['floating_point']['format'] == 'FP16':
             bfloat_conversion = """
     if (exponent == 0xFF) {
         exponent = 0x1F;  // Handle infinity or NaN
@@ -214,20 +210,11 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
     } else {
         exponent = exponent - 127 + 15;  // Adjust exponent for FP16
     }"""
-            binarytofloat_conversion = """
-    if (exponent == 0x1F) {
-        data.bits = (sign << 31) | (0xFF << 23) | (mantissa << 13);  // Handle inf or NaN
-    } else if (exponent == 0) {
-        data.bits = (sign << 31) | (0 << 23) | (mantissa << 13);  // Handle zero/denormals
-    } else {
-        exponent = exponent - 15 + 127;  // Adjust exponent for FP32
-        data.bits = (sign << 31) | (exponent << 23) | (mantissa << 13);
-    }"""
 
-        defines = f"#define EXP_BITS {exp_bits}\n"
+        defines = f"#define EXPONENT_BITS {exp_bits}\n"
         defines += f"#define MANTISSA_BITS {mant_bits}\n"
-        defines += f"#define TOTAL_BITS (1 + EXP_BITS + MANTISSA_BITS)\n"
-        defines += f"#define EXP_BIAS ((1 << (EXP_BITS - 1)) - 1)\n"
+        defines += f"#define TOTAL_BITS (1 + EXPONENT_BITS + MANTISSA_BITS)\n"
+        defines += f"#define EXPONENT_BIAS ((1 << (EXPONENT_BITS - 1)) - 1)\n"
 
         if netlist.netlist_data['floating_point']['format'] != 'FP32':
             floattobinary_conversion = f"""unsigned short sign = (data.bits >> 31) & 1;
@@ -235,7 +222,7 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
     unsigned short mantissa = (data.bits >> (23 - MANTISSA_BITS)) & ((1 << MANTISSA_BITS) - 1);
     {bfloat_conversion}
 
-    unsigned short value = (sign << (EXP_BITS + MANTISSA_BITS)) | (exponent << MANTISSA_BITS) | mantissa;"""
+    unsigned short value = (sign << (EXPONENT_BITS + MANTISSA_BITS)) | (exponent << MANTISSA_BITS) | mantissa;"""
 
     ########################################################
 
@@ -259,6 +246,12 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
     # for secondary function: binary output to decimal
     transform_back_func = 'binarytodecimal' if not netlist.netlist_data['floating_point']['is_fp'] else 'binarytofloat'
     transform_back_call =f"{outp_type} r = {transform_back_func}({outp_bin}, signed_outputs);"
+
+    # for debugging purposes on the binary-decimal/FP conversions
+    debug_inputs = ''
+    for inp in netlist.netlist_data['unique_inputs']:
+        debug_inputs += f'\t//fprintf(fb2d, " %{inp_parse_format} ", {inp});\n'
+        debug_inputs += f'\t//for (c=0; c<size; c++) fprintf(fb2d, "%d", {inp}_bin[size-1-c]);\n'
 
     # text going into fscanf: first the format and then the inputs as pointers
     fscanf_1 = '"' + input_file_separator.join([
@@ -372,19 +365,37 @@ void floattobinary({inp_float_type} num, int *binary, int signed_inputs) {{
     return sign * result;
 }}
 
-{outp_float_type} binarytofloat({store_float_type_bits} binary, int signed_outputs) {{
-    unsigned short sign = (binary >> (EXP_BITS + MANTISSA_BITS)) & 1;
-    unsigned short exponent = (binary >> MANTISSA_BITS) & ((1 << EXP_BITS) - 1);
-    unsigned short mantissa = binary & ((1 << MANTISSA_BITS) - 1);
+{outp_float_type} binarytofloat(int *binary, int signed_outputs) {{
+	{outp_float_type} result = 0.0;
 
-    union {{
-        {outp_float_type} output;
-        {store_float_type_bits} bits;
-    }} data;
-    data.bits = binary;
-    {binarytofloat_conversion}
+    // Example: result = -32768000.0
+	// mantissa = 1 + 0.953125 | exponent = 151 - 127 = 24 | sign = 1
+	// 0  1  0  1  1  1  1 | 1  1  1  0  1  0  0  1 | 1
+	// 0  1  2  3  4  5  6 | 7  8  9  10 11 12 13 14| 15
 
-    return data.output;
+	int sign = binary[TOTAL_BITS - 1];
+	int exponent = 0;
+	for (int i = 0; i < EXPONENT_BITS; i++) {{
+		exponent |= binary[MANTISSA_BITS + i] << i;
+	}}
+	exponent -= EXPONENT_BIAS;
+	// Calculate the mantissa as a fractional value
+	double mantissa = 0.0;
+	for (int i = 0; i < MANTISSA_BITS; i++) {{
+		mantissa += binary[MANTISSA_BITS - 1 - i] * (1.0 / (1 << (i + 1)));
+	}}
+	mantissa = 1.0 + mantissa;
+
+	if ( (exponent == 0) || (exponent == (1 << EXPONENT_BITS) - 1) ) {{
+		// This is a simplification of all edge cases
+		result = 0.0;
+	}} else {{
+		result = (1 << exponent) * mantissa;
+	}}
+    if (sign) {{
+        result = -result;
+    }}
+	return result;
 }}
 
 void printbinary(int mysize, int binary[]){{
@@ -403,9 +414,7 @@ void printbinary(int mysize, int binary[]){{
 
 {transform_to_binary_call}
 
-    //fprintf(fb2d, "%{inp_parse_format} ", {netlist.netlist_data['unique_inputs'][0]});
-    //for (c=0; c<size; c++) fprintf(fb2d, "%d", {netlist.netlist_data['unique_inputs'][0]}_bin[size-1-c]);
-
+{debug_inputs}
     {netlist.circuit}_top(ax_values, {io_bins});
     {transform_back_call}
 
@@ -420,7 +429,7 @@ void printbinary(int mysize, int binary[]){{
 void filetest(int ax_values[], double *error) {{
 
     char line[MAX_LENGTH];
-    {inp_type} {', '.join(netlist.netlist_data['unique_inputs'])};
+    {inp_from_file_type} {', '.join(netlist.netlist_data['unique_inputs'])};
     {outp_type} y_true, res;
     {outp_type} err=0;
     {outp_type} min_error=pow(2, {outsize - 2}), max_error=0;
@@ -457,7 +466,7 @@ void filetest(int ax_values[], double *error) {{
         i++;
         
         res = top_{netlist.circuit}(ax_values, {', '.join(netlist.netlist_data['unique_inputs'])}, signed_inputs, signed_outputs);
-        //fprintf(fo, {fscanf_1[:-1]}\\n", {', '.join(netlist.netlist_data['unique_inputs'])}, res);
+        //fprintf(fo, {fscanf_1[:-1]}{input_file_separator}%{outp_parse_format}\\n", {', '.join(netlist.netlist_data['unique_inputs'])}, y_true, res);
         if(res != y_true) {{
             if (res>y_true) {{
                 nabs = res-y_true;
@@ -510,6 +519,13 @@ void filetest(int ax_values[], double *error) {{
     fclose(f);
     //fclose(fo);
 }}
+
+// void main(int argc, char *argv[]) {{
+//     int binary[{insize}] = {{1,1,0,0,1,0,1,1,0,0,0,0,0,0,0,0}}; // supposed to give -8388608.0
+//     int signed_outputs = 0;
+//     {outp_float_type} res = binarytofloat(binary, signed_outputs);
+//     printf("Result: %{outp_float_parse_format}\\n", res);
+// }}
 
 void main(int argc, char *argv[]) {{
     printf("Arguments %d\\n", argc);
