@@ -361,14 +361,24 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
         fi
 
         # convert outputs and expected outputs to IEEE754 format
-        python3 $maindir/src/evaluation/convert_ieee754.py \
-            --format $format \
-            --input-file $testdir/sim/output.txt \
-            --output-file $testdir/sim/output_ieee754.txt
-        python3 $maindir/src/evaluation/convert_ieee754.py \
-            --format $format \
-            --input-file $testdir/sim/expected.txt \
-            --output-file $testdir/sim/expected_ieee754.txt
+        python3 $maindir/src/numerical_conversion.py \
+            --mode convert \
+            --convert-from binary \
+            --convert-to ieee754 \
+            --input-file $testdir/sim//output.txt \
+            --output-file $testdir/sim/output_ieee754.txt \
+            --input-separator underscore \
+            --output-separator underscore \
+            --ieee754-format $format
+        python3 $maindir/src/numerical_conversion.py \
+            --mode convert \
+            --convert-from binary \
+            --convert-to ieee754 \
+            --input-file $testdir/sim//expected.txt \
+            --output-file $testdir/sim/expected_ieee754.txt \
+            --input-separator underscore \
+            --output-separator underscore \
+            --ieee754-format $format
 
         # get the output width
         if grep -q "parameter OUT_WIDTH" $testdir/sim/top_tb.v; then

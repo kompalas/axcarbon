@@ -483,7 +483,11 @@ void filetest(int ax_values[], double *error) {{
 
             err++;
             if(y_true != 0) {{
-                mre += (float)nabs/(float)y_true;
+                if (y_true > 0) {{
+                    mre += (float)nabs/(float)y_true;
+                }} else {{
+                    mre += (float)nabs/(float)(-y_true);
+                }}
             }}
             med += nabs;
             dev = nabs - (med / i);

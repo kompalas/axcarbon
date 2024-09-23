@@ -1,0 +1,2 @@
+NetlID,Lib,SynClk,SimClk,Area,Delay,Power,ErrorRate,MRE,MED,NMED,MinError,MaxError,ErrorRange,Variance
+19,variability14,1.2,1.2,8.6016,0.217,1.212e-05,1.0,1.0,21580000.0,0.005024,28.0,99950000.0,99950000.0,402000000000000.0
