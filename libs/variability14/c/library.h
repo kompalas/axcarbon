@@ -30,6 +30,8 @@ void BUF_X32 ( int A, int* Z);
 void BUF_X4 ( int A, int* Z);
 void BUF_X8 ( int A, int* Z);
 void CLKBUF_X1 ( int A, int* Z);
+void CLKBUF_X12 ( int A, int* Z);
+void CLKBUF_X16 ( int A, int* Z);
 void CLKBUF_X2 ( int A, int* Z);
 void CLKBUF_X3 ( int A, int* Z);
 void CLKBUF_X4 ( int A, int* Z);

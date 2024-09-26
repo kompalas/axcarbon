@@ -194,6 +194,14 @@ void CLKBUF_X1 ( int A, int* Z){
  *Z = A;
 }
 
+void CLKBUF_X12 ( int A, int* Z){
+ *Z = A;
+}
+
+void CLKBUF_X16 ( int A, int* Z){
+ *Z = A;
+}
+
 void CLKBUF_X2 ( int A, int* Z){
  *Z = A;
 }
