@@ -198,10 +198,12 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
         inp_parse_format = inp_float_parse_format
         outp_type = outp_float_type
         outp_parse_format = outp_float_parse_format
-        bfloat_conversion = ""
+        fp16_conversion = ""
+        mantissa_definition = "unsigned short mantissa = (data.bits >> (23 - MANTISSA_BITS)) & ((1 << MANTISSA_BITS) - 1);"
 
         if netlist.netlist_data['floating_point']['format'] == 'FP16':
-            bfloat_conversion = """
+            mantissa_definition = "unsigned int mantissa = data.bits & 0x7FFFFF;  // 23-bit mantissa"
+            fp16_conversion = """
     if (exponent == 0xFF) {
         exponent = 0x1F;  // Handle infinity or NaN
         if (mantissa) mantissa = 0x200;  // NaN case
@@ -209,6 +211,44 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
         exponent = 0;  // Handle zero or denormalized numbers
     } else {
         exponent = exponent - 127 + 15;  // Adjust exponent for FP16
+
+        
+
+
+        // Handle overflow and underflow for exponent
+        if (exponent >= (1 << EXPONENT_BITS) - 1) {  // Exponent overflow (FP16 max is 31)
+            exponent = (1 << EXPONENT_BITS) - 1;  // Set to infinity
+            mantissa = 0;
+        } else if (exponent <= 0) {  // Underflow/denormals
+            exponent = 0;
+            mantissa = 0;  // Set to zero for simplicity (could handle denormals better)
+        } else {
+            // Truncate and round the mantissa from 23 bits (FP32) to 10 bits (FP16)
+            unsigned int mantissa_fp16 = mantissa >> (23 - MANTISSA_BITS);  // Take the top 10 bits
+
+            // Get the rounding bit (the first bit after the 10th mantissa bit)
+            unsigned int rounding_bit = (mantissa >> (23 - MANTISSA_BITS - 1)) & 1;
+            unsigned int remaining_bits = mantissa & ((1 << (23 - MANTISSA_BITS - 1)) - 1);
+
+            // Round-to-nearest-even:
+            if (rounding_bit == 1 && (remaining_bits > 0 || (mantissa_fp16 & 1))) {
+                // If rounding bit is 1 and there's something left, or it's a tie and mantissa_fp16 is odd
+                mantissa_fp16++;
+            }
+
+            // Handle mantissa overflow due to rounding
+            if (mantissa_fp16 == (1 << MANTISSA_BITS)) {  // Mantissa overflow
+                mantissa_fp16 = 0;  // Reset mantissa
+                exponent++;  // Increment exponent
+            }
+
+            mantissa = mantissa_fp16;
+        }
+
+        
+
+
+
     }"""
 
         defines = f"#define EXPONENT_BITS {exp_bits}\n"
@@ -219,8 +259,8 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
         if netlist.netlist_data['floating_point']['format'] != 'FP32':
             floattobinary_conversion = f"""unsigned short sign = (data.bits >> 31) & 1;
     unsigned short exponent = (data.bits >> 23) & 0xFF;
-    unsigned short mantissa = (data.bits >> (23 - MANTISSA_BITS)) & ((1 << MANTISSA_BITS) - 1);
-    {bfloat_conversion}
+    {mantissa_definition}
+    {fp16_conversion}
 
     unsigned short value = (sign << (EXPONENT_BITS + MANTISSA_BITS)) | (exponent << MANTISSA_BITS) | mantissa;"""
 
@@ -328,6 +368,10 @@ void floattobinary({inp_float_type} num, int *binary, int signed_inputs) {{
     data.input = num;
     {floattobinary_conversion}
 
+    // Verify the original conversion to FP32
+	// for (int c = 31; c >= 0; c--) printf("%d", (data.bits >> c) & 1);
+	// printf("\\n");
+
     // Convert bits to binary array
     for (int c = 0; c < TOTAL_BITS; c++) {{
         binary[c] = (value >> c) & 1;
@@ -385,12 +429,24 @@ void floattobinary({inp_float_type} num, int *binary, int signed_inputs) {{
 		mantissa += binary[MANTISSA_BITS - 1 - i] * (1.0 / (1 << (i + 1)));
 	}}
 	mantissa = 1.0 + mantissa;
+	// printf("mantissa = %lf | exponent = %d | sign = %d\\n", mantissa, exponent, sign);
 
-	if ( (exponent == 0) || (exponent == (1 << EXPONENT_BITS) - 1) ) {{
-		// This is a simplification of all edge cases
+	if (exponent == (1 << EXPONENT_BITS) - 1) {{
 		result = 0.0;
-	}} else {{
-		result = (1 << exponent) * mantissa;
+	}}
+	else if (exponent == 0) {{
+		if (mantissa == 0.0) {{
+			result = 0.0;
+		}} else {{
+			result = mantissa;
+        }}
+	}} 
+    else {{
+        if (exponent > 0) {{
+			result = mantissa * (1 << exponent);
+		}} else {{
+			result = mantissa / (1 << -exponent);
+		}}
 	}}
     if (sign) {{
         result = -result;
@@ -479,6 +535,8 @@ void filetest(int ax_values[], double *error) {{
             }}
             if (nabs > max_error) {{
                 max_error = nabs;
+                // For debugging the maximum produced error
+				// printf("%d_{fscanf_1[:-1]}{input_file_separator}%{outp_parse_format}\\n", i, {', '.join(netlist.netlist_data['unique_inputs'])}, y_true, res);
             }}
 
             err++;
@@ -525,7 +583,7 @@ void filetest(int ax_values[], double *error) {{
 }}
 
 // void main(int argc, char *argv[]) {{
-//     int binary[{insize}] = {{1,1,0,0,1,0,1,1,0,0,0,0,0,0,0,0}}; // supposed to give -8388608.0
+//     int binary[32] = {{0,0,0,0,1,0,1,0,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1}};
 //     int signed_outputs = 0;
 //     {outp_float_type} res = binarytofloat(binary, signed_outputs);
 //     printf("Result: %{outp_float_parse_format}\\n", res);

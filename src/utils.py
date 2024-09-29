@@ -36,6 +36,7 @@ __all__ = [
     'get_overrides', 'get_cp_net_indices',
     'forward',
     'get_mult_table',
+    'check_is_fp', 'check_fp_format'
 ]
 
 logger = logging.getLogger(__name__)
@@ -714,3 +715,38 @@ def get_mult_table(netlist, graph):
             logger.info(f"{input1} x {input2} = {res} ({input1*input2})")
 
     return table
+
+
+def check_is_fp(circuit_name):
+    """Check if the circuit uses floating-point arithmetic"""
+    hdl_file = os.path.join(project_dir, 'circuits', circuit_name, f'top.v')
+    with open(hdl_file, 'r') as f:
+        hdl = f.read()
+    
+    if re.search("parameter EXP_WIDTH", hdl) and re.search("parameter MANT_WIDTH", hdl):
+        return True
+    return False
+
+
+def check_fp_format(circuit_name):
+    """Get the information about the floating-point arithmetic of a circuit"""
+    hdl_file = os.path.join(project_dir, 'circuits', circuit_name, f'top.v')
+    with open(hdl_file, 'r') as f:
+        hdl = f.read()
+
+    sign_bits = 1
+    exp_width = re.search("parameter EXP_WIDTH\s*=\s*(\d+)", hdl).group(1)
+    exp_width = int(exp_width)
+    mant_width = re.search("parameter MANT_WIDTH\s*=\s*(\d+)", hdl).group(1)
+    mant_width = int(mant_width)
+
+    if exp_width == 8 and mant_width == 23:
+        format = 'FP32'
+    elif exp_width == 5 and mant_width == 10:
+        format = 'FP16'
+    elif exp_width == 8 and mant_width == 7:
+        format = 'bfloat16'
+    else:
+        raise ValueError(f"Unsupported floating-point format: {exp_width}E{mant_width}M")
+    
+    return format, sign_bits, exp_width, mant_width

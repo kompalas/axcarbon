@@ -98,7 +98,7 @@ def translate_chromosome(chromosome, candidates, variables_range):
 
 
 def calc_fitness(chromosome, candidates, variables_range, cancel_dict, netlist, graph,
-                 error_metric=None, hw_metric=None, **kwargs):
+                 error_metric=None, hw_metric=None, error_constraint=None, hw_constraint=None, **kwargs):
     """Single objective function to return all objective values:
         Accuracy, nominal delay and standard deviation of critical path"""
 
@@ -122,16 +122,6 @@ def calc_fitness(chromosome, candidates, variables_range, cancel_dict, netlist, 
         )
         error = errors.get(error_metric)
 
-    # TODO: Find a better way to constrain the error, this only works with a baseline file that contains min/max values
-    # # mandatory constraint: if error exceeds the maximum error, return worst fitness
-    # if 'baseline_data' in kwargs and error > kwargs['baseline_data']['Error']['max']:
-    #     return MAX_ERROR, MAX_DELAY, MAX_STDEV
-
-    # # apply threshold on error: if violated, return worst values for all metrics
-    # if 'constrained' in kwargs and 'baseline_data' in kwargs:
-    #     if error > kwargs['baseline_data']['Error']['max'] / kwargs['constrained']:
-    #         return MAX_ERROR, MAX_DELAY, MAX_STDEV
-
     # calculate hardware metric
     hw_value = MAX_DELAY
     if hw_metric is not None:
@@ -141,6 +131,10 @@ def calc_fitness(chromosome, candidates, variables_range, cancel_dict, netlist, 
             hw_value = calc_area(graph, ng)
         elif hw_metric == HW_Metric.Power:
             raise NotImplementedError("Power calculation is not implemented yet.")
+
+    # apply threshold on error and HW value: if violated, return worst values for all metrics
+    if (error_constraint is not None and error > error_constraint) or (hw_constraint is not None and hw_value > hw_constraint):
+        return MAX_ERROR, MAX_DELAY
 
     if 'write_verilog_to' in kwargs:
         netlist.build_vfile(

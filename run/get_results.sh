@@ -12,7 +12,7 @@ maindir="$HOME/axcarbon"
 top_design="top"
 get_error_from="gate_level_simulations_ieee754"  # options: gate_level_simulations, c_simulations, gate_level_simulations_ieee754
 use_eval_inputs="true"  # if "true", the evaluation inputs will be used (instead of the ones used during optimization) 
-
+ieee754_format="FP32"
 
 ############## Test Directory ###################
 
@@ -174,7 +174,8 @@ if [[ ${expdir: -1} == "/" ]]; then
 fi
 exp_name="${expdir##*/}"
 # figure out circuit name from current directory
-circuit="$(echo $expdir | awk -F'_' '{for (i=1; i<=NF; i++) if ($i ~ "ga") print $(i+1)}')"
+# circuit="$(echo $expdir | awk -F'' '{for (i=1; i<=NF; i++) if ($i ~ "ga") print $(i+1)}')"
+circuit=$(echo 'saved_logs/ga_macfp32_14nm___2024.09.27-21.56.03.414/' | awk -F'/' '{split($2, arr, "__"); print arr[1]}' | awk  '{gsub("ga_", "", $0); print}')
 circdir="$maindir/circuits/$circuit"
 
 # results directory and file
@@ -259,10 +260,10 @@ hw_metric="$(grep -oP "(?<=hw_metric': <HW_Metric.)[^:]*" "$exp_logfile" | tr '[
 error_metric="$(grep -oP "(?<=error_metric': <ErrorMetric.)[^:]*" "$exp_logfile" | tr '[:upper:]' '[:lower:]')"
 
 # create approximate netlists from GA results and evaluate them
-python3 $maindir/src/evaluation/ga_pareto.py \
-    --experiment $expdir \
-    --results-directory $expdir/netlists \
-    --generation $which_gen
+# python3 $maindir/src/evaluation/ga_pareto.py \
+#     --experiment $expdir \
+#     --results-directory $expdir/netlists \
+#     --generation $which_gen
 
 # iterate over each approximate netlist
 for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
@@ -270,6 +271,10 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
     cp $netl hdl/top.v
     netl_id="${netl##*approx}"
     netl_id="${netl_id%.sv}"
+
+    # if [ $netl_id -ne 0 ] && [ $netl_id -ne 15 ]; then
+    #     continue
+    # fi
 
     # synthesis to get area
     make dcsyn
@@ -348,17 +353,7 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
         rm -f $ofile
 
     elif [[ "$get_error_from" == "gate_level_simulations_ieee754" ]]; then
-
-        # get the FP format
-        bits="$(grep "parameter BIT_WIDTH" $testdir/sim/top_tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
-        if [[ $bits -eq 32 ]]; then
-            format="FP32"
-        elif [[ $bits -eq 16 ]]; then
-            format="bfloat16"
-        else
-            echo "Error: Unsupported bit width: $bits"
-            exit 1
-        fi
+        mkdir -p $expdir/errors
 
         # convert outputs and expected outputs to IEEE754 format
         python3 $maindir/src/numerical_conversion.py \
@@ -369,7 +364,7 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
             --output-file $testdir/sim/output_ieee754.txt \
             --input-separator underscore \
             --output-separator underscore \
-            --ieee754-format $format
+            --ieee754-format $ieee754_format
         python3 $maindir/src/numerical_conversion.py \
             --mode convert \
             --convert-from binary \
@@ -378,7 +373,7 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
             --output-file $testdir/sim/expected_ieee754.txt \
             --input-separator underscore \
             --output-separator underscore \
-            --ieee754-format $format
+            --ieee754-format $ieee754_format
 
         # get the output width
         if grep -q "parameter OUT_WIDTH" $testdir/sim/top_tb.v; then
@@ -397,16 +392,16 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
         python3 $maindir/src/evaluation/errors.py \
             --output-file $testdir/sim/output_ieee754.txt \
             --expected-file $testdir/sim/expected_ieee754.txt \
-            --output-width $outwidth 2>&1 | tee $expdir/errors_${netl_id}.txt
+            --output-width $outwidth 2>&1 | tee $expdir/errors/errors_${netl_id}.txt
 
-        error_rate="$(awk '/Error Rate:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
-        mre="$(awk '/MRE:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
-        med="$(awk '/^MED:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
-        nmed="$(awk '/NMED:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
-        min_error="$(awk '/Min Error:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
-        max_error="$(awk '/Max Error:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
+        error_rate="$(awk '/Error Rate:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
+        mre="$(awk '/MRE:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
+        med="$(awk '/^MED:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
+        nmed="$(awk '/NMED:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
+        min_error="$(awk '/Min Error:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
+        max_error="$(awk '/Max Error:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
         range="$(awk -v max=$max_error -v min=$min_error 'BEGIN {printf "%.3e", max-min}')"
-        variance="$(awk '/Variance:/ {print $NF}' $expdir/errors_${netl_id}.txt)"
+        variance="$(awk '/Variance:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
 
     else
         echo "Wrong variable: get_error_from is set to $get_error_from. Options are: gate_level_simulations, c_simulations, c_simulations_ieee754"
@@ -434,3 +429,5 @@ python3 $maindir/src/evaluation/filter_pareto_csv.py \
     --input-csv-file $resfile \
     --hw-metric $hw_metric \
     --error-metric $error_metric
+
+curl -d "GA evaluation finished on $expdir" ntfy.sh/axcarbon

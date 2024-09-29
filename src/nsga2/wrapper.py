@@ -36,7 +36,8 @@ class EvolutionWrapper:
             graph=graph,
             error_metric=args.error_metric,
             hw_metric=args.hw_metric,
-            constrained=args.constrained,
+            error_constraint=args.error_constraint,
+            hw_constraint=args.hw_constraint,
         )
         problem = Problem(
             objective_functions=[objective_function, null_objective_function],  # workaround to convey 2 objectives

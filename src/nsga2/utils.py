@@ -45,9 +45,6 @@ def ga_args(parser):
     ga_args.add_argument("--approximation-type", dest="approx_type", type=approx_type_arg,
                          help="Define the type of approximation techniques. Possbile choices are gate-level pruning (glp) "
                               "or gate-level pruning with precision scaling (glp-pc)")
-    ga_args.add_argument("--constrained", type=int, default=1,
-                         help="Set the dividing factor to the maximum baseline error as a constraint. Solutions of "   
-                              "error higher than the constraint will not be considered")
     ga_args.add_argument('--gene-type', '--gt', type=gene_type_arg, default='int', dest='gene_type',
                          help="Specify the numerical type of chromosome genes. Choices {' | '.join(str_to_gene_type_map.keys())}."
                               " Default is integer-based genes.")
@@ -66,6 +63,10 @@ def ga_args(parser):
     ga_args.add_argument("--hw-metric", dest="hw_metric", type=hw_metric_arg,
                             help="Choose the hardware metric as one of the objectives for the GA. Choices: "
                                 "{' | '.join(str_to_hw_metric_map)}. Default is delay")
+    ga_args.add_argument("--error-constraint", dest="error_constraint", type=float,
+                         help="Set the error constraint for the GA. Errors higher than this will be discarded. Default is no constraint")
+    ga_args.add_argument("--hw-constraint", dest="hw_constraint", type=float,
+                            help="Set the hardware constraint for the GA. Hardware values higher than this will be discarded. Default is no constraint")
     return parser
 
 

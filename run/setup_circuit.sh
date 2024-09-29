@@ -16,17 +16,15 @@ circdir="$maindir/circuits/$circuit"
 enable_safety_bits="0"
 safety_bits="1"
 
+# floatin-pont format: if it is empty, the circuit is not floating-point
+# otherwise, it should be either "FP32", "FP16" or "bfloat16"
+floating_point_format="bfloat16"
+
 mkdir -p $maindir/hdl
 mkdir -p $maindir/sim
 
 # get rtl description and synthesize design
 cp $circdir/top.v hdl/
-
-# check if the circuit is floating-point
-is_floating_point="false"
-if echo $circuit | grep -q "^fp"; then
-    is_floating_point="true"
-fi
 
 # create initial inputs file, if input bitwidth is specified
 if [[ ! "$inputs_exist" == "True" ]]; then
@@ -56,37 +54,24 @@ if [[ ! "$inputs_exist" == "True" ]]; then
         signed="--signed"
     fi
 
-    if [ $is_floating_point == "true" ]; then
+    if [ $floating_point_format != "" ]; then
         input_type="ieee754"
         convert_to="ieee754"
         signed="--signed"
 
         if echo $circuit | grep -q "mac"; then
-            override_range=(--override-range "-10000 10000")
+            if [ $floating_point_format == "FP32" ]; then
+                override_range=(--override-range "-10 10")
+            elif [ $floating_point_format == "FP16" ]; then
+                override_range=(--override-range "-10 10")
+            elif [ $floating_point_format == "bfloat16" ]; then
+                override_range=(--override-range "-10 10")
+            else
+                echo "Error: Unsupported floating-point format: $floating_point_format"
+                exit 1
+            fi
         fi
-
-        # get the input width
-        if grep -q "parameter INP_WIDTH" $circdir/tb.v; then
-            param="INP_WIDTH"
-        elif grep -q "parameter inpwidth" $circdir/tb.v; then
-            param="inpwidth"
-        elif grep -q "parameter BIT_WIDTH" $circdir/tb.v; then
-            param="BIT_WIDTH"
-        else
-            echo "Error: Could not find the output width parameter in the testbench"
-            exit 1
-        fi
-        # get the FP format
-        bits="$(grep "parameter $param" $circdir/tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
-        if [[ $bits -eq 32 ]]; then
-            format="FP32"
-        elif [[ $bits -eq 16 ]]; then
-            format="bfloat16"
-        else
-            echo "Error: Unsupported bit width: $bits"
-            exit 1
-        fi
-        fp_format="--ieee754-format $format"
+        fp_format="--ieee754-format $floating_point_format"
     fi
 
     # generate inputs for optimization dataset
@@ -98,7 +83,7 @@ if [[ ! "$inputs_exist" == "True" ]]; then
         --bits ${@:3:$bits_num} \
         --safety-bits ${safety_bits_array[@]} \
         --out-file sim/inputs.txt \
-        $signed "${override_range[@]}"
+        $signed $fp_format "${override_range[@]}"
 
     cp $circdir/tb.v sim/top_tb.v
     simclk="10.0"
@@ -135,7 +120,7 @@ if [[ ! "$inputs_exist" == "True" ]]; then
         --bits ${@:3:$bits_num} \
         --safety-bits ${safety_bits_array[@]} \
         --out-file sim/inputs.txt \
-        $signed "${override_range[@]}"
+        $signed $fp_format "${override_range[@]}"
 
     rm -rf work_lib/
     rm -rf rtl_simv.daidir/
@@ -153,9 +138,8 @@ if [[ ! "$inputs_exist" == "True" ]]; then
         --input-separator underscore \
         --output-separator underscore \
         $fp_format
-
 fi
-
+exit 1
 # get baseline measurements for the circuit
 source $maindir/run/baseline_eval.sh $circuit $library
 

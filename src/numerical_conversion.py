@@ -78,7 +78,7 @@ def ieee754_to_binary(float_num, precision='FP32'):
         # We will handle it similar to FP32 but only extract the first 16 bits (sign, exponent, 7 bits of mantissa).
         format_char = 'f'  # Start with 32-bit single-precision
     else:
-        raise ValueError("Unsupported precision. Use 'FP32', 'FP16', or 'bfloat16'.")
+        raise ValueError(f"Unsupported precision {precision}. Use 'FP32', 'FP16', or 'bfloat16'.")
 
     # Convert the float to raw binary bytes
     if precision == 'bfloat16':
@@ -137,7 +137,11 @@ def convert_binary_to_decimal_ieee754(args):
             if args.keep_output_only:
                 floats = [floats[-1]]
 
-            f.write(args.output_separator.join(list(map(str, floats))) + '\n')  # Write the converted numbers to the output file
+            # Write the converted numbers to the output file
+            if args.ieee754_format == 'FP32':
+                f.write(args.output_separator.join([f"{float:.5f}" for float in floats]) + '\n')
+            else:
+                f.write(args.output_separator.join([f"{float:.3f}" for float in floats]) + '\n')
 
     print(f'Converted inputs/outputs to IEEE-754 format and saved to: {args.output_file}')
 
@@ -183,6 +187,7 @@ def check_inputs_ieee754(args):
     print(f'Total number of inputs: {line_idx + 1:,}')
     print(f'Number of errors: {errors:,}')
     print(f'Percentage of errors: {100 * errors/(line_idx + 1):.2f}%')
+    return
 
     if limits is not None:
         wrong_predictions = [x for x in wrong_predictions if limits[0] < x < limits[1]]
@@ -232,16 +237,23 @@ def check_inputs_ieee754(args):
 
 
 if __name__ == '__main__':
+
+    # import sys
+    # fnum = sys.argv[1]
+    # bnum = ieee754_to_binary(float(fnum), precision='FP32')
+    # print(bnum)
+    # exit()
+
     parser = argparse.ArgumentParser(description='Numerical conversion utilities')
-    parser.add_argument('--mode', required=True, choices=['convert', 'check'], help='Conversion mode')
-    parser.add_argument('--convert-from', choices=['binary', 'decimal', 'ieee754'], help='Convert from this format')
-    parser.add_argument('--convert-to', choices=['binary', 'decimal', 'ieee754'], help='Convert to this format')
+    parser.add_argument('--mode', choices=['convert', 'check'], default='convert', help='Conversion mode')
+    parser.add_argument('--convert-from', choices=['binary', 'decimal', 'ieee754'], default='binary', help='Convert from this format')
+    parser.add_argument('--convert-to', choices=['binary', 'decimal', 'ieee754'], default='ieee754', help='Convert to this format')
     parser.add_argument('--input-file', type=str, help='Input file')
     parser.add_argument('--output-file', type=str, help='Output file')
     parser.add_argument('--ieee754-format', choices=['FP32', 'FP16', 'bfloat16'], default='bfloat16', help='Floating point format')
     parser.add_argument('--keep-output-only', action='store_true', help='Keep only the output in the output file')
-    parser.add_argument('--input-separator', choices=["tab", "space", "underscore", "none"], default='tab', help='Separator used in the input file')
-    parser.add_argument('--output-separator', choices=["tab", "space", "underscore", "none"], default='tab', help='Separator used in the output file')
+    parser.add_argument('--input-separator', choices=["tab", "space", "underscore", "none"], default='underscore', help='Separator used in the input file')
+    parser.add_argument('--output-separator', choices=["tab", "space", "underscore", "none"], default='underscore', help='Separator used in the output file')
 
     args = parser.parse_args()
 

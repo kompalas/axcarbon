@@ -16,19 +16,20 @@ python3 $maindir/main.py \
 	--libfile $library \
         --name ga_${circuit} \
         --ga \
-        --generations 50 \
+        --generations 80 \
         --population-size 100 \
         --error-metric mre \
         --hw-metric area \
+        --error-constraint 0.05 \
         --gene-type discrete \
         --approximation-type glp \
-        --initial-weight 100 \
+        --initial-weight 200 \
         --threads 10 \
         --save-frequency 5 \
         --tournament-participants 0.2 \
         --tournament-probability 0.9 \
         --crossover-probability 0.8 \
-        # --mutation-probability 0.01 \
+        --mutation-probability 0.05 \
 
 results=$(grep -A 2 "Pareto front contains" latest_log_file | tail -n 3)
 curl -d "GA ($circuit) finished: $results" ntfy.sh/axcarbon

@@ -7,7 +7,7 @@ from time import time
 from copy import deepcopy
 from src import project_dir
 from src.cfile import build_c_netlist_text, build_c_netlist_text_main_structure, create_shared_cfile
-from src.utils import signed_io_verilog
+from src.utils import signed_io_verilog, check_is_fp, check_fp_format
 
 __all__ = ['Netlist', 'parse_verilog_netlist']
 
@@ -34,15 +34,16 @@ class Netlist:
 
         # figure out if the circuit is floating point
         floating_point_dict = {}
-        floating_point_dict['is_fp'] = re.search('^fp', circuit.lower()) is not None
+        floating_point_dict['is_fp'] = check_is_fp(circuit)
         if floating_point_dict['is_fp']:
             bits = set(self.netlist_data['bits_per_unique_input'].values()).pop()
             assert bits in [16, 32], "Floating point bit width must be 16 or 32"
             floating_point_dict['bits'] = bits
             # NOTE: FP16 may be included in the future
-            floating_point_dict['format'] = 'FP32' if bits == 32 else 'bfloat16'
-            floating_point_dict['sign_bits'] = 1
-            floating_point_dict['exponent_bits'] = 8
+            format, sign_bits, exp_bits, mantissa_bits = check_fp_format(circuit)
+            floating_point_dict['format'] = format
+            floating_point_dict['sign_bits'] = sign_bits
+            floating_point_dict['exponent_bits'] = exp_bits
             floating_point_dict['mantissa_bits'] = bits - floating_point_dict['sign_bits'] - floating_point_dict['exponent_bits']
         self.netlist_data['floating_point'] = floating_point_dict
 

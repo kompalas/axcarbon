@@ -1,0 +1,2 @@
+SynClk	Area	Delay	Error	Power
+1.29	465.911886	1.290	0.000e+00	3.233e-03
