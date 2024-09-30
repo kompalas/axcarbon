@@ -30,6 +30,7 @@ python3 $maindir/main.py \
         --tournament-probability 0.9 \
         --crossover-probability 0.8 \
         --mutation-probability 0.05 \
+        --use-binary-inputs
 
 results=$(grep -A 2 "Pareto front contains" latest_log_file | tail -n 3)
 curl -d "GA ($circuit) finished: $results" ntfy.sh/axcarbon

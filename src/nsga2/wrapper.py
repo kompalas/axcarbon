@@ -38,6 +38,7 @@ class EvolutionWrapper:
             hw_metric=args.hw_metric,
             error_constraint=args.error_constraint,
             hw_constraint=args.hw_constraint,
+            use_binary_inputs=args.use_binary_inputs,
         )
         problem = Problem(
             objective_functions=[objective_function, null_objective_function],  # workaround to convey 2 objectives

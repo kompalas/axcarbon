@@ -1,5 +1,93 @@
 import math
 import argparse
+from functools import partial
+from src.numerical_conversion import binary_to_decimal, binary_to_ieee754
+
+
+def calculate_error_metrics_from_arrays(expected, output, output_bitwidth=32, convert_to=None, as_dict=True):
+    # Initialize variables
+    errors = 0
+    mre = 0.0
+    med = 0.0
+    min_error = math.inf
+    max_error = 0
+    count = 0
+    sum_squared = 0  # For variance calculation
+    sum_diff = 0     # For variance calculation
+    med_max = pow(2, output_bitwidth) - 1
+
+    # Define conversion function
+    if convert_to is None:
+        convert_to_f = lambda x: x
+    elif convert_to == 'FP32':
+        convert_to_f = partial(binary_to_ieee754, precision='FP32')
+    elif convert_to == 'FP16':
+        convert_to_f = partial(binary_to_ieee754, precision='FP16')
+    elif convert_to == 'bfloat16':
+        convert_to_f = partial(binary_to_ieee754, precision='bfloat16')
+    elif convert_to == 'decimal':
+        convert_to_f = binary_to_decimal
+    else:
+        raise ValueError(f"Invalid conversion type {convert_to}")
+
+    for exp, out in zip(expected, output):
+        count += 1
+
+        exp = convert_to_f(exp)
+        out = convert_to_f(out)
+
+        if out != exp:
+            diff = abs(out - exp)
+
+            # Update min and max error
+            if diff < min_error:
+                min_error = diff
+            if diff > max_error:
+                max_error = diff
+
+            # Update error metrics
+            errors += 1
+            if exp != 0:
+                mre += diff / abs(exp)
+            med += diff
+
+            # Update variance variables
+            sum_diff += diff
+            sum_squared += diff ** 2
+
+        else:
+            min_error = 0
+
+    # Calculate error metrics
+    total_inputs = count
+    error_rate = errors / total_inputs if total_inputs > 0 else 0.0
+    mean_relative_error = mre / total_inputs if total_inputs > 0 else 0.0
+    mean_error_distance = med / total_inputs if total_inputs > 0 else 0.0
+    normalized_med = (med / total_inputs) / med_max if total_inputs > 0 and med_max != 0 else 0.0
+    range_error = max_error - min_error
+
+    # Calculate variance
+    if total_inputs > 0:
+        mean_diff = sum_diff / total_inputs
+        variance = (sum_squared / total_inputs) - (mean_diff ** 2)
+    else:
+        variance = 0.0
+
+    # Store results in a dictionary
+    if as_dict:
+        return {
+            'total_inputs': total_inputs,
+            'error_rate': error_rate,
+            'mean_relative_error': mean_relative_error,
+            'mean_error_distance': mean_error_distance,
+            'normalized_mean_error_distance': normalized_med,
+            'min_error': min_error,
+            'max_error': max_error,
+            'range': range_error,
+            'error_variance': variance,
+        }
+
+    return total_inputs, error_rate, mean_relative_error, mean_error_distance, normalized_med, min_error, max_error, range_error, variance
 
 
 def calculate_error_metrics(expected_file, output_file, output_bitwidth=32):

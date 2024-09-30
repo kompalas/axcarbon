@@ -67,6 +67,8 @@ def ga_args(parser):
                          help="Set the error constraint for the GA. Errors higher than this will be discarded. Default is no constraint")
     ga_args.add_argument("--hw-constraint", dest="hw_constraint", type=float,
                             help="Set the hardware constraint for the GA. Hardware values higher than this will be discarded. Default is no constraint")
+    ga_args.add_argument("--use-binary-inputs", action='store_true', dest='use_binary_inputs',
+                            help="Set to use binary inputs for the error calculation. Default is False")
     return parser
 
 

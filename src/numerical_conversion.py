@@ -2,6 +2,7 @@ import argparse
 import struct
 import os
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def decimal_to_binary(decimal, bitwidth):
@@ -30,6 +31,10 @@ def binary_to_ieee754(binary_str, precision='FP32'):
 
     total_bits = 1 + exp_bits + mantissa_bits
     
+    # convert to binary strinng if not already
+    if isinstance(binary_str, (list, tuple, np.ndarray)):
+        binary_str = ''.join(str(x) for x in binary_str)
+
     # Pad the binary string to the correct size if needed
     binary_str = binary_str.zfill(total_bits)
 

@@ -6,10 +6,12 @@ import random
 import logging
 import ctypes
 import os.path
+import numpy as np
 from src import project_dir
 from src import MAX_ERROR, MAX_DELAY, MAX_STDEV
 from src.utils import check_cancel_gates
 from src.nsga2.utils import ErrorMetric, HW_Metric
+from src.evaluation.errors import calculate_error_metrics_from_arrays
 
 __all__ = [
     'calc_error_ctypes', 'calc_delay',
@@ -20,7 +22,7 @@ __all__ = [
 logger = logging.getLogger(__name__)
 
 
-def calc_error_ctypes(chromosome, netlist, shared_location=None):
+def calc_error_ctypes(chromosome, netlist, shared_location=None, use_binary_inputs=False):
     """Calculate approximation error of netlist with ctypes"""
     shared_location = shared_location or os.path.join(project_dir, 'circuits', netlist.circuit)
     shared_location += '/' if shared_location[-1] != '/' else ''
@@ -28,16 +30,43 @@ def calc_error_ctypes(chromosome, netlist, shared_location=None):
     shared_lib = ctypes.CDLL(shared_location + f'_top.so')
     # define the arrays for the approximate values and the error measurements
     ChromArray = ctypes.c_int * len(chromosome)
-    ErrorArray = ctypes.c_double * (1 + len(ErrorMetric))
-    # insert them as arguments to the ctypes function
     arguments = ChromArray(*chromosome)
-    initial_values = [-1.0] * (1 + len(ErrorMetric))
-    error = ErrorArray(*initial_values)
-    # call the function to populate error array
-    shared_lib.filetest(arguments, error)
 
-    # unpack all error values tracked from the simulation
-    num_inputs, error_rate, mre, med, nmed, min_error, max_error, range, variance = error
+    if use_binary_inputs:
+        MAX_LINES = 100000
+        MAX_LEN = max(netlist.netlist_data['bits_per_unique_output'].values())
+
+        # Create numpy arrays to store the results
+        result_storage = np.zeros((MAX_LINES, MAX_LEN), dtype=np.int32)
+        true_output_storage = np.zeros((MAX_LINES, MAX_LEN), dtype=np.int32)
+        # Convert the numpy array to a ctypes pointer
+        result_storage_ctypes = result_storage.ctypes.data_as(ctypes.POINTER((ctypes.c_int * MAX_LEN)))
+        true_output_storage_ctypes = true_output_storage.ctypes.data_as(ctypes.POINTER((ctypes.c_int * MAX_LEN)))
+
+        # Now call the C function
+        shared_lib.binary_filetest(arguments, result_storage_ctypes, true_output_storage_ctypes)
+
+        # Calculate error metrics
+        convert_to = 'decimal'
+        if netlist.netlist_data['floating_point']['is_fp']:
+            convert_to = netlist.netlist_data['floating_point']['format']
+        errors = calculate_error_metrics_from_arrays(true_output_storage, result_storage,
+                                                     output_bitwidth=MAX_LEN,
+                                                     convert_to=convert_to,
+                                                     as_dict=False)
+        num_inputs, error_rate, mre, med, nmed, min_error, max_error, range, variance = errors
+
+    else:
+        ErrorArray = ctypes.c_double * (1 + len(ErrorMetric))
+        # insert them as arguments to the ctypes function
+        initial_values = [-1.0] * (1 + len(ErrorMetric))
+        error = ErrorArray(*initial_values)
+        # call the function to populate error array
+        shared_lib.filetest(arguments, error)
+
+        # unpack all error values tracked from the simulation
+        num_inputs, error_rate, mre, med, nmed, min_error, max_error, range, variance = error
+
     return {ErrorMetric.ErrorRate: error_rate,
             ErrorMetric.MRE: mre,
             ErrorMetric.MED: med,
@@ -119,6 +148,7 @@ def calc_fitness(chromosome, candidates, variables_range, cancel_dict, netlist, 
             chromosome=chromosome, netlist=netlist,
             shared_location=re.search("(.*)/[^/]*$", kwargs['write_cfile_to']).group(1)
             if 'write_cfile_to' in kwargs else None,
+            use_binary_inputs=kwargs.get('use_binary_inputs', False)
         )
         error = errors.get(error_metric)
 

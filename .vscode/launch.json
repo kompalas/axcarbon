@@ -17,8 +17,8 @@
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "args": [
-                "--circuit", "fpmac16b28nm",
-                "--libfile", "fdsoi28",
+                "--circuit", "macfp16_14nm",
+                "--libfile", "variability14",
                 "--name", "ga_test",
                 "--ga",
                 "--generations", "10",
@@ -31,7 +31,8 @@
                 "--gene-type", "discrete",
                 "--initial-weight", "20",
                 "--threads", "10",
-                "--save-frequency", "5"
+                "--save-frequency", "5",
+                "--use-binary-inputs"
             ],
             "console": "integratedTerminal",
             "redirectOutput": true,

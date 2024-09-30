@@ -135,7 +135,114 @@ def build_c_netlist_text_main_structure(netlist, graph):
     return netl_c
 
 
-def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='_', add_accumulate_func=False, add_multiply_func=False):
+def build_c_netlist_binary_filetest(netlist, inputs_separator='_'):
+    inputs_file = f"{project_dir}/circuits/{netlist.circuit}/inputs.txt"
+    outputs_file = f"{project_dir}/circuits/{netlist.circuit}/outputs.txt"
+
+    output_name = next(iter(netlist.netlist_data['unique_outputs']))  # single output is expected
+    len_define = 'int ' + ', '.join([
+        f'len{i + 1}={bits}' for i, bits in enumerate(netlist.netlist_data['bits_per_unique_input'].values())
+    ]) + f', len0=outsize;'
+
+    bin_arrays_define = 'int ' + ', '.join([
+        f'{input}_bin[{bits}]' for input, bits in netlist.netlist_data['bits_per_unique_input'].items()
+    ]) + f', {output_name}_bin[outsize];'
+
+    split_binary_arrays_parse = '\n'.join([
+        f'char *{input}_str = strtok(line, "{inputs_separator}");' if i == 0 else f'\t\tchar *{input}_str = strtok(NULL, "{inputs_separator}");'
+        for i, input in enumerate(netlist.netlist_data['unique_inputs'])
+    ]) + f'\n\t\tchar *y_true_str = strtok(NULL, "{inputs_separator}");'
+
+    binary_strings_to_arrays = '\n'.join([
+        f'binary_string_to_array({input}_str, {input}_bin, &len{i+1});' if i == 0 else f'\t\t\tbinary_string_to_array({input}_str, {input}_bin, &len{i+1});'
+        for i, input in enumerate(netlist.netlist_data['unique_inputs'])
+    ]) + '\n\t\t\tbinary_string_to_array(y_true_str, y_true_bin, &len0);'
+
+    check_string_parsing = ' && '.join([
+        f'{input}_str != NULL' for input in netlist.netlist_data['unique_inputs']
+    ]) + f' && y_true_str != NULL'
+
+    debug_write_arrays_to_output_file = ''
+    for i, input in enumerate(netlist.netlist_data['unique_inputs']):
+        debug_write_arrays_to_output_file += f'''
+\t\t\t// for (int c=0; c<len{i+1}; c++)
+\t\t\t//     fprintf(fo, "%d", {input}_bin[len{i+1}-c-1]);
+\t\t\t// fprintf(fo, "{inputs_separator}");'''
+
+    unique_io = netlist.netlist_data['unique_inputs'] + netlist.netlist_data['unique_outputs']
+    io_bins = ', '.join(natsorted(io + '_bin' for io in unique_io))
+
+    data = f"""
+// Helper function to convert a binary string into an array of integers (0 or 1).
+void binary_string_to_array(char *bin_str, int bin_array[], int *len) {{
+    *len = strlen(bin_str);
+    for (int i = 0; i < *len; i++) {{
+        bin_array[i] = bin_str[*len - 1 - i] - '0'; // Convert '0' or '1' char to integer 0 or 1.
+    }}
+}}
+
+void binary_filetest(int ax_values[], int (*{output_name}_storage)[outsize], int (*y_true_storage)[outsize]) {{
+	// Storage for all result arrays from multiple iterations
+	// int {output_name}_storage[MAX_LINES][outsize];
+	// int y_true_storage[MAX_LINES][outsize];
+
+    char file[] = "{inputs_file}";
+    FILE *f = fopen(file, "r");
+    if (f == NULL)
+        exit(1);
+	// char fileo[] = "{outputs_file}";
+    // FILE *fo = fopen(fileo, "w");
+    // if (fo == NULL)
+    //    exit(1);
+
+    // Arrays to store binary numbers.
+    {bin_arrays_define}
+    int y_true_bin[outsize];
+	// Length of each binary array.
+    {len_define}
+
+    // Read each line from the file.
+    char line[MAX_LENGTH];
+	int line_count = 0;
+    while (fgets(line, sizeof(line), f)  && line_count < MAX_LINES) {{
+
+        // Remove newline character from the line, if any.
+        line[strcspn(line, "\\n")] = '\\0';
+
+		// Split the line
+        {split_binary_arrays_parse}
+
+		// Convert each binary string to an array of integers.
+        if ({check_string_parsing}) {{
+            {binary_strings_to_arrays}
+
+			{debug_write_arrays_to_output_file}
+            {netlist.circuit}_top(ax_values, {io_bins});
+        
+			// Store the result_array in the larger storage array.
+            for (int i = 0; i < outsize; i++) {{
+                {output_name}_storage[line_count][i] = {output_name}_bin[outsize - i - 1];
+			    y_true_storage[line_count][i] = y_true_bin[outsize - i - 1];
+            }}
+
+			// for(int c=0; c<outsize; c++)
+			//	fprintf(fo, "%d", y_true_bin[outsize-c-1]);
+			// fprintf(fo, "{inputs_separator}");
+			// for (int c=0; c<outsize; c++)
+			//  fprintf(fo, "%d", {output_name}_bin[outsize-c-1]);
+			// fprintf(fo, "\\n");
+
+			line_count++;
+		}}
+	}}
+
+    fclose(f);
+    // fclose(fo);
+}}"""
+    return data
+
+
+def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='_', add_accumulate_func=False, add_multiply_func=False, max_lines=100000):
     """Create the text structure outline of the C-netlist file"""
     unique_io = netlist.netlist_data['unique_inputs'] + netlist.netlist_data['unique_outputs']
     io_pointers = ', '.join(natsorted('int* ' + io for io in unique_io))
@@ -212,9 +319,6 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
     } else {
         exponent = exponent - 127 + 15;  // Adjust exponent for FP16
 
-        
-
-
         // Handle overflow and underflow for exponent
         if (exponent >= (1 << EXPONENT_BITS) - 1) {  // Exponent overflow (FP16 max is 31)
             exponent = (1 << EXPONENT_BITS) - 1;  // Set to infinity
@@ -244,10 +348,6 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
 
             mantissa = mantissa_fp16;
         }
-
-        
-
-
 
     }"""
 
@@ -299,15 +399,22 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
     ]) + rf'{input_file_separator}%{outp_parse_format}"'
     fscanf_2 = ', '.join('&' + inp for inp in netlist.netlist_data['unique_inputs'])
 
+    inputs_file = f"{project_dir}/circuits/{netlist.circuit}/{inputs_filename}"
+    outputs_file = f"{project_dir}/circuits/{netlist.circuit}/outputs.txt"
+
+    binary_filetest_c = build_c_netlist_binary_filetest(netlist, input_file_separator)
+
     data = f"""#include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <string.h>
 #include <time.h>
 #include <math.h>
 #include "library.h"
 #define MAX_LENGTH 100
 #define size {insize}
 #define outsize {outsize}
+#define MAX_LINES {max_lines}
 
 {defines}
 
@@ -502,7 +609,7 @@ void filetest(int ax_values[], double *error) {{
     int signed_inputs={signed_inputs_value};
     int signed_outputs={signed_outputs_value};
 
-    char file[] = "{project_dir}/circuits/{netlist.circuit}/{inputs_filename}";
+    char file[] = "{inputs_file}";
     FILE *f = fopen(file, "r");
     if (f == NULL)
         exit(1);
@@ -514,7 +621,7 @@ void filetest(int ax_values[], double *error) {{
     //for (j=0; j<{chromosome_length}; j++) fprintf(fax, "%d %d\\n", j, ax_values[j]);
     //fclose(fax);
     
-    //FILE *fo = fopen("{project_dir}/circuits/{netlist.circuit}/outputs.txt", "w");
+    //FILE *fo = fopen("{outputs_file}", "w");
     //if (fo == NULL)
     //    exit(1);
 
@@ -536,7 +643,7 @@ void filetest(int ax_values[], double *error) {{
             if (nabs > max_error) {{
                 max_error = nabs;
                 // For debugging the maximum produced error
-				// printf("%d_{fscanf_1[:-1]}{input_file_separator}%{outp_parse_format}\\n", i, {', '.join(netlist.netlist_data['unique_inputs'])}, y_true, res);
+				// printf("%d_{fscanf_1[1:-1]}{input_file_separator}%{outp_parse_format}\\n", i, {', '.join(netlist.netlist_data['unique_inputs'])}, y_true, res);
             }}
 
             err++;
@@ -581,6 +688,8 @@ void filetest(int ax_values[], double *error) {{
     fclose(f);
     //fclose(fo);
 }}
+
+{binary_filetest_c}
 
 // void main(int argc, char *argv[]) {{
 //     int binary[32] = {{0,0,0,0,1,0,1,0,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1}};
