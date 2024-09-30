@@ -139,7 +139,7 @@ if [[ ! "$inputs_exist" == "True" ]]; then
         --output-separator underscore \
         $fp_format
 fi
-exit 1
+
 # get baseline measurements for the circuit
 source $maindir/run/baseline_eval.sh $circuit $library
 

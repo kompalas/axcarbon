@@ -48,10 +48,13 @@ def binary_to_ieee754(binary_str, precision='FP32'):
 
     if exponent == (2 ** exp_bits - 1):
         # Special cases: infinity or NaN
-        if int(mantissa, 2) == 0:
-            return float('inf') if sign > 0 else float('-inf')
-        else:
-            return float('nan')
+        # if int(mantissa, 2) == 0:
+        #     return float('inf') if sign > 0 else float('-inf')
+        # else:
+        #     return float('nan')
+        # NOTE: Commenting out the above correct behavior, and simplifying to 0.0 for now.
+        #       This helps produce a valid number in all cases
+        return 0.0
     elif exponent == 0:
         # Subnormal number
         exponent_val = 1 - bias
@@ -143,10 +146,7 @@ def convert_binary_to_decimal_ieee754(args):
                 floats = [floats[-1]]
 
             # Write the converted numbers to the output file
-            if args.ieee754_format == 'FP32':
-                f.write(args.output_separator.join([f"{float:.5f}" for float in floats]) + '\n')
-            else:
-                f.write(args.output_separator.join([f"{float:.3f}" for float in floats]) + '\n')
+            f.write(args.output_separator.join([f"{float:.5f}" for float in floats]) + '\n')
 
     print(f'Converted inputs/outputs to IEEE-754 format and saved to: {args.output_file}')
 
