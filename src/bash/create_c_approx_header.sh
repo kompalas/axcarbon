@@ -17,7 +17,8 @@ fi
 
 maindir="$HOME/axcarbon"
 # figure out circuit name from current directory
-circuit="$(echo $expdir | awk -F'_' '{for (i=1; i<=NF; i++) if ($i ~ "ga") print $(i+1)}')"
+exp_name="${expdir##*/}"
+circuit=$(echo $exp_name | awk '{split($1, arr, "__"); print arr[1]}' | awk  '{gsub("ga_", "", $0); print}')
 circdir="$maindir/circuits/$circuit"
 
 # iterate over each approximate netlist

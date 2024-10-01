@@ -732,7 +732,7 @@ void main(int argc, char *argv[]) {{
     {outp_type} res;
     int signed_inputs={signed_inputs_value};
     int signed_outputs={signed_outputs_value};
-    int ax_values[{chromosome_length}] = {{-1}};
+    int ax_values[{chromosome_length}]; for(int i=0; i<{chromosome_length}; i++) ax_values[i] = -1;
     res = top_{netlist.circuit}(ax_values, {', '.join(netlist.netlist_data['unique_inputs'])}, signed_inputs, signed_outputs);
     return res;
 }}
@@ -744,7 +744,7 @@ void main(int argc, char *argv[]) {{
     {outp_type} res;
     int signed_inputs={signed_inputs_value};
     int signed_outputs={signed_outputs_value};
-    int ax_values[{chromosome_length}] = {{-1}};
+    int ax_values[{chromosome_length}] = -1;
     res = top_{netlist.circuit}(ax_values, {', '.join(netlist.netlist_data['unique_inputs'])}, signed_inputs, signed_outputs);
     return res;
 }}
