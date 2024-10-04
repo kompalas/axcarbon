@@ -259,10 +259,12 @@ hw_metric="$(grep -oP "(?<=hw_metric': <HW_Metric.)[^:]*" "$exp_logfile" | tr '[
 error_metric="$(grep -oP "(?<=error_metric': <ErrorMetric.)[^:]*" "$exp_logfile" | tr '[:upper:]' '[:lower:]')"
 
 # create approximate netlists from GA results and evaluate them
-python3 $maindir/src/evaluation/ga_pareto.py \
-    --experiment $expdir \
-    --results-directory $expdir/netlists \
-    --generation $which_gen
+# TODO: This also accepts a "--to-keep" argument, with the number of solutions to evaluate. Default is 20.
+#       Consider increasing this number (a large value would take the entire pareto front)
+# python3 $maindir/src/evaluation/ga_pareto.py \
+#     --experiment $expdir \
+#     --results-directory $expdir/netlists \
+#     --generation $which_gen
 
 # iterate over each approximate netlist
 for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
@@ -277,7 +279,22 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
         echo "Error: Synthesis failed"
         exit 1
     fi
+
     area="$(awk '/Total cell area/ {print $NF}' $area_rpt)"
+    # Skip if area is zero
+    if (( $(echo "$area == 0.0" | bc -l) )); then
+        echo "Skipping netlist $netl_id due to zero area"
+        nan_value="NaN"  # for the error metrics
+        echo -e "$netl_id,$library,$synclk,$simclk,$area,0.0,0.0,$nan_value,$nan_value,$nan_value,$nan_value,$nan_value,$nan_value,$nan_value,$nan_value" >> $resfile
+
+        # move reports to the appropriate directory
+        rm -rf $expdir/reports/approx${netl_id}
+        mv $testdir/reports $expdir/reports/approx${netl_id}
+        # move netlist to the appropriate directory
+        rm -rf $expdir/gate/approx${netl_id}
+        mv $testdir/gate $expdir/gate/approx${netl_id}
+        continue
+    fi
 
     # STA to get delay
     make sta

@@ -411,7 +411,8 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
 #include <time.h>
 #include <math.h>
 #include "library.h"
-#define MAX_LENGTH 100
+#define CHROMOSOME_LENGTH {chromosome_length}
+#define MAX_LENGTH 1000
 #define size {insize}
 #define outsize {outsize}
 #define MAX_LINES {max_lines}
@@ -618,7 +619,7 @@ void filetest(int ax_values[], double *error) {{
     //if (fax == NULL)
     //    exit(1);
     //int j;
-    //for (j=0; j<{chromosome_length}; j++) fprintf(fax, "%d %d\\n", j, ax_values[j]);
+    //for (j=0; j<CHROMOSOME_LENGTH; j++) fprintf(fax, "%d %d\\n", j, ax_values[j]);
     //fclose(fax);
     
     //FILE *fo = fopen("{outputs_file}", "w");
@@ -732,7 +733,7 @@ void main(int argc, char *argv[]) {{
     {outp_type} res;
     int signed_inputs={signed_inputs_value};
     int signed_outputs={signed_outputs_value};
-    int ax_values[{chromosome_length}]; for(int i=0; i<{chromosome_length}; i++) ax_values[i] = -1;
+    int ax_values[CHROMOSOME_LENGTH]; for(int i=0; i<CHROMOSOME_LENGTH; i++) ax_values[i] = -1;
     res = top_{netlist.circuit}(ax_values, {', '.join(netlist.netlist_data['unique_inputs'])}, signed_inputs, signed_outputs);
     return res;
 }}
@@ -744,7 +745,7 @@ void main(int argc, char *argv[]) {{
     {outp_type} res;
     int signed_inputs={signed_inputs_value};
     int signed_outputs={signed_outputs_value};
-    int ax_values[{chromosome_length}] = -1;
+    int ax_values[CHROMOSOME_LENGTH] = -1;
     res = top_{netlist.circuit}(ax_values, {', '.join(netlist.netlist_data['unique_inputs'])}, signed_inputs, signed_outputs);
     return res;
 }}
