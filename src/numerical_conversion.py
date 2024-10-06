@@ -9,7 +9,16 @@ def decimal_to_binary(decimal, bitwidth):
     return f'{decimal:0{bitwidth}b}'
 
 
-def binary_to_decimal(binary_str):    
+def binary_to_decimal(binary_str, signed=False):
+    # Handle signed binary numbers using 2's complement
+    if signed and binary_str[0] == '1':  # If the sign bit is 1, it's a negative number
+        # Invert the bits and add 1 to get the positive representation
+        inverted_bits = ''.join('1' if bit == '0' else '0' for bit in binary_str)
+        decimal_value = int(inverted_bits, 2) + 1
+        return -decimal_value
+        # TODO: Handle signed binary numbers
+        # sign = -1 if binary_str[0] == '1' else 1
+        # return sign * int(binary_str[1:], 2)
     return int(binary_str, 2)
 
 
@@ -123,7 +132,7 @@ def convert_binary_to_decimal(args):
         for line in inputs:
             decimal_line = args.output_separator.join(
                 str(
-                    binary_to_decimal(x)
+                    binary_to_decimal(x, signed=args.signed_binary)
                 )
                 for x in line.strip().split(args.input_separator)
             )
@@ -256,6 +265,7 @@ if __name__ == '__main__':
     parser.add_argument('--input-file', type=str, help='Input file')
     parser.add_argument('--output-file', type=str, help='Output file')
     parser.add_argument('--ieee754-format', choices=['FP32', 'FP16', 'bfloat16'], default='bfloat16', help='Floating point format')
+    parser.add_argument('--signed-binary', action='store_true', help='Use signed binary numbers')
     parser.add_argument('--keep-output-only', action='store_true', help='Keep only the output in the output file')
     parser.add_argument('--input-separator', choices=["tab", "space", "underscore", "none"], default='underscore', help='Separator used in the input file')
     parser.add_argument('--output-separator', choices=["tab", "space", "underscore", "none"], default='underscore', help='Separator used in the output file')

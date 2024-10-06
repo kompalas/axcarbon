@@ -1,6 +1,8 @@
 import os
 import re
+import argparse
 from src import project_dir
+
 
 def translate_operation_backup(verilog_line):
     # Process NOT gate separately because of different syntax in Verilog and C
@@ -163,7 +165,15 @@ def verilog_lib_to_clib(input_verilog_lib, output_c_lib, output_header=None):
 
 if __name__ == '__main__':
 
-    input_verilog_lib = os.path.join(project_dir, 'libs', 'fdsoi28', 'verilog', 'verilog_udp.v')
-    output_c_lib = os.path.join(project_dir, 'libs', 'fdsoi28', 'c', 'library.c')
-    output_header = os.path.join(project_dir, 'libs', 'fdsoi28', 'c', 'library.h')
-    verilog_lib_to_clib(input_verilog_lib, output_c_lib, output_header)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--input', type=str, required=True, help='Input Verilog library file')
+    parser.add_argument('--output', type=str, required=True, help='Output C library file')
+    parser.add_argument('--header', type=str, help='Output header file')
+    args = parser.parse_args()
+
+    verilog_lib_to_clib(args.input, args.output, args.header)
+
+    # input_verilog_lib = os.path.join(project_dir, 'libs', 'fdsoi28', 'verilog', 'verilog_udp.v')
+    # output_c_lib = os.path.join(project_dir, 'libs', 'fdsoi28', 'c', 'library.c')
+    # output_header = os.path.join(project_dir, 'libs', 'fdsoi28', 'c', 'library.h')
+    # verilog_lib_to_clib(input_verilog_lib, output_c_lib, output_header)

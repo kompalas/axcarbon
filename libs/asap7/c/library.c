@@ -3227,9 +3227,11 @@ void OR5x2_ASAP7_6t_R(int A, int B, int C, int D, int E, int* Y) {
 }
 
 void TIEHIxp5_ASAP7_6t_R(int* H) {
+    *H = 1;
 }
 
 void TIELOxp5_ASAP7_6t_R(int* L) {
+    *L = 0;
 }
 
 void XNOR2x2_ASAP7_6t_R(int A, int B, int* Y) {

@@ -283,7 +283,10 @@ def build_c_netlist_text(netlist, main_netlist_structure, input_file_separator='
     outp_parse_format = outp_int_parse_format
 
     # define floating-point variables
-    defines=""
+    defines = "#define EXPONENT_BITS 8\n"
+    defines += "#define MANTISSA_BITS 23\n"
+    defines += "#define TOTAL_BITS (1 + EXPONENT_BITS + MANTISSA_BITS)\n"
+    defines += "#define EXPONENT_BIAS ((1 << (EXPONENT_BITS - 1)) - 1)\n"
     inputs_filename = "inputs_decimal.txt"
     outp_float_type = 'double'
     outp_float_parse_format = 'lf'
