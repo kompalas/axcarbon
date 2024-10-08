@@ -1,24 +1,21 @@
 #!/usr/bin/bash
-# Use circuit as the first argument and an integer of bits for every input after that
-# example usage: ./setup_circuit.sh mult8 8 8
+# example usage: ./setup_circuit.sh mult8 asap7 null 8 8
 
 set -euo pipefail
 set -x
 
 circuit=${1?"Specify the circuit as first positional argument"}
 library=${2?"Specify the library as the second positional argument"}
-# if inputs already exist, leave the second positional argument unset
-inputs_exist=${3:-"True"}
-
+# floatin-pont format: if it is empty, the circuit is not floating-point
+# otherwise, it should be either "FP32", "FP16" or "bfloat16"
+floating_point_format=${3:-"null"}
+# if inputs already exist, leave the final positional argument unset
+inputs_exist=${4:-"True"}
 maindir="$HOME/axcarbon"
 circdir="$maindir/circuits/$circuit"
 
 enable_safety_bits="0"
 safety_bits="1"
-
-# floatin-pont format: if it is empty, the circuit is not floating-point
-# otherwise, it should be either "FP32", "FP16" or "bfloat16"
-floating_point_format="bfloat16"
 
 mkdir -p $maindir/hdl
 mkdir -p $maindir/sim
@@ -28,7 +25,7 @@ cp $circdir/top.v hdl/
 
 # create initial inputs file, if input bitwidth is specified
 if [[ ! "$inputs_exist" == "True" ]]; then
-    bits_num=$(($#-2))
+    bits_num=$(($#-3))
 
     safety_bits_array=()
     for ((i=0; i<$bits_num; i++)); do
@@ -44,6 +41,7 @@ if [[ ! "$inputs_exist" == "True" ]]; then
     num_inputs_eval="1000000"
 
     signed=""
+    signed_binary_conversion=""
     input_type="binary"
     convert_to="decimal"
     override_range=()
@@ -51,10 +49,10 @@ if [[ ! "$inputs_exist" == "True" ]]; then
 
     # check if inputs are supposed to be signed numbers
     if grep -q "input signed" $circdir/top.v; then
-        signed="--signed"
+        signed_binary_conversion="--signed-binary"
     fi
 
-    if [ $floating_point_format != "" ]; then
+    if [ $floating_point_format != "null" ]; then
         input_type="ieee754"
         convert_to="ieee754"
         signed="--signed"
@@ -80,7 +78,7 @@ if [[ ! "$inputs_exist" == "True" ]]; then
         --deterministic \
         --type $input_type \
         --separator underscore \
-        --bits ${@:3:$bits_num} \
+        --bits ${@:4:$bits_num} \
         --safety-bits ${safety_bits_array[@]} \
         --out-file sim/inputs.txt \
         $signed $fp_format "${override_range[@]}"
@@ -109,7 +107,7 @@ if [[ ! "$inputs_exist" == "True" ]]; then
         --output-file $circdir/inputs_${convert_to}.txt \
         --input-separator underscore \
         --output-separator underscore \
-        $fp_format
+        $fp_format $signed_binary_conversion
 
     # generate inputs for evaluation
     python3 $maindir/src/create_inputs.py \
@@ -117,7 +115,7 @@ if [[ ! "$inputs_exist" == "True" ]]; then
         --deterministic \
         --type $input_type \
         --separator underscore \
-        --bits ${@:3:$bits_num} \
+        --bits ${@:4:$bits_num} \
         --safety-bits ${safety_bits_array[@]} \
         --out-file sim/inputs.txt \
         $signed $fp_format "${override_range[@]}"
@@ -137,11 +135,11 @@ if [[ ! "$inputs_exist" == "True" ]]; then
         --output-file $circdir/inputs_eval_${convert_to}.txt \
         --input-separator underscore \
         --output-separator underscore \
-        $fp_format
+        $fp_format $signed_binary_conversion
 fi
 
 # get baseline measurements for the circuit
-source $maindir/run/baseline_eval.sh $circuit $library
+source $maindir/run/baseline_eval.sh $circuit $library $floating_point_format
 
 # save netlist
 cp $maindir/gate/top.v $circdir/top.sv

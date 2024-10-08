@@ -5,12 +5,16 @@ set -x
 
 circuit=${1?"Specify a circuit as the first positional argument"}
 library=${2?"Specify a library as the second positional argument. Options are: asap7, variability14, nangate45"}
+floating_point_format=${3:-"null"}  # if the circuit is floating-point, specify the format: FP32, FP16, bfloat16
 
 maindir="$HOME/axcarbon"
 testdir="$maindir"
 cd $testdir
 circdir="$maindir/circuits/$circuit"
 top_design="top"
+
+synclk="0.0"
+delay_incr="0.01"
 
 # functions to get area, delay and power
 function getArea {
@@ -36,7 +40,7 @@ if [[ $library == "asap7" ]]; then
     libverilog="$maindir/libs/asap7/verilog"
     lib="asap7.db"
     tunit="ps"
-
+    delay_incr="0.1"
     if ! grep -q "set_dont_use {asap7" $testdir/scripts/synthesis.tcl; then
         sed -i "28i set_dont_use {asap7/FAxp33_ASAP7_6t_R}" $testdir/scripts/synthesis.tcl
     fi
@@ -59,8 +63,15 @@ elif [[ $library == "fdsoi28" ]]; then
     libverilog="$maindir/libs/fdsoi28/verilog"
     lib="28nm_FDSOI_0.9V_300K.db"
     tunit="ns"
+elif [[ $library == "egfet" ]]; then
+    libpath="$maindir/libs/egfet/db"
+    libcpath="$maindir/libs/egfet/c"
+    libverilog="$maindir/libs/egfet/verilog"
+    lib="EGFET_1.0V_enabled.db"
+    tunit="ns"
+    delay_incr="100"
 else
-    echo "Invalid library option. Options are: asap7, variability14, fdsoi28, nangate45"
+    echo "Invalid library option. Options are: asap7, variability14, fdsoi28, nangate45, egfet"
     exit 1
 fi
 export tunit="$tunit"
@@ -92,34 +103,6 @@ cp $circdir/tb.v ./sim/top_tb.v
 awk -F'_' '{for (i=1; i<NF; i++) {printf("%s", $i); if(i<NF-1) printf("_")} printf("\n")}' $circdir/inputs.txt > ./sim/inputs.txt
 awk -F'_' '{print $NF}' $circdir/inputs.txt > ./sim/expected.txt
 
-synclk="0.0"
-delay_incr="0.01"
-
-if [ $is_floating_point == "true" ]; then
-        # get the input width
-    if grep -q "parameter INP_WIDTH" $circdir/tb.v; then
-        param="INP_WIDTH"
-    elif grep -q "parameter inpwidth" $circdir/tb.v; then
-        param="inpwidth"
-    elif grep -q "parameter BIT_WIDTH" $circdir/tb.v; then
-        param="BIT_WIDTH"
-    else
-        echo "Error: Could not find the output width parameter in the testbench"
-        exit 1
-    fi
-    # get the FP format
-    bits="$(grep "parameter $param" $circdir/tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
-    if [[ $bits -eq 32 ]]; then
-        format="FP32"
-    elif [[ $bits -eq 16 ]]; then
-        format="bfloat16"
-    else
-        echo "Error: Unsupported bit width: $bits"
-        exit 1
-    fi
-    fp_format="--ieee754-format $format"
-fi
-
 while true; do
 
     # Iteratively, perform synthesis and STA to find the minimum clock period that the circuit can match
@@ -145,7 +128,7 @@ while true; do
 
     make gate_sim
 
-    if [ $is_floating_point == "true" ]; then
+    if [ $floating_point_format != "null" ]; then
         python3 $maindir/src/numerical_conversion.py \
             --mode convert \
             --convert-from binary \
@@ -154,7 +137,7 @@ while true; do
             --output-file sim/expected.txt \
             --input-separator underscore \
             --output-separator underscore \
-            --ieee754-format $format
+            --ieee754-format $floating_point_format
         python3 $maindir/src/numerical_conversion.py \
             --mode convert \
             --convert-from binary \
@@ -163,7 +146,7 @@ while true; do
             --output-file sim/output.txt \
             --input-separator underscore \
             --output-separator underscore \
-            --ieee754-format $format
+            --ieee754-format $floating_point_format
         error="$(./scripts/errors/decimal/med.sh ./sim/expected.txt ./sim/output.txt)"
     else
         error="$(./scripts/errors/binary/med.sh ./sim/expected.txt ./sim/output.txt)"

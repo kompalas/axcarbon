@@ -22,7 +22,6 @@ if ! [ -d "$testdir" ]; then
     tar -xzvf $maindir/test/eval.tar.gz -C $maindir/test
     mv $maindir/test/eval $testdir
 fi
-# exit 0
 
 ############## Custom Functions ###################
 
@@ -208,8 +207,14 @@ elif [[ $library == "fdsoi28" ]]; then
     libverilog="$maindir/libs/fdsoi28/verilog"
     lib="28nm_FDSOI_0.9V_300K.db"
     tunit="ns"
+elif [[ $library == "egfet" ]]; then
+    libpath="$maindir/libs/egfet/db"
+    libcpath="$maindir/libs/egfet/c"
+    libverilog="$maindir/libs/egfet/verilog"
+    lib="EGFET_1.0V_enabled.db"
+    tunit="ns"
 else
-    echo "Invalid library option. Options are: asap7, variability14, fdsoi28, nangate45"
+    echo "Invalid library option. Options are: asap7, variability14, fdsoi28, nangate45, egfet"
     exit 1
 fi
 # copy library c files into the libs/ directory
@@ -261,10 +266,11 @@ error_metric="$(grep -oP "(?<=error_metric': <ErrorMetric.)[^:]*" "$exp_logfile"
 # create approximate netlists from GA results and evaluate them
 # TODO: This also accepts a "--to-keep" argument, with the number of solutions to evaluate. Default is 20.
 #       Consider increasing this number (a large value would take the entire pareto front)
-# python3 $maindir/src/evaluation/ga_pareto.py \
-#     --experiment $expdir \
-#     --results-directory $expdir/netlists \
-#     --generation $which_gen
+python3 $maindir/src/evaluation/ga_pareto.py \
+    --experiment $expdir \
+    --results-directory $expdir/netlists \
+    --generation $which_gen \
+    --to-keep 20
 
 # iterate over each approximate netlist
 for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
@@ -312,25 +318,78 @@ for netl in $(find $expdir/netlists/ -name "approx[0-9]*.sv" | sort -V); do
 
     if [[ "$get_error_from" == "gate_level_simulations" ]]; then
         # get error measurements from gate level simulations
-        error_rate="$(getErrorRate)"
-        mre="$(getMRE)"
-        med="$(getMED)"
-        if grep -q "parameter OUT_WIDTH" $testdir/sim/top_tb.v; then
-            p="OUT_WIDTH"
-        elif grep -q "parameter outwidth" $testdir/sim/top_tb.v; then
-            p="outwidth"
-        elif grep -q "parameter BIT_WIDTH" $testdir/sim/top_tb.v; then
-            p="BIT_WIDTH"
-        else
-            echo "Error: Could not find the output width parameter in the testbench"
-            exit 1
+
+        if grep -q "input signed" $circdir/top.v; then
+            python3 $maindir/src/numerical_conversion.py \
+                --mode convert \
+                --convert-from binary \
+                --convert-to decimal \
+                --input-file $testdir/sim/output.txt \
+                --output-file $testdir/sim/output_decimal.txt \
+                --input-separator underscore \
+                --output-separator underscore \
+                --signed-binary
+            python3 $maindir/src/numerical_conversion.py \
+                --mode convert \
+                --convert-from binary \
+                --convert-to decimal \
+                --input-file $testdir/sim/expected.txt \
+                --output-file $testdir/sim/expected_decimal.txt \
+                --input-separator underscore \
+                --output-separator underscore \
+                --signed-binary
+
+            # get the output width
+            if grep -q "parameter OUT_WIDTH" $testdir/sim/top_tb.v; then
+                p="OUT_WIDTH"
+            elif grep -q "parameter outwidth" $testdir/sim/top_tb.v; then
+                p="outwidth"
+            elif grep -q "parameter BIT_WIDTH" $testdir/sim/top_tb.v; then
+                p="BIT_WIDTH"
+            else
+                echo "Error: Could not find the output width parameter in the testbench"
+                exit 1
+            fi
+            outwidth="$(grep "parameter $p" $testdir/sim/top_tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
+
+            # get error measurements from the output
+            mkdir -p $expdir/errors
+            python3 $maindir/src/evaluation/errors.py \
+                --output-file $testdir/sim/output_decimal.txt \
+                --expected-file $testdir/sim/expected_decimal.txt \
+                --output-width $outwidth 2>&1 | tee $expdir/errors/errors_${netl_id}.txt
+
+            error_rate="$(awk '/Error Rate:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
+            mre="$(awk '/MRE:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
+            med="$(awk '/^MED:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
+            nmed="$(awk '/NMED:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
+            min_error="$(awk '/Min Error:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
+            max_error="$(awk '/Max Error:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
+            range="$(awk -v max=$max_error -v min=$min_error 'BEGIN {printf "%.3e", max-min}')"
+            variance="$(awk '/Variance:/ {print $NF}' $expdir/errors/errors_${netl_id}.txt)"
+
+        else # if only unsigned inputs
+
+            error_rate="$(getErrorRate)"
+            mre="$(getMRE)"
+            med="$(getMED)"
+            if grep -q "parameter OUT_WIDTH" $testdir/sim/top_tb.v; then
+                p="OUT_WIDTH"
+            elif grep -q "parameter outwidth" $testdir/sim/top_tb.v; then
+                p="outwidth"
+            elif grep -q "parameter BIT_WIDTH" $testdir/sim/top_tb.v; then
+                p="BIT_WIDTH"
+            else
+                echo "Error: Could not find the output width parameter in the testbench"
+                exit 1
+            fi
+            outwidth="$(grep "parameter $p" $testdir/sim/top_tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
+            nmed="$(awk -v a=$med -v b=$outwidth 'BEGIN {printf "%.3e", a/(2**b)}')"
+            min_error="$(getMinError)"
+            max_error="$(getMaxError)"
+            range="$(awk -v max=$max_error -v min=$min_error 'BEGIN {printf "%.3e", max-min}')"
+            variance="$(getErrorVariance)"
         fi
-        outwidth="$(grep "parameter $p" $testdir/sim/top_tb.v | awk -F'=' '{gsub(";", "", $NF); print $NF*1}')"
-        nmed="$(awk -v a=$med -v b=$outwidth 'BEGIN {printf "%.3e", a/(2**b)}')"
-        min_error="$(getMinError)"
-        max_error="$(getMaxError)"
-        range="$(awk -v max=$max_error -v min=$min_error 'BEGIN {printf "%.3e", max-min}')"
-        variance="$(getErrorVariance)"
 
     elif [[ "$get_error_from" == "c_simulations" ]]; then
         
