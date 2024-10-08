@@ -40,6 +40,8 @@ set_max_area 0
 # report_lib 
 if {[string match "*asap7*" $LIB_DB_PATH]} {
 	set_dont_use {asap7/FAxp33_ASAP7_6t_R}
+	set_dont_use {asap7/TIEHIxp5_ASAP7_6t_R}
+	set_dont_use {asap7/TIELOxp5_ASAP7_6t_R}
 }
 
 #sdc
