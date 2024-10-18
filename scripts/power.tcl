@@ -47,5 +47,6 @@ update_power
 set clk_period $::env(ENV_CLK_PERIOD)
 report_power > ./reports/${top_design}_${clk_period}${tunit}.power.ptpx.rpt
 report_power -hierarchy > ./reports/${top_design}_${clk_period}${tunit}.hierarchy.power.ptpx.rpt
+# report_power -verbose -cell_power -area -include_lib_cells > ./reports/${top_design}_${clk_period}${tunit}.power.detailed.ptpx.rpt
 
 quit
