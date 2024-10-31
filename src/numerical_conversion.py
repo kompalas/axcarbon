@@ -10,6 +10,10 @@ def decimal_to_binary(decimal, bitwidth):
 
 
 def binary_to_decimal(binary_str, signed=False):
+    # convert to binary string if not already
+    if isinstance(binary_str, (list, tuple, np.ndarray)):
+        binary_str = ''.join(str(x) for x in binary_str)
+
     # Handle signed binary numbers using 2's complement
     if signed and binary_str[0] == '1':  # If the sign bit is 1, it's a negative number
         # Invert the bits and add 1 to get the positive representation
@@ -19,7 +23,12 @@ def binary_to_decimal(binary_str, signed=False):
         # TODO: Handle signed binary numbers
         # sign = -1 if binary_str[0] == '1' else 1
         # return sign * int(binary_str[1:], 2)
-    return int(binary_str, 2)
+    try:
+        return int(binary_str, 2)
+    except TypeError:
+        print(f"Error converting binary string to decimal: {binary_str}")
+        print(type(binary_str))
+        raise
 
 
 def binary_to_ieee754(binary_str, precision='FP32'):
@@ -40,7 +49,7 @@ def binary_to_ieee754(binary_str, precision='FP32'):
 
     total_bits = 1 + exp_bits + mantissa_bits
     
-    # convert to binary strinng if not already
+    # convert to binary string if not already
     if isinstance(binary_str, (list, tuple, np.ndarray)):
         binary_str = ''.join(str(x) for x in binary_str)
 

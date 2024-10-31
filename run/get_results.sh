@@ -7,11 +7,12 @@ set -x
 expdir=${1?"Specify the directory at which GA results are stored"}
 library=${2:--"asap7"}
 which_gen="${3:--1}"
-ieee754_format="${4:-FP32}"
+# floating-pont format: if it is empty, the circuit is not floating-point
+# otherwise, it should be either "FP32", "FP16" or "bfloat16"
+ieee754_format="${4:-null}"
 
 maindir="$HOME/axcarbon"
 top_design="top"
-get_error_from="gate_level_simulations_ieee754"  # options: gate_level_simulations, c_simulations, gate_level_simulations_ieee754
 use_eval_inputs="true"  # if "true", the evaluation inputs will be used (instead of the ones used during optimization) 
 
 ############## Test Directory ###################
@@ -247,6 +248,15 @@ area_rpt="$testdir/reports/${top_design}_${synclk}${tunit}.area.rpt"
 delay_rpt="$testdir/reports/${top_design}_${synclk}${tunit}.timing.pt.rpt"
 power_rpt="$testdir/reports/${top_design}_${synclk}${tunit}.power.ptpx.rpt"
 
+# set the type of error evaluations, based on whether floating-point is used
+get_error_from="gate_level_simulations"  # options: gate_level_simulations, c_simulations, gate_level_simulations_ieee754
+if [[ "$ieee754_format" != "null" ]]; then
+    if [[ "$ieee754_format" != "FP32" && "$ieee754_format" != "FP16" && "$ieee754_format" != "bfloat16" ]]; then
+        echo "Invalid IEEE754 format. Options are: FP32, FP16, bfloat16"
+        exit 1
+    fi
+    get_error_from="gate_level_simulations_ieee754"  # options: gate_level_simulations, c_simulations, gate_level_simulations_ieee754
+fi
 
 ################# Evaluation ######################
 
