@@ -13,7 +13,7 @@ export ENV_LIBRARY_VERILOG_PATH="/home/balaskas/axcarbon/libs/asap7/verilog"
 #set the top design name
 export ENV_TOP_DESIGN="top"
 #set the desired delay
-export ENV_CLK_PERIOD="812.10"
+export ENV_CLK_PERIOD="328.43"
 
 #clock name and reset (if applicable)
 export ENV_CLK_PORT="clk"
