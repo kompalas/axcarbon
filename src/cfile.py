@@ -132,6 +132,11 @@ def build_c_netlist_text_main_structure(netlist, graph):
         '\n\t' + net + ' = ' + rpl + ';'
         for net, rpl in replaced if net in netlist.netlist_data['outputs']
     ])
+
+    # write the constant assignments of the netlist
+    netl_c += '\n' + '\n'.join([
+        f'{assigned} = {value};' for assigned, value in netlist.netlist_data['replaced'].items()
+    ])
     return netl_c
 
 

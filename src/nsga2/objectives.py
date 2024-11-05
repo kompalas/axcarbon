@@ -91,7 +91,7 @@ def calc_area(exact_graph, ax_graph):
     return len(connected_nodes) / len(exact_graph.nodes)
 
 
-def apply_approximations(chromosome, candidates, cancel_dict, graph, variables_range):
+def apply_approximations(chromosome, candidates, cancel_dict, graph, netlist, variables_range):
     """Apply the approximations of a chromosome to the graph"""
     # subs must be tuples of replaced (net), replacement (constant or net)
     subs = translate_chromosome(chromosome, candidates, variables_range)
@@ -100,6 +100,9 @@ def apply_approximations(chromosome, candidates, cancel_dict, graph, variables_r
     # logger.debug(f"Subs: {subs}")
 
     for replaced, replacement in subs:
+        if replaced in netlist.netlist_data['replaced']:
+            continue
+
         already_replaced = graph.replace(replaced, replacement)
         check_cancel_gates(graph, cancel_dict, already_replaced)
 
@@ -139,7 +142,7 @@ def calc_fitness(chromosome, candidates, variables_range, cancel_dict, netlist, 
 
     # apply approximations to the graph
     ng = deepcopy(graph)
-    subs = apply_approximations(chromosome, candidates, cancel_dict, ng, variables_range)
+    subs = apply_approximations(chromosome, candidates, cancel_dict, ng, netlist, variables_range)
 
     # calculate error metric
     error = MAX_ERROR

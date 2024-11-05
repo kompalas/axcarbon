@@ -97,6 +97,11 @@ class Netlist:
         final_netlist = ''
         replaced_wires = dict(approximations)
 
+        # Remove any wires that have already been assigned
+        for already_assigned_wire in self.netlist_data['replaced']:
+            if already_assigned_wire in replaced_wires:
+                replaced_wires.pop(already_assigned_wire)
+
         if 'normalized' not in self.netlist_data:
             self.normalize_multiline_gate_descriptions()
         init_netlist = self.netlist_data['normalized']

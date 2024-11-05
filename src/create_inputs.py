@@ -63,7 +63,7 @@ def main():
         args.safety_bits = args.safety_bits * len(args.bits)
     elif len(args.safety_bits) != len(args.bits):
         raise ValueError("The '--safety-bits' must be empty, have one argument, or have "
-                        "as many arguments asthe number of bitwidths")
+                        "as many arguments as the number of bitwidths")
 
     input_vectors = []
     for bitwidth, safety_bits in zip(args.bits, args.safety_bits):
@@ -86,6 +86,7 @@ def main():
             num_range = (0, (2 ** (bitwidth - safety_bits)) - 1)
 
         # Generate the numbers
+        # size = args.num_inputs if len(range(num_range[0], num_range[1] + 1))
         number = random_func(num_range[0], num_range[1] + 1, size=args.num_inputs, **kwargs)
 
         # Convert to binary represantations if necessary (either "binary" or "ieee754")
