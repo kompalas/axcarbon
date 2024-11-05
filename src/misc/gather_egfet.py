@@ -16,7 +16,6 @@ for i in range(2, 9):
         if i == 2 and j == 1:
             alldf = df
         else:
-            df = df.iloc[1:]
             alldf = pd.concat([alldf, df])
 
 alldf.to_csv(f'{project_dir}/results/egfet_bespoke_multipliers.csv', index=False)
