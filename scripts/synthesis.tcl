@@ -50,6 +50,7 @@ source ./scripts/units.tcl
 
 #compile option
 compile_ultra
+# compile_ultra -no_autoungroup
 
 #reports
 set clk_period $::env(ENV_CLK_PERIOD)

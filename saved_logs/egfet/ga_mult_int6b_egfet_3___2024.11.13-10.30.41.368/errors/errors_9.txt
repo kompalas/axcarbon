@@ -1,0 +1,9 @@
+Total Inputs: 1.000e+04
+Error Rate: 9.864e-01
+MRE: 1.426e-01
+MED: 1.018e+02
+NMED: 0.000e+00
+Min Error: 0.000e+00
+Max Error: 2.680e+02
+Error Range: 2.680e+02
+Variance: 4.576e+03

@@ -134,8 +134,9 @@ def build_c_netlist_text_main_structure(netlist, graph):
     ])
 
     # write the constant assignments of the netlist
+    prefix = "1'b"
     netl_c += '\n' + '\n'.join([
-        f'{assigned} = {value};' for assigned, value in netlist.netlist_data['replaced'].items()
+        f"{assigned} = {value.replace(prefix, '')};" for assigned, value in netlist.netlist_data['replaced'].items()
     ])
     return netl_c
 

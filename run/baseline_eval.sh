@@ -69,7 +69,7 @@ elif [[ $library == "egfet" ]]; then
     libverilog="$maindir/libs/egfet/verilog"
     lib="EGFET_1.0V_enabled.db"
     tunit="ns"
-    delay_incr="100"
+    delay_incr="100000"
 else
     echo "Invalid library option. Options are: asap7, variability14, fdsoi28, nangate45, egfet"
     exit 1

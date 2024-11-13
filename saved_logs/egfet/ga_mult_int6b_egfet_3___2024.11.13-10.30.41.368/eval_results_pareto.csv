@@ -1,0 +1,2 @@
+NetlID,Lib,SynClk,SimClk,Area,Delay,Power,ErrorRate,MRE,MED,NMED,MinError,MaxError,ErrorRange,Variance
+9,egfet,28388658.0,28235528.0,23027927.0,27511018.0,0.001434,0.9864,0.1426,101.8,0.0,0.0,268.0,268.0,4576.0

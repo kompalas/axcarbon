@@ -5,7 +5,7 @@ parameter PERIOD=0.6;
 parameter NUM_INPUTS=100000;
 
 parameter BIT_WIDTH=5;
-parameter OUT_WIDTH=2*BIT_WIDTH;
+parameter OUT_WIDTH=BIT_WIDTH+8;
 
 // DUT I/O ports
 reg signed     [BIT_WIDTH -1  :0] inp;
