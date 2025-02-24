@@ -14,36 +14,7 @@ def two_floats(value):
     return values
 
 
-def main():
-    parser = argparse.ArgumentParser("Create inputs for simulation.")
-    parser.add_argument("--type", "-t", dest="input_type", 
-                        choices=["binary", "decimal", "float", "ieee754"], default="decimal",
-                        help="Numerical representation of the input numbers. "
-                            "Choices are decimal (default) and binary")
-    parser.add_argument('--ieee754-format', choices=['FP32', 'FP16', 'bfloat16'], default='bfloat16', help='Floating point format')
-    parser.add_argument("--num-inputs", "-n", type=int, default=10000, dest='num_inputs',
-                        help="Define number of input samples (default 10,000)")
-    parser.add_argument("--bits", "-b", type=int, nargs='+',
-                        help='''Specify bitwidth for each input, separated by space.\
-                            The number of entries defines the number of input vectors\
-                                (columns in the input text file)''')
-    parser.add_argument("--deterministic", '-d', action='store_true',
-                        help='Set for deterministically generated outputs')
-    parser.add_argument("--out-file", "-o", dest='out_file', default='./inputs.txt',
-                        help="Location of output file (default './inputs.txt'")
-    parser.add_argument("--separator", "--sep", dest="separator", 
-                        choices=["tab", "space", "underscore", "none"], default='tab',
-                        help="Separator between consecutive inputs. "
-                            "Choices are: space, nothing/none, tab (default) and underscore")
-    parser.add_argument("--signed", action='store_true',
-                        help='Set for using signed integers as inputs. Only affects decimal numbers')
-    parser.add_argument("--safety-bits", type=int, nargs='+', default=[],
-                        help='Specify safety bitwidth for each input, separated by space. Default is 0')
-    parser.add_argument("--override-range", type=two_floats,
-                        help="Override the range of numbers that can be generated. "
-                            "Specify the minimum and maximum values")
-    args = parser.parse_args()
-
+def create_inputs(args):
     if args.deterministic:
         seed(101)
 
@@ -106,6 +77,38 @@ def main():
             fin.write(args.separator.join(line))
             fin.write("\n")
     print(f"Inputs saved to {args.out_file}")
+
+
+def main():
+    parser = argparse.ArgumentParser("Create inputs for simulation.")
+    parser.add_argument("--type", "-t", dest="input_type", 
+                        choices=["binary", "decimal", "float", "ieee754"], default="decimal",
+                        help="Numerical representation of the input numbers. "
+                            "Choices are decimal (default) and binary")
+    parser.add_argument('--ieee754-format', choices=['FP32', 'FP16', 'bfloat16'], default='bfloat16', help='Floating point format')
+    parser.add_argument("--num-inputs", "-n", type=int, default=10000, dest='num_inputs',
+                        help="Define number of input samples (default 10,000)")
+    parser.add_argument("--bits", "-b", type=int, nargs='+',
+                        help='''Specify bitwidth for each input, separated by space.\
+                            The number of entries defines the number of input vectors\
+                                (columns in the input text file)''')
+    parser.add_argument("--deterministic", '-d', action='store_true',
+                        help='Set for deterministically generated outputs')
+    parser.add_argument("--out-file", "-o", dest='out_file', default='./inputs.txt',
+                        help="Location of output file (default './inputs.txt'")
+    parser.add_argument("--separator", "--sep", dest="separator", 
+                        choices=["tab", "space", "underscore", "none"], default='tab',
+                        help="Separator between consecutive inputs. "
+                            "Choices are: space, nothing/none, tab (default) and underscore")
+    parser.add_argument("--signed", action='store_true',
+                        help='Set for using signed integers as inputs. Only affects decimal numbers')
+    parser.add_argument("--safety-bits", type=int, nargs='+', default=[],
+                        help='Specify safety bitwidth for each input, separated by space. Default is 0')
+    parser.add_argument("--override-range", type=two_floats,
+                        help="Override the range of numbers that can be generated. "
+                            "Specify the minimum and maximum values")
+    args = parser.parse_args()
+    create_inputs(args)
 
 
 if __name__ == "__main__":

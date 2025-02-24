@@ -15,6 +15,7 @@ import argparse
 from datetime import datetime
 from copy import deepcopy
 from glob import glob
+from string import ascii_lowercase
 from src import project_dir, ALL_CIRCUITS
 from src.wire import Wire
 from src.edge import Edge
@@ -36,7 +37,8 @@ __all__ = [
     'get_overrides', 'get_cp_net_indices',
     'forward',
     'get_mult_table',
-    'check_is_fp', 'check_fp_format'
+    'check_is_fp', 'check_fp_format',
+    'get_tb_template'
 ]
 
 logger = logging.getLogger(__name__)
@@ -750,3 +752,60 @@ def check_fp_format(circuit_name):
         raise ValueError(f"Unsupported floating-point format: {exp_width}E{mant_width}M")
     
     return format, sign_bits, exp_width, mant_width
+
+
+def get_tb_template(bits_list, output_bits, input_names, output_name, signed=False):
+    """Get the template for the testbench of a circuit"""
+    assert len(bits_list) == len(input_names), "Number of bits and input names do not match"
+    suffix = ' signed' if signed else ''
+    input_reg_defs = '\n'.join([
+        f"reg{suffix} [{bits-1}:0] {name};" for bits, name in zip(bits_list, input_names)
+    ])
+    input_load_width = len(input_names) * max(bits_list)
+    input_names_load = ', '.join(input_names)
+    dut_port_matching = ', '.join([
+        f".{name}({name})" for name in input_names + [output_name]
+    ])
+
+    tb_text = f"""
+`timescale 1ns/1ps
+
+module top_tb();
+
+// PARAMETER DEFINITIONS
+parameter PERIOD=10;
+parameter NUM_INPUTS=10;
+
+// DUT I/O PORTS
+{input_reg_defs}
+wire{suffix} [{output_bits} - 1:0] {output_name};
+
+// VARIABLES FOR LOADING INPUTS/OUTPUTS
+reg  [{input_load_width} - 1:0] inputs [0:NUM_INPUTS-1];
+integer i, f, ftmp;
+
+initial begin
+    f = $fopen("./sim/output.txt");
+    #(5*PERIOD);
+    for(i=0; i<NUM_INPUTS; i=i+1) begin
+        {{{input_names_load}}} = inputs[i];
+        #PERIOD;
+        $fwrite(f, "%b\\n", {output_name});
+    end
+    $finish;
+end
+
+initial begin 
+    $readmemb("./sim/inputs.txt", inputs);
+end
+
+top
+// #(
+//     .BIT_WIDTH                  (BIT_WIDTH),
+// )
+DUT
+({dut_port_matching});
+
+endmodule
+"""
+    return tb_text

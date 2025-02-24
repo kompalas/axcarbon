@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/balaskas/axcarbon/src/misc/evoapprox.py", line 123, in <module>
+    main(**vars(args))
+  File "/home/balaskas/axcarbon/src/misc/evoapprox.py", line 100, in main
+    error_metrics = calculate_error_metrics(expected, output, circuit_properties[circuit]['outbits'])
+  File "/home/balaskas/axcarbon/src/evaluation/errors.py", line 108, in calculate_error_metrics
+    out = float(out_line.strip())
+ValueError: could not convert string to float: '0x0001101101100x0'

@@ -1,0 +1,3 @@
+CircuitName,Library,Synclk,Simclk,Area,Delay,Power,MED
+add8u_02Y,asap7,0,17.409,0.373248,17.409,2.185e-08,0.000e+00
+add8u_02Y,variability14,0,0.12,0.737280,0.020,9.679e-06,0.000e+00

@@ -1,0 +1,5 @@
+CircuitName,Library,Synclk,Simclk,Area,Delay,Power,MED
+add16u_0GN,asap7,0,102.969,9.191232,102.969,1.016e-07,0.000e+00
+add16u_0GN,variability14,0,0.116,35.438593,0.116,5.007e-04,0.000e+00
+add16u_0GN,fdsoi28,0,0.030,195.510000,0.030,4.909e-04,0.000e+00
+add16u_0GN,nangate45,0,0.351,117.572000,0.351,3.350e-04,0.000e+00

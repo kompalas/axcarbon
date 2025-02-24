@@ -1,0 +1,5 @@
+CircuitName,Library,Synclk,Simclk,Area,Delay,Power,MED
+mul8u_GTR,asap7,0,347.681,25.952400,347.681,2.220e-08,0.000e+00
+mul8u_GTR,variability14,0,0.367,124.403717,0.367,3.807e-05,0.000e+00
+mul8u_GTR,fdsoi28,0,0.095,686.812007,0.095,1.157e-05,0.000e+00
+mul8u_GTR,nangate45,0,0.981,446.347997,0.981,2.050e-05,0.000e+00
