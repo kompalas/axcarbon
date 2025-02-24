@@ -1,0 +1,30 @@
+ 
+****************************************
+Report : area
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 16:30:24 2025
+****************************************
+
+Library(s) Used:
+
+    asap7 (File: /home/balaskas/axcarbon/libs/asap7/db/asap7.db)
+
+Number of ports:                           25
+Number of nets:                            45
+Number of cells:                           29
+Number of combinational cells:             29
+Number of sequential cells:                 0
+Number of macros/black boxes:               0
+Number of buf/inv:                         10
+Number of references:                       7
+
+Combinational area:                  1.889568
+Buf/Inv area:                        0.349920
+Noncombinational area:               0.000000
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                     1.889568
+Total area:                 undefined
+1

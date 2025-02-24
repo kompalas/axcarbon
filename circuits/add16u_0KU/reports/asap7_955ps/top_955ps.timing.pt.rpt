@@ -1,0 +1,44 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 16:33:02 2025
+****************************************
+
+
+  Startpoint: A[12] (input port clocked by clk)
+  Endpoint: O[14] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 f
+  A[12] (in)                              0.000      0.000 f
+  U31/Y (MAJIxp5_ASAP7_6t_R)             29.533     29.533 r
+  U34/Y (MAJIxp5_ASAP7_6t_R)             27.461     56.995 f
+  U42/Y (INVxp5_ASAP7_6t_R)              17.080     74.075 r
+  U28/Y (AOI22xp25_ASAP7_6t_R)           26.763    100.838 f
+  U27/Y (XNOR2xp5_ASAP7_6t_R)            31.882    132.720 f
+  O[14] (out)                             0.000    132.720 f
+  data arrival time                                132.720
+
+  clock clk (rise edge)                 955.000    955.000
+  clock network delay (ideal)             0.000    955.000
+  clock reconvergence pessimism           0.000    955.000
+  output external delay                   0.000    955.000
+  data required time                               955.000
+  ---------------------------------------------------------------
+  data required time                               955.000
+  data arrival time                               -132.720
+  ---------------------------------------------------------------
+  slack (MET)                                      822.280
+
+
+1

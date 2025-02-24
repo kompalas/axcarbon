@@ -125,6 +125,7 @@ def main(mode, circuit, output, num_inputs=1000, expected=None, results=None):
                         value = df[(df['CircuitName'] == circuit) & (df['Synclk'] != 0) & (df['Library'] == lib)][metric]
                         if value.empty:
                             continue
+                        assert len(value) == 1, f"Multiple values found for {metric} of {circuit} in {lib}"
                         metric_df.loc[circuit, lib] = value.iloc[0]
                 metric_df.to_csv(output, mode='w' if metric == 'Area' else 'a', header=True)
 

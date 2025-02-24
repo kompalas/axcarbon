@@ -1,0 +1,56 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 16:29:10 2025
+****************************************
+
+
+  Startpoint: A[0] (input port clocked by clk)
+  Endpoint: O[14] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  ------------------------------------------------------------------------------
+  clock clk (rise edge)                                  0.000      0.000
+  clock network delay (ideal)                            0.000      0.000
+  input external delay                                   0.000      0.000 f
+  A[0] (in)                                              0.000      0.000 f
+  U77/Y (NAND2xp5_ASAP7_6t_R)                           26.508     26.508 r
+  U111/Y (MAJIxp5_ASAP7_6t_R)                           31.961     58.470 f
+  U112/Y (MAJIxp5_ASAP7_6t_R)                           38.324     96.793 r
+  U115/Y (MAJIxp5_ASAP7_6t_R)                           27.889    124.683 f
+  U116/Y (MAJIxp5_ASAP7_6t_R)                           37.542    162.225 r
+  U119/Y (MAJIxp5_ASAP7_6t_R)                           27.831    190.056 f
+  U120/Y (MAJIxp5_ASAP7_6t_R)                           37.542    227.599 r
+  U123/Y (MAJIxp5_ASAP7_6t_R)                           27.831    255.430 f
+  U124/Y (MAJIxp5_ASAP7_6t_R)                           37.542    292.973 r
+  U127/Y (MAJIxp5_ASAP7_6t_R)                           27.831    320.804 f
+  U128/Y (MAJIxp5_ASAP7_6t_R)                           37.542    358.346 r
+  U131/Y (MAJIxp5_ASAP7_6t_R)                           27.831    386.178 f
+  U132/Y (MAJIxp5_ASAP7_6t_R)                           37.542    423.720 r
+  U135/Y (MAJIxp5_ASAP7_6t_R)                           27.831    451.551 f
+  U152/Y (INVxp5_ASAP7_6t_R)                            17.080    468.632 r
+  U105/Y (AOI22xp25_ASAP7_6t_R)                         26.763    495.395 f
+  U104/Y (XNOR2xp5_ASAP7_6t_R)                          31.882    527.277 f
+  O[14] (out)                                            0.000    527.277 f
+  data arrival time                                               527.277
+
+  clock clk (rise edge)                                955.000    955.000
+  clock network delay (ideal)                            0.000    955.000
+  clock reconvergence pessimism                          0.000    955.000
+  output external delay                                  0.000    955.000
+  data required time                                              955.000
+  ------------------------------------------------------------------------------
+  data required time                                              955.000
+  data arrival time                                              -527.277
+  ------------------------------------------------------------------------------
+  slack (MET)                                                     427.723
+
+
+1

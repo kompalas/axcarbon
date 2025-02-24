@@ -1,0 +1,48 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 16:31:45 2025
+****************************************
+
+
+  Startpoint: A[8] (input port clocked by clk)
+  Endpoint: O[14] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 f
+  A[8] (in)                               0.000      0.000 f
+  U57/Y (MAJIxp5_ASAP7_6t_R)             29.533     29.533 r
+  U60/Y (MAJIxp5_ASAP7_6t_R)             27.461     56.995 f
+  U61/Y (MAJIxp5_ASAP7_6t_R)             37.542     94.537 r
+  U64/Y (MAJIxp5_ASAP7_6t_R)             27.831    122.368 f
+  U65/Y (MAJIxp5_ASAP7_6t_R)             37.542    159.911 r
+  U68/Y (MAJIxp5_ASAP7_6t_R)             27.831    187.742 f
+  U79/Y (INVxp5_ASAP7_6t_R)              17.080    204.822 r
+  U53/Y (AOI22xp25_ASAP7_6t_R)           26.763    231.585 f
+  U52/Y (XNOR2xp5_ASAP7_6t_R)            31.882    263.468 f
+  O[14] (out)                             0.000    263.468 f
+  data arrival time                                263.468
+
+  clock clk (rise edge)                 955.000    955.000
+  clock network delay (ideal)             0.000    955.000
+  clock reconvergence pessimism           0.000    955.000
+  output external delay                   0.000    955.000
+  data required time                               955.000
+  ---------------------------------------------------------------
+  data required time                               955.000
+  data arrival time                               -263.468
+  ---------------------------------------------------------------
+  slack (MET)                                      691.532
+
+
+1

@@ -1,0 +1,62 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 16:29:45 2025
+****************************************
+
+
+  Startpoint: B[5] (input port clocked by clk)
+  Endpoint: O[14] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  ------------------------------------------------------------------------------
+  clock clk (rise edge)                                  0.000      0.000
+  clock network delay (ideal)                            0.000      0.000
+  input external delay                                   0.000      0.000 r
+  B[5] (in)                                              0.000      0.000 r
+  U373/Y (NAND4xp25_ASAP7_6t_R)                         38.901     38.901 f
+  U483/Y (A2O1A1Ixp33_ASAP7_6t_R)                       33.767     72.668 r
+  U514/Y (XOR2xp5_ASAP7_6t_R)                           40.342    113.010 r
+  U515/SN (HAxp5_ASAP7_6t_R)                            52.973    165.983 r
+  U520/Y (MAJIxp5_ASAP7_6t_R)                           28.941    194.923 f
+  U540/SN (HAxp5_ASAP7_6t_R)                            39.869    234.792 f
+  U541/SN (HAxp5_ASAP7_6t_R)                            25.411    260.203 f
+  U542/Y (INVxp5_ASAP7_6t_R)                            26.844    287.047 r
+  U544/Y (MAJIxp5_ASAP7_6t_R)                           31.792    318.839 f
+  U556/Y (INVxp5_ASAP7_6t_R)                            24.123    342.962 r
+  U557/SN (HAxp5_ASAP7_6t_R)                            34.509    377.470 r
+  U558/SN (HAxp5_ASAP7_6t_R)                            42.838    420.308 r
+  U605/Y (INVxp5_ASAP7_6t_R)                            20.499    440.807 f
+  U606/SN (HAxp5_ASAP7_6t_R)                            33.516    474.323 f
+  U607/SN (HAxp5_ASAP7_6t_R)                            33.798    508.121 f
+  U368/Y (NAND2xp5_ASAP7_6t_R)                          33.299    541.421 r
+  U608/Y (MAJIxp5_ASAP7_6t_R)                           31.589    573.010 f
+  U609/Y (MAJIxp5_ASAP7_6t_R)                           38.235    611.245 r
+  U617/Y (MAJIxp5_ASAP7_6t_R)                           29.656    640.901 f
+  U618/Y (MAJIxp5_ASAP7_6t_R)                           38.411    679.312 r
+  U622/Y (MAJIxp5_ASAP7_6t_R)                           23.185    702.496 f
+  U419/Y (NAND2xp5_ASAP7_6t_R)                          23.772    726.268 r
+  U625/Y (OA21x1_ASAP7_6t_R)                            21.060    747.328 r
+  O[14] (out)                                            0.000    747.328 r
+  data arrival time                                               747.328
+
+  clock clk (rise edge)                                955.000    955.000
+  clock network delay (ideal)                            0.000    955.000
+  clock reconvergence pessimism                          0.000    955.000
+  output external delay                                  0.000    955.000
+  data required time                                              955.000
+  ------------------------------------------------------------------------------
+  data required time                                              955.000
+  data arrival time                                              -747.328
+  ------------------------------------------------------------------------------
+  slack (MET)                                                     207.672
+
+
+1

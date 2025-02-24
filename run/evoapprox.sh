@@ -26,8 +26,6 @@ libs=("asap7" "variability14" "fdsoi28" "nangate45")
 
 maindir="$HOME/axcarbon"
 top_design="top"
-# using a different clock period per technology node
-# synclk="0"
 num_inputs="10000"
 
 
@@ -93,7 +91,7 @@ for circuit in "${circuits[@]}"; do
                 sed -i "28i set_dont_use {asap7/FAxp33_ASAP7_6t_R}" $testdir/scripts/synthesis.tcl
             fi
             # 7nm -> 1050 MHz -> 955 ps
-            synclk="0.955"
+            synclk="955"
 
         elif [[ $libname == "variability14" ]]; then
             libpath="$maindir/libs/variability14/db"
@@ -124,11 +122,14 @@ for circuit in "${circuits[@]}"; do
             exit 1
         fi
 
+        ### Uncomment the following line to synthesize for delay optimization
+        # synclk="0.0"
+
         # check if there are reports for the circuit
         reports_dir="$circdir/reports/${libname}_${synclk}${tunit}"
         mkdir -p $reports_dir
         if ! [ -z "$( ls -A $reports_dir )" ]; then
-            echo "Reports already exist for circuit $circuit and library $libname (synthesis at $synclk${tunit})"
+            echo "Reports already exist for circuit $circuit and library $libname (synthesis at ${synclk}${tunit})"
             continue
         fi
 
@@ -180,7 +181,7 @@ for circuit in "${circuits[@]}"; do
         # rtl simulations to get the expected outputs
         rm -rf work_lib
         make rtl_sim
-        if grep -qi "^error" $testdir/logs/sim.log; then
+        if grep -qi "^error" $testdir/logs/vcs_rtl.log; then
             echo "Error: RTL simulation failed for circuit $circuit"
             exit 1
         fi
@@ -214,9 +215,15 @@ for circuit in "${circuits[@]}"; do
 
         # get power
         make power
+        if grep -qi "^error" $testdir/logs/ptpower.log; then
+            echo "Error: Power analysis failed for circuit $circuit"
+            exit 1
+        fi
         power="$(awk '/Total Power/ {print $4}' $power_rpt)"
 
         # write the results
+        # Remove existing line if it starts with "$circuit,$libname,$synclk"
+        sed -i "/^$circuit,$libname,$synclk/d" $resfile
         echo -e "$circuit,$libname,$synclk,$simclk,$area,$delay,$power,$med" >> $resfile
 
         # move reports to the appropriate directory

@@ -1,0 +1,54 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 16:29:48 2025
+****************************************
+
+
+  Startpoint: A[3] (input port clocked by clk)
+  Endpoint: O[14] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 f
+  A[3] (in)                               0.000      0.000 f
+  U64/Y (NAND2xp5_ASAP7_6t_R)            16.190     16.190 r
+  U91/Y (INVxp5_ASAP7_6t_R)              22.114     38.304 f
+  U92/Y (MAJIxp5_ASAP7_6t_R)             34.820     73.124 r
+  U95/Y (MAJIxp5_ASAP7_6t_R)             27.630    100.754 f
+  U96/Y (MAJIxp5_ASAP7_6t_R)             37.542    138.296 r
+  U99/Y (MAJIxp5_ASAP7_6t_R)             27.831    166.128 f
+  U100/Y (MAJIxp5_ASAP7_6t_R)            37.542    203.670 r
+  U103/Y (MAJIxp5_ASAP7_6t_R)            27.831    231.501 f
+  U104/Y (MAJIxp5_ASAP7_6t_R)            37.542    269.044 r
+  U107/Y (MAJIxp5_ASAP7_6t_R)            27.831    296.875 f
+  U108/Y (MAJIxp5_ASAP7_6t_R)            37.542    334.417 r
+  U111/Y (MAJIxp5_ASAP7_6t_R)            27.831    362.249 f
+  U125/Y (INVxp5_ASAP7_6t_R)             17.080    379.329 r
+  U86/Y (AOI22xp25_ASAP7_6t_R)           26.763    406.092 f
+  U85/Y (XNOR2xp5_ASAP7_6t_R)            31.882    437.974 f
+  O[14] (out)                             0.000    437.974 f
+  data arrival time                                437.974
+
+  clock clk (rise edge)                 955.000    955.000
+  clock network delay (ideal)             0.000    955.000
+  clock reconvergence pessimism           0.000    955.000
+  output external delay                   0.000    955.000
+  data required time                               955.000
+  ---------------------------------------------------------------
+  data required time                               955.000
+  data arrival time                               -437.974
+  ---------------------------------------------------------------
+  slack (MET)                                      517.026
+
+
+1

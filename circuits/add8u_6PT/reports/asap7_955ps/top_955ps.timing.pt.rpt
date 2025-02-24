@@ -1,0 +1,48 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 16:29:50 2025
+****************************************
+
+
+  Startpoint: A[1] (input port clocked by clk)
+  Endpoint: O[6] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 f
+  A[1] (in)                               0.000      0.000 f
+  U36/Y (NAND2xp5_ASAP7_6t_R)            16.190     16.190 r
+  U51/Y (INVxp5_ASAP7_6t_R)              22.114     38.304 f
+  U53/Y (MAJIxp5_ASAP7_6t_R)             34.820     73.124 r
+  U56/Y (MAJIxp5_ASAP7_6t_R)             27.630    100.754 f
+  U57/Y (MAJIxp5_ASAP7_6t_R)             37.542    138.296 r
+  U60/Y (MAJIxp5_ASAP7_6t_R)             27.831    166.128 f
+  U65/Y (INVxp5_ASAP7_6t_R)              17.080    183.208 r
+  U46/Y (AOI22xp25_ASAP7_6t_R)           26.763    209.971 f
+  U45/Y (XNOR2xp5_ASAP7_6t_R)            31.882    241.853 f
+  O[6] (out)                              0.000    241.853 f
+  data arrival time                                241.853
+
+  clock clk (rise edge)                 955.000    955.000
+  clock network delay (ideal)             0.000    955.000
+  clock reconvergence pessimism           0.000    955.000
+  output external delay                   0.000    955.000
+  data required time                               955.000
+  ---------------------------------------------------------------
+  data required time                               955.000
+  data arrival time                               -241.853
+  ---------------------------------------------------------------
+  slack (MET)                                      713.147
+
+
+1
