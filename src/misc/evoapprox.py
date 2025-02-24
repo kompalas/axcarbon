@@ -115,12 +115,18 @@ def main(mode, circuit, output, num_inputs=1000, expected=None, results=None):
             df = pd.read_csv(results)
             all_circuits = df['CircuitName'].unique()
             all_libs = df['Library'].unique()
-            area_df = pd.DataFrame(columns=list(all_libs), index=list(all_circuits))
-            for circuit in all_circuits:
-                for lib in all_libs:
-                    area = df[(df['CircuitName'] == circuit) & (df['Library'] == lib)]['Area'].mean()
-                    area_df.loc[circuit, lib] = area
-            area_df.to_csv(output)
+
+            # Gather area, latency and power and save to a single CSV file
+            metrics = ['Area', 'Delay', 'Power']
+            for metric in metrics:
+                metric_df = pd.DataFrame(columns=list(all_libs), index=list(all_circuits))
+                for circuit in all_circuits:
+                    for lib in all_libs:
+                        value = df[(df['CircuitName'] == circuit) & (df['Synclk'] != 0) & (df['Library'] == lib)][metric]
+                        if value.empty:
+                            continue
+                        metric_df.loc[circuit, lib] = value.iloc[0]
+                metric_df.to_csv(output, mode='w' if metric == 'Area' else 'a', header=True)
 
     else:
         raise NotImplementedError(f"Mode {mode} not implemented yet.")

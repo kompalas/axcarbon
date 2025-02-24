@@ -2,7 +2,7 @@
 set -eou pipefail
 # set -x
 
-which_circuits=${1?"Specify which circuits to evaluate. Options are: all, mul8u, add8u, add16u"}
+which_circuits=${1:-"all"}
 
 mul8u=("mul8u_1JJQ" "mul8u_ZB3" "mul8u_4X5" "mul8u_DG8" "mul8u_GTR" "mul8u_L93" "mul8u_18UH" "mul8u_17MJ")
 add8u=("add8u_1HG" "add8u_6PT" "add8u_6P8" "add8u_6SM" "add8u_6S4" "add8u_6R6" "add8u_0TP" "add8u_00M" "add8u_02Y")
@@ -26,7 +26,8 @@ libs=("asap7" "variability14" "fdsoi28" "nangate45")
 
 maindir="$HOME/axcarbon"
 top_design="top"
-synclk="0"
+# using a different clock period per technology node
+# synclk="0"
 num_inputs="10000"
 
 
@@ -69,13 +70,6 @@ for circuit in "${circuits[@]}"; do
 
     # run the evaluation for each library
     for libname in "${libs[@]}"; do
-        
-        # check if there are reports for the circuit
-        mkdir -p $circdir/reports/$libname
-        if ! [ -z "$( ls -A $circdir/reports/$libname )" ]; then
-            echo "Reports already exist for circuit $circuit and library $libname"
-            continue
-        fi
 
         # create test directory
         mkdir -p $maindir/test/evoapprox
@@ -86,6 +80,7 @@ for circuit in "${circuits[@]}"; do
         fi
 
         # set up libraries
+        tunit="ns"
         delay_incr="0.1"
         if [[ $libname == "asap7" ]]; then
             libpath="$maindir/libs/asap7/db"
@@ -97,35 +92,44 @@ for circuit in "${circuits[@]}"; do
             if ! grep -q "set_dont_use {asap7" $testdir/scripts/synthesis.tcl; then
                 sed -i "28i set_dont_use {asap7/FAxp33_ASAP7_6t_R}" $testdir/scripts/synthesis.tcl
             fi
+            # 7nm -> 1050 MHz -> 955 ps
+            synclk="0.955"
+
+        elif [[ $libname == "variability14" ]]; then
+            libpath="$maindir/libs/variability14/db"
+            libcpath="$maindir/libs/variability14/c"
+            libverilog="$maindir/libs/variability14/verilog"
+            lib="predicted_0.db"
+            # 14nm -> 940 MHz -> 1.065 ns
+            synclk="1.065"
+
+        elif [[ $libname == "fdsoi28" ]]; then
+            libpath="$maindir/libs/fdsoi28/db"
+            libcpath="$maindir/libs/fdsoi28/c"
+            libverilog="$maindir/libs/fdsoi28/verilog"
+            lib="28nm_FDSOI_0.9V_300K.db"
+            # 28nm -> 700 MHz -> 1.43 ns
+            synclk="1.43"
 
         elif [[ $libname == "nangate45" ]]; then
             libpath="$maindir/libs/nangate45/db"
             libcpath="$maindir/libs/nangate45/c"
             libverilog="$maindir/libs/nangate45/verilog"
             lib="nangate45.db"
-            tunit="ns"
-        elif [[ $libname == "variability14" ]]; then
-            libpath="$maindir/libs/variability14/db"
-            libcpath="$maindir/libs/variability14/c"
-            libverilog="$maindir/libs/variability14/verilog"
-            lib="predicted_0.db"
-            tunit="ns"
-        elif [[ $libname == "fdsoi28" ]]; then
-            libpath="$maindir/libs/fdsoi28/db"
-            libcpath="$maindir/libs/fdsoi28/c"
-            libverilog="$maindir/libs/fdsoi28/verilog"
-            lib="28nm_FDSOI_0.9V_300K.db"
-            tunit="ns"
-        elif [[ $libname == "egfet" ]]; then
-            libpath="$maindir/libs/egfet/db"
-            libcpath="$maindir/libs/egfet/c"
-            libverilog="$maindir/libs/egfet/verilog"
-            lib="EGFET_1.0V_enabled.db"
-            tunit="ns"
-            delay_incr="100000"
+            # 45nm -> 500 MHz -> 2 ns
+            synclk="2.0"
+
         else
-            echo "Invalid library option: ${libname}. Options are: asap7, variability14, fdsoi28, nangate45, egfet"
+            echo "Invalid library option: ${libname}. Options are: asap7, variability14, fdsoi28, nangate45"
             exit 1
+        fi
+
+        # check if there are reports for the circuit
+        reports_dir="$circdir/reports/${libname}_${synclk}${tunit}"
+        mkdir -p $reports_dir
+        if ! [ -z "$( ls -A $reports_dir )" ]; then
+            echo "Reports already exist for circuit $circuit and library $libname (synthesis at $synclk${tunit})"
+            continue
         fi
 
         # prepare testbench, inputs and true outputs for simulation
@@ -182,7 +186,9 @@ for circuit in "${circuits[@]}"; do
         fi
         mv $testdir/sim/output.txt $testdir/sim/expected.txt
 
-        simclk="$delay"
+        # get the simulation clock period that does not produce any timing errors
+        # start with the maximum between the synthesis clock and the CPD
+        simclk="$(awk -v synclk=$synclk -v delay=$delay 'BEGIN {print (synclk > delay) ? synclk : delay}')"
         while true; do
             sed -i "/parameter PERIOD=/ c\parameter PERIOD=$simclk;" $testdir/sim/top_tb.v
 
@@ -206,8 +212,6 @@ for circuit in "${circuits[@]}"; do
             fi
         done
 
-
-
         # get power
         make power
         power="$(awk '/Total Power/ {print $4}' $power_rpt)"
@@ -216,10 +220,10 @@ for circuit in "${circuits[@]}"; do
         echo -e "$circuit,$libname,$synclk,$simclk,$area,$delay,$power,$med" >> $resfile
 
         # move reports to the appropriate directory
-        mv $area_rpt $circdir/reports/$libname
-        mv $delay_rpt $circdir/reports/$libname
-        mv $power_rpt $circdir/reports/$libname
-        mv $testdir/gate/top.v $circdir/netlists/${libname}.v
+        mv $area_rpt $reports_dir
+        mv $delay_rpt $reports_dir
+        mv $power_rpt $reports_dir
+        mv $testdir/gate/top.v $circdir/netlists/${libname}_${synclk}${tunit}.v
 
     done
 done

@@ -1,0 +1,56 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 15:21:48 2025
+****************************************
+
+
+  Startpoint: A[1] (input port clocked by clk)
+  Endpoint: O[11] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  ------------------------------------------------------------------------------
+  clock clk (rise edge)                                  0.000      0.000
+  clock network delay (ideal)                            0.000      0.000
+  input external delay                                   0.000      0.000 r
+  A[1] (in)                                              0.000      0.000 r
+  U481/Y (NAND4xp75_ASAP7_6t_R)                         15.161     15.161 f
+  U480/Y (A2O1A1Ixp33_ASAP7_6t_R)                       13.566     28.728 r
+  U484/Y (XNOR2xp5f_ASAP7_6t_R)                         25.720     54.448 r
+  U483/Y (AOI21x1_ASAP7_6t_R)                           21.290     75.737 f
+  U582/Y (INVx2_ASAP7_6t_R)                             14.088     89.825 r
+  U504/Y (XNOR2xp5f_ASAP7_6t_R)                         27.405    117.231 r
+  U503/Y (NAND2xp5R_ASAP7_6t_R)                         17.991    135.221 f
+  U401/Y (OAI211xp67b_ASAP7_6t_R)                       20.298    155.520 r
+  U397/Y (XNOR2xp5_ASAP7_6t_R)                          29.706    185.226 r
+  U392/Y (XNOR2xp5f_ASAP7_6t_R)                         27.479    212.705 r
+  U390/Y (XNOR2xp5f_ASAP7_6t_R)                         30.683    243.388 r
+  U389/Y (NOR2x2R_ASAP7_6t_R)                           17.194    260.582 f
+  U406/Y (AND2x4_ASAP7_6t_R)                            19.847    280.429 f
+  U405/Y (AOI21x1_ASAP7_6t_R)                           14.867    295.296 r
+  U546/Y (NAND2xp5R_ASAP7_6t_R)                         16.215    311.511 f
+  U402/Y (NAND2xp5R_ASAP7_6t_R)                         16.463    327.974 r
+  U404/Y (XNOR2xp5f_ASAP7_6t_R)                         19.707    347.681 r
+  O[11] (out)                                            0.000    347.681 r
+  data arrival time                                               347.681
+
+  clock clk (rise edge)                                  0.955      0.955
+  clock network delay (ideal)                            0.000      0.955
+  clock reconvergence pessimism                          0.000      0.955
+  output external delay                                  0.000      0.955
+  data required time                                                0.955
+  ------------------------------------------------------------------------------
+  data required time                                                0.955
+  data arrival time                                              -347.681
+  ------------------------------------------------------------------------------
+  slack (VIOLATED)                                               -346.726
+
+
+1

@@ -1,0 +1,42 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 15:24:41 2025
+****************************************
+
+
+  Startpoint: A[5] (input port clocked by clk)
+  Endpoint: O[7] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 f
+  A[5] (in)                               0.000      0.000 f
+  U8/ZN (OR2_X1)                          0.059      0.059 f
+  U11/CO (FA_X1)                          0.091      0.150 f
+  U9/S (FA_X1)                            0.128      0.278 r
+  O[7] (out)                              0.002      0.280 r
+  data arrival time                                  0.280
+
+  clock clk (rise edge)                   2.000      2.000
+  clock network delay (ideal)             0.000      2.000
+  clock reconvergence pessimism           0.000      2.000
+  output external delay                   0.000      2.000
+  data required time                                 2.000
+  ---------------------------------------------------------------
+  data required time                                 2.000
+  data arrival time                                 -0.280
+  ---------------------------------------------------------------
+  slack (MET)                                        1.720
+
+
+1

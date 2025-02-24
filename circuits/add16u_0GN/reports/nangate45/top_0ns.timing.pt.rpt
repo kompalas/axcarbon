@@ -1,0 +1,46 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Sun Feb 23 20:57:42 2025
+****************************************
+
+
+  Startpoint: A[8] (input port clocked by clk)
+  Endpoint: O[14] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 f
+  A[8] (in)                               0.000      0.000 f
+  U43/ZN (OR2_X2)                         0.062      0.062 f
+  U49/ZN (AOI21_X1)                       0.039      0.101 r
+  U67/ZN (OR2_X1)                         0.039      0.139 r
+  U41/ZN (AND2_X1)                        0.043      0.182 r
+  U50/ZN (OAI211_X1)                      0.053      0.235 f
+  U93/ZN (AOI21_X1)                       0.055      0.290 r
+  U94/ZN (XNOR2_X1)                       0.059      0.349 r
+  O[14] (out)                             0.002      0.351 r
+  data arrival time                                  0.351
+
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  clock reconvergence pessimism           0.000      0.000
+  output external delay                   0.000      0.000
+  data required time                                 0.000
+  ---------------------------------------------------------------
+  data required time                                 0.000
+  data arrival time                                 -0.351
+  ---------------------------------------------------------------
+  slack (VIOLATED)                                  -0.351
+
+
+1

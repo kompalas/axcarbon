@@ -1,0 +1,30 @@
+ 
+****************************************
+Report : area
+Design : top
+Version: T-2022.03-SP5
+Date   : Sun Feb 23 20:52:04 2025
+****************************************
+
+Library(s) Used:
+
+    typical (File: /home/balaskas/axcarbon/libs/variability14/db/predicted_0.db)
+
+Number of ports:                           49
+Number of nets:                           201
+Number of cells:                          169
+Number of combinational cells:            169
+Number of sequential cells:                 0
+Number of macros/black boxes:               0
+Number of buf/inv:                         41
+Number of references:                      19
+
+Combinational area:                 47.087617
+Buf/Inv area:                        9.240576
+Noncombinational area:               0.000000
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                    47.087617
+Total area:                 undefined
+1

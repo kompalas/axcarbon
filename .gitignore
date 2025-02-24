@@ -67,4 +67,6 @@ circuits/*/*txt
 # test intermediate files
 test/**/*.sv
 test/ga_*
+test/evoapprox/
 
+!circuits/*/reports*

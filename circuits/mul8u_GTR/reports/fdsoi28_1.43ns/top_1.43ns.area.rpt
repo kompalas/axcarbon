@@ -1,0 +1,30 @@
+ 
+****************************************
+Report : area
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 15:22:31 2025
+****************************************
+
+Library(s) Used:
+
+    typical (File: /home/balaskas/axcarbon/libs/fdsoi28/db/28nm_FDSOI_0.9V_300K.db)
+
+Number of ports:                           32
+Number of nets:                           196
+Number of cells:                          148
+Number of combinational cells:            147
+Number of sequential cells:                 0
+Number of macros/black boxes:               0
+Number of buf/inv:                         42
+Number of references:                      15
+
+Combinational area:                228.228001
+Buf/Inv area:                       22.344000
+Noncombinational area:               0.000000
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                   228.228001
+Total area:                 undefined
+1

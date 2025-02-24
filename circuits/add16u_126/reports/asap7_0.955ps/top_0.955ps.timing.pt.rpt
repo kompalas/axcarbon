@@ -1,0 +1,45 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 15:16:59 2025
+****************************************
+
+
+  Startpoint: B[4] (input port clocked by clk)
+  Endpoint: O[15] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  ------------------------------------------------------------------------------
+  clock clk (rise edge)                                  0.000      0.000
+  clock network delay (ideal)                            0.000      0.000
+  input external delay                                   0.000      0.000 f
+  B[4] (in)                                              0.000      0.000 f
+  U135/Y (NAND2x2_ASAP7_6t_R)                            9.114      9.114 r
+  U134/Y (NOR2x2R_ASAP7_6t_R)                            9.779     18.893 f
+  U109/Y (OAI21xp5b_ASAP7_6t_R)                         16.981     35.875 r
+  U176/Y (NAND3xp33R_ASAP7_6t_R)                        21.985     57.859 f
+  U183/Y (AOI31xp33_ASAP7_6t_R)                         20.050     77.910 r
+  U137/Y (XNOR2xp5_ASAP7_6t_R)                          19.825     97.735 r
+  O[15] (out)                                            0.000     97.735 r
+  data arrival time                                                97.735
+
+  clock clk (rise edge)                                  0.955      0.955
+  clock network delay (ideal)                            0.000      0.955
+  clock reconvergence pessimism                          0.000      0.955
+  output external delay                                  0.000      0.955
+  data required time                                                0.955
+  ------------------------------------------------------------------------------
+  data required time                                                0.955
+  data arrival time                                               -97.735
+  ------------------------------------------------------------------------------
+  slack (VIOLATED)                                                -96.780
+
+
+1

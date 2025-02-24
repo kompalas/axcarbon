@@ -1,0 +1,63 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 15:23:00 2025
+****************************************
+
+
+  Startpoint: B[7] (input port clocked by clk)
+  Endpoint: O[15] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 r
+  B[7] (in)                               0.000      0.000 r
+  U192/ZN (NAND2_X1)                      0.036      0.036 f
+  U193/ZN (NOR2_X1)                       0.076      0.112 r
+  U203/ZN (AOI21_X1)                      0.044      0.157 f
+  U205/ZN (XNOR2_X1)                      0.066      0.223 f
+  U207/ZN (NOR2_X1)                       0.058      0.281 r
+  U208/ZN (AOI21_X1)                      0.041      0.321 f
+  intadd_1_U6/S (FA_X1)                   0.148      0.470 r
+  U166/ZN (INV_X1)                        0.027      0.497 f
+  intadd_2_U5/S (FA_X1)                   0.130      0.627 f
+  intadd_5_U4/S (FA_X1)                   0.144      0.771 r
+  U159/ZN (INV_X1)                        0.027      0.798 f
+  intadd_0_U7/S (FA_X1)                   0.139      0.938 r
+  U149/ZN (INV_X1)                        0.027      0.965 f
+  intadd_4_U3/S (FA_X1)                   0.146      1.110 r
+  U148/ZN (AND2_X1)                       0.052      1.162 r
+  intadd_4_U2/CO (FA_X1)                  0.075      1.237 r
+  U130/ZN (INV_X1)                        0.027      1.264 f
+  intadd_0_U5/CO (FA_X1)                  0.104      1.368 f
+  intadd_0_U4/CO (FA_X1)                  0.093      1.461 f
+  intadd_0_U3/CO (FA_X1)                  0.093      1.554 f
+  intadd_0_U2/CO (FA_X1)                  0.098      1.652 f
+  U235/ZN (INV_X1)                        0.034      1.686 r
+  U236/ZN (NAND2_X1)                      0.029      1.715 f
+  U237/ZN (OAI21_X1)                      0.032      1.747 r
+  O[15] (out)                             0.002      1.749 r
+  data arrival time                                  1.749
+
+  clock clk (rise edge)                   2.000      2.000
+  clock network delay (ideal)             0.000      2.000
+  clock reconvergence pessimism           0.000      2.000
+  output external delay                   0.000      2.000
+  data required time                                 2.000
+  ---------------------------------------------------------------
+  data required time                                 2.000
+  data arrival time                                 -1.749
+  ---------------------------------------------------------------
+  slack (MET)                                        0.251
+
+
+1

@@ -1,0 +1,63 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Sun Feb 23 21:12:41 2025
+****************************************
+
+
+  Startpoint: B[7] (input port clocked by clk)
+  Endpoint: O[14] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 r
+  B[7] (in)                               0.000      0.000 r
+  U448/ZN (NAND4_X4)                      0.005      0.005 f
+  U445/ZN (INV_X4)                        0.004      0.009 r
+  U431/ZN (XNOR2_X2)                      0.008      0.017 r
+  U227/ZN (NAND2_X4)                      0.004      0.021 f
+  U395/ZN (OAI21_X4)                      0.004      0.025 r
+  U280/ZN (INV_X2)                        0.004      0.029 f
+  U278/ZN (NAND2_X4)                      0.002      0.031 r
+  U279/ZN (NAND2_X4)                      0.002      0.034 f
+  U260/ZN (NAND2_X2)                      0.003      0.037 r
+  U231/ZN (NAND2_X4)                      0.004      0.040 f
+  U192/ZN (NAND2_X2)                      0.003      0.043 r
+  U191/ZN (OAI211_X2)                     0.005      0.049 f
+  U423/ZN (XNOR2_X2)                      0.008      0.057 f
+  U359/ZN (INV_X2)                        0.003      0.060 r
+  U143/ZN (NAND2_X2)                      0.003      0.063 f
+  U311/ZN (NAND2_X4)                      0.003      0.066 r
+  U309/ZN (NAND2_X4)                      0.003      0.070 f
+  U430/ZN (INV_X4)                        0.003      0.073 r
+  U321/ZN (NAND2_X4)                      0.003      0.076 f
+  U319/ZN (NAND2_X4)                      0.003      0.079 r
+  U294/ZN (NAND2_X2)                      0.004      0.083 f
+  U371/ZN (NAND3_X4)                      0.003      0.086 r
+  U363/ZN (NAND3_X2)                      0.003      0.089 f
+  U402/ZN (XNOR2_X1)                      0.006      0.095 f
+  O[14] (out)                             0.000      0.095 f
+  data arrival time                                  0.095
+
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  clock reconvergence pessimism           0.000      0.000
+  output external delay                   0.000      0.000
+  data required time                                 0.000
+  ---------------------------------------------------------------
+  data required time                                 0.000
+  data arrival time                                 -0.095
+  ---------------------------------------------------------------
+  slack (VIOLATED)                                  -0.095
+
+
+1

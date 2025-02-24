@@ -1,0 +1,30 @@
+ 
+****************************************
+Report : area
+Design : top
+Version: T-2022.03-SP5
+Date   : Sun Feb 23 20:56:25 2025
+****************************************
+
+Library(s) Used:
+
+    NangateOpenCellLibrary (File: /home/balaskas/axcarbon/libs/nangate45/db/nangate45.db)
+
+Number of ports:                           32
+Number of nets:                           593
+Number of cells:                          577
+Number of combinational cells:            577
+Number of sequential cells:                 0
+Number of macros/black boxes:               0
+Number of buf/inv:                        107
+Number of references:                      26
+
+Combinational area:                611.267997
+Buf/Inv area:                       60.382000
+Noncombinational area:               0.000000
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (Wire load has zero net area)
+
+Total cell area:                   611.267997
+Total area:                 undefined
+1

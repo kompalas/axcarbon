@@ -1,0 +1,59 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Sun Feb 23 21:04:48 2025
+****************************************
+
+
+  Startpoint: A[1] (input port clocked by clk)
+  Endpoint: O[11] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 r
+  A[1] (in)                               0.000      0.000 r
+  U405/ZN (NAND2_X2)                      0.015      0.015 f
+  U370/ZN (NOR2_X1)                       0.018      0.032 r
+  U403/Z (XOR2_X1)                        0.030      0.063 r
+  U249/ZN (XNOR2_X1)                      0.029      0.092 r
+  U422/ZN (XNOR2_X1)                      0.030      0.123 r
+  U307/Z (XOR2_X1)                        0.039      0.161 r
+  U308/ZN (NAND2_X2)                      0.020      0.181 f
+  U444/ZN (NAND2_X2)                      0.012      0.193 r
+  U443/ZN (NAND2_X2)                      0.012      0.205 f
+  U445/ZN (NAND2_X2)                      0.012      0.217 r
+  U451/ZN (NOR2_X1)                       0.013      0.229 f
+  U441/ZN (NOR2_X2)                       0.017      0.247 r
+  U439/ZN (NAND2_X1)                      0.015      0.262 f
+  U498/Z (XOR2_X1)                        0.027      0.289 f
+  U512/ZN (OAI21_X2)                      0.023      0.312 r
+  U410/ZN (NAND2_X2)                      0.018      0.330 f
+  U409/ZN (OAI21_X2)                      0.021      0.351 r
+  U412/ZN (NAND2_X1)                      0.016      0.366 f
+  U629/ZN (NAND2_X1)                      0.012      0.378 r
+  U632/ZN (XNOR2_X1)                      0.021      0.399 r
+  O[11] (out)                             0.000      0.399 r
+  data arrival time                                  0.399
+
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  clock reconvergence pessimism           0.000      0.000
+  output external delay                   0.000      0.000
+  data required time                                 0.000
+  ---------------------------------------------------------------
+  data required time                                 0.000
+  data arrival time                                 -0.399
+  ---------------------------------------------------------------
+  slack (VIOLATED)                                  -0.399
+
+
+1
