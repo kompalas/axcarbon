@@ -1,0 +1,30 @@
+ 
+****************************************
+Report : area
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 21:13:58 2025
+****************************************
+
+Library(s) Used:
+
+    saed14rvt_tt0p8v25c (File: /usr/local/eda/synLibs/saed14nm/SAED14nm_EDK_06052019/stdcell_rvt/db_ccs/saed14rvt_tt0p8v25c.db)
+
+Number of ports:                           49
+Number of nets:                            43
+Number of cells:                           13
+Number of combinational cells:             13
+Number of sequential cells:                 0
+Number of macros/black boxes:               0
+Number of buf/inv:                          0
+Number of references:                       6
+
+Combinational area:                 10.655999
+Buf/Inv area:                        0.000000
+Noncombinational area:               0.000000
+Macro/Black Box area:                0.000000
+Net Interconnect area:               4.382033
+
+Total cell area:                    10.655999
+Total area:                         15.038033
+1

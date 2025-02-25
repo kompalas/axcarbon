@@ -1,0 +1,56 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Tue Feb 25 06:56:25 2025
+****************************************
+
+
+  Startpoint: A[5] (input port clocked by clk)
+  Endpoint: O[14] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 r
+  A[5] (in)                               0.000      0.000 r
+  U147/Y (INVX16_RVT)                     0.367      0.367 f
+  U423/Y (OR2X1_RVT)                      0.015      0.382 f
+  U275/Y (OR2X1_RVT)                      0.014      0.397 f
+  U274/Y (INVX0_RVT)                      0.014      0.411 r
+  U276/Y (OR2X1_RVT)                      0.014      0.425 r
+  U285/Y (XOR2X2_RVT)                     0.026      0.451 f
+  U334/Y (NOR2X0_RVT)                     0.017      0.469 r
+  U133/Y (OR2X2_RVT)                      0.014      0.482 r
+  U134/Y (XNOR2X2_RVT)                    0.034      0.516 r
+  U199/Y (XOR2X2_RVT)                     0.033      0.549 r
+  U202/Y (XNOR2X2_RVT)                    0.034      0.582 r
+  U201/Y (OR2X1_RVT)                      0.019      0.601 r
+  U304/Y (AO21X1_RVT)                     0.012      0.613 r
+  U303/Y (NAND2X0_RVT)                    0.010      0.623 f
+  U314/Y (NAND2X0_RVT)                    0.012      0.635 r
+  U347/Y (OR2X1_RVT)                      0.014      0.649 r
+  U346/Y (NAND2X0_RVT)                    0.010      0.660 f
+  O[14] (out)                             0.000      0.660 f
+  data arrival time                                  0.660
+
+  clock clk (rise edge)                   1.430      1.430
+  clock network delay (ideal)             0.000      1.430
+  clock reconvergence pessimism           0.000      1.430
+  output external delay                   0.000      1.430
+  data required time                                 1.430
+  ---------------------------------------------------------------
+  data required time                                 1.430
+  data arrival time                                 -0.660
+  ---------------------------------------------------------------
+  slack (MET)                                        0.770
+
+
+1

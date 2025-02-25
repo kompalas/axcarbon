@@ -1,0 +1,63 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Tue Feb 25 06:50:00 2025
+****************************************
+
+
+  Startpoint: A[7] (input port clocked by clk)
+  Endpoint: O[14] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 r
+  A[7] (in)                               0.000      0.000 r
+  U258/Y (AND2X1_RVT)                     0.022      0.022 r
+  U260/Y (NAND2X0_RVT)                    0.010      0.031 f
+  U343/Y (AND2X1_RVT)                     0.013      0.045 f
+  U342/Y (XOR2X2_RVT)                     0.026      0.071 r
+  U519/Y (AND2X1_RVT)                     0.014      0.084 r
+  U548/Y (INVX1_RVT)                      0.019      0.104 f
+  U361/Y (NOR2X0_RVT)                     0.014      0.118 r
+  U549/Y (OR2X1_RVT)                      0.014      0.132 r
+  U255/Y (OR2X1_RVT)                      0.014      0.146 r
+  U143/Y (XOR2X2_RVT)                     0.033      0.179 r
+  U257/Y (NOR2X0_RVT)                     0.016      0.195 f
+  U256/Y (NOR2X0_RVT)                     0.016      0.211 r
+  U142/Y (XNOR2X2_RVT)                    0.034      0.245 r
+  U412/Y (OR2X1_RVT)                      0.016      0.261 r
+  U179/Y (INVX1_RVT)                      0.018      0.279 f
+  U175/Y (OR2X1_RVT)                      0.014      0.293 f
+  U389/Y (XOR2X2_RVT)                     0.026      0.319 f
+  U170/Y (INVX1_RVT)                      0.018      0.336 r
+  U568/Y (OR2X2_RVT)                      0.014      0.350 r
+  U285/Y (AND2X1_RVT)                     0.015      0.365 r
+  U592/Y (AND2X1_RVT)                     0.015      0.380 r
+  U392/Y (NAND2X0_RVT)                    0.011      0.391 f
+  U409/Y (AND2X1_RVT)                     0.012      0.402 f
+  U596/Y (XOR3X2_RVT)                     0.019      0.421 r
+  O[14] (out)                             0.000      0.422 r
+  data arrival time                                  0.422
+
+  clock clk (rise edge)                   1.430      1.430
+  clock network delay (ideal)             0.000      1.430
+  clock reconvergence pessimism           0.000      1.430
+  output external delay                   0.000      1.430
+  data required time                                 1.430
+  ---------------------------------------------------------------
+  data required time                                 1.430
+  data arrival time                                 -0.422
+  ---------------------------------------------------------------
+  slack (MET)                                        1.008
+
+
+1

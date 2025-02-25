@@ -1,0 +1,55 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 21:10:45 2025
+****************************************
+
+
+  Startpoint: B[7] (input port clocked by clk)
+  Endpoint: O[14] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  ------------------------------------------------------------------------------
+  clock clk (rise edge)                                  0.000      0.000
+  clock network delay (ideal)                            0.000      0.000
+  input external delay                                   0.000      0.000 r
+  B[7] (in)                                              0.000      0.000 r
+  U247/X (SAEDRVT14_ND2_CDC_0P5)                         0.018      0.018 f
+  U248/X (SAEDRVT14_EO2_V1_0P75)                         0.030      0.049 f
+  intadd_1_U7/S (SAEDRVT14_ADDF_V1_0P5)                  0.063      0.112 r
+  intadd_2_U6/S (SAEDRVT14_ADDF_V1_0P5)                  0.059      0.171 f
+  intadd_3_U5/S (SAEDRVT14_ADDF_V1_0P5)                  0.061      0.232 r
+  intadd_4_U4/S (SAEDRVT14_ADDF_V1_0P5)                  0.059      0.291 f
+  intadd_0_U8/S (SAEDRVT14_ADDF_V1_0P5)                  0.061      0.352 r
+  intadd_6_U2/CO (SAEDRVT14_ADDF_V1_0P5)                 0.048      0.401 r
+  U199/X (SAEDRVT14_AN2_MM_0P5)                          0.023      0.424 r
+  intadd_0_U6/CO (SAEDRVT14_ADDF_V1_0P5)                 0.040      0.464 r
+  intadd_0_U5/CO (SAEDRVT14_ADDF_V1_0P5)                 0.042      0.506 r
+  intadd_0_U4/CO (SAEDRVT14_ADDF_V1_0P5)                 0.042      0.548 r
+  intadd_0_U3/CO (SAEDRVT14_ADDF_V1_0P5)                 0.042      0.590 r
+  intadd_0_U2/CO (SAEDRVT14_ADDF_V1_0P5)                 0.043      0.633 r
+  U224/X (SAEDRVT14_ND2_CDC_0P5)                         0.022      0.655 f
+  U225/X (SAEDRVT14_OA21_1)                              0.020      0.675 f
+  O[14] (out)                                            0.004      0.679 f
+  data arrival time                                                 0.679
+
+  clock clk (rise edge)                                  1.065      1.065
+  clock network delay (ideal)                            0.000      1.065
+  clock reconvergence pessimism                          0.000      1.065
+  output external delay                                  0.000      1.065
+  data required time                                                1.065
+  ------------------------------------------------------------------------------
+  data required time                                                1.065
+  data arrival time                                                -0.679
+  ------------------------------------------------------------------------------
+  slack (MET)                                                       0.386
+
+
+1

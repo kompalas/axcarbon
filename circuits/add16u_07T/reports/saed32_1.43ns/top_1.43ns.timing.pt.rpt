@@ -1,0 +1,45 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Tue Feb 25 06:56:13 2025
+****************************************
+
+
+  Startpoint: B[9] (input port clocked by clk)
+  Endpoint: O[15] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 r
+  B[9] (in)                               0.000      0.000 r
+  intadd_0_U7/CO (FADDX1_RVT)             0.040      0.040 r
+  intadd_0_U6/CO (FADDX1_RVT)             0.027      0.067 r
+  intadd_0_U5/CO (FADDX1_RVT)             0.027      0.094 r
+  intadd_0_U4/CO (FADDX1_RVT)             0.027      0.121 r
+  intadd_0_U3/CO (FADDX1_RVT)             0.027      0.148 r
+  intadd_0_U2/S (FADDX1_RVT)              0.027      0.175 r
+  O[15] (out)                             0.004      0.179 r
+  data arrival time                                  0.179
+
+  clock clk (rise edge)                   1.430      1.430
+  clock network delay (ideal)             0.000      1.430
+  clock reconvergence pessimism           0.000      1.430
+  output external delay                   0.000      1.430
+  data required time                                 1.430
+  ---------------------------------------------------------------
+  data required time                                 1.430
+  data arrival time                                 -0.179
+  ---------------------------------------------------------------
+  slack (MET)                                        1.251
+
+
+1

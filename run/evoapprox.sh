@@ -1,6 +1,6 @@
 # !/bin/bash
 set -eou pipefail
-# set -x
+set -x
 
 which_circuits=${1:-"all"}
 
@@ -22,7 +22,7 @@ else
     exit 1
 fi
 
-libs=("asap7" "variability14" "fdsoi28" "nangate45")
+libs=("asap7" "saed14" "saed32" "nangate45")
 
 maindir="$HOME/axcarbon"
 top_design="top"
@@ -82,7 +82,6 @@ for circuit in "${circuits[@]}"; do
         delay_incr="0.1"
         if [[ $libname == "asap7" ]]; then
             libpath="$maindir/libs/asap7/db"
-            libcpath="$maindir/libs/asap7/c"
             libverilog="$maindir/libs/asap7/verilog"
             lib="asap7.db"
             tunit="ps"
@@ -95,15 +94,28 @@ for circuit in "${circuits[@]}"; do
 
         elif [[ $libname == "variability14" ]]; then
             libpath="$maindir/libs/variability14/db"
-            libcpath="$maindir/libs/variability14/c"
             libverilog="$maindir/libs/variability14/verilog"
             lib="predicted_0.db"
             # 14nm -> 940 MHz -> 1.065 ns
             synclk="1.065"
 
+        elif [[ $libname == "saed14" ]]; then
+            libpath="/usr/local/eda/synLibs/saed14nm/SAED14nm_EDK_06052019/stdcell_rvt/db_ccs"
+            libverilog="/usr/local/eda/synLibs/saed14nm/SAED14nm_EDK_06052019/stdcell_rvt/verilog"
+            lib="saed14rvt_tt0p8v25c.db"
+            # 14nm -> 940 MHz -> 1.065 ns
+            synclk="1.065"
+
+        elif [[ $libname == "saed32" ]]; then
+            libpath="/usr/local/eda/synLibs/SAED32_EDK/lib/stdcell_rvt/db_ccs"
+            libverilog="/usr/local/eda/synLibs/SAED32_EDK/lib/stdcell_rvt/verilog"
+            # sed -i "/set target_library/ c\set target_library [glob -nocomplain \${LIB_DB_PATH}/*.db]" $testdir/scripts/synthesis.tcl
+            lib="saed32rvt_tt0p85v25c.db"
+            # 32nm -> 700 MHz -> 1.43 ns
+            synclk="1.43"
+
         elif [[ $libname == "fdsoi28" ]]; then
             libpath="$maindir/libs/fdsoi28/db"
-            libcpath="$maindir/libs/fdsoi28/c"
             libverilog="$maindir/libs/fdsoi28/verilog"
             lib="28nm_FDSOI_0.9V_300K.db"
             # 28nm -> 700 MHz -> 1.43 ns
@@ -111,7 +123,6 @@ for circuit in "${circuits[@]}"; do
 
         elif [[ $libname == "nangate45" ]]; then
             libpath="$maindir/libs/nangate45/db"
-            libcpath="$maindir/libs/nangate45/c"
             libverilog="$maindir/libs/nangate45/verilog"
             lib="nangate45.db"
             # 45nm -> 500 MHz -> 2 ns
@@ -196,6 +207,7 @@ for circuit in "${circuits[@]}"; do
             # gate level simulation to get errors
             rm -rf work_gate_lib
             rm -rf gate_simv.daidir
+            rm -rf tech_lib
             make gate_sim
             python3 $maindir/src/misc/evoapprox.py \
                 --mode errors \

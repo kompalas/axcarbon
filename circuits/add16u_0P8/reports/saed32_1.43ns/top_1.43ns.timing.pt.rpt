@@ -1,0 +1,49 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Tue Feb 25 06:53:39 2025
+****************************************
+
+
+  Startpoint: B[6] (input port clocked by clk)
+  Endpoint: O[15] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 r
+  B[6] (in)                               0.000      0.000 r
+  U16/Y (OR2X1_RVT)                       0.017      0.017 r
+  intadd_0_U10/CO (FADDX1_RVT)            0.031      0.048 r
+  intadd_0_U9/CO (FADDX1_RVT)             0.027      0.075 r
+  intadd_0_U8/CO (FADDX1_RVT)             0.027      0.102 r
+  intadd_0_U7/CO (FADDX1_RVT)             0.027      0.129 r
+  intadd_0_U6/CO (FADDX1_RVT)             0.027      0.156 r
+  intadd_0_U5/CO (FADDX1_RVT)             0.027      0.183 r
+  intadd_0_U4/CO (FADDX1_RVT)             0.027      0.211 r
+  intadd_0_U3/CO (FADDX1_RVT)             0.027      0.238 r
+  intadd_0_U2/S (FADDX1_RVT)              0.027      0.265 r
+  O[15] (out)                             0.004      0.269 r
+  data arrival time                                  0.269
+
+  clock clk (rise edge)                   1.430      1.430
+  clock network delay (ideal)             0.000      1.430
+  clock reconvergence pessimism           0.000      1.430
+  output external delay                   0.000      1.430
+  data required time                                 1.430
+  ---------------------------------------------------------------
+  data required time                                 1.430
+  data arrival time                                 -0.269
+  ---------------------------------------------------------------
+  slack (MET)                                        1.161
+
+
+1

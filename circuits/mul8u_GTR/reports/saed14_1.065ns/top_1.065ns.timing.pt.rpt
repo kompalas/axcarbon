@@ -1,0 +1,59 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 21:18:18 2025
+****************************************
+
+
+  Startpoint: A[1] (input port clocked by clk)
+  Endpoint: O[14] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  ------------------------------------------------------------------------------
+  clock clk (rise edge)                                  0.000      0.000
+  clock network delay (ideal)                            0.000      0.000
+  input external delay                                   0.000      0.000 r
+  A[1] (in)                                              0.000      0.000 r
+  U209/X (SAEDRVT14_ND2_CDC_0P5)                         0.021      0.021 f
+  U147/X (SAEDRVT14_NR2_1)                               0.020      0.040 r
+  U146/X (SAEDRVT14_NR2_1)                               0.017      0.057 f
+  U212/X (SAEDRVT14_EO2_V1_0P75)                         0.028      0.086 f
+  U170/X (SAEDRVT14_NR2_1)                               0.025      0.111 r
+  U131/X (SAEDRVT14_AOI21_0P75)                          0.019      0.130 f
+  intadd_2_U6/S (SAEDRVT14_ADDF_V1_0P5)                  0.050      0.181 r
+  U205/X (SAEDRVT14_INV_0P5)                             0.015      0.196 f
+  intadd_1_U5/S (SAEDRVT14_ADDF_V1_0P5)                  0.061      0.256 r
+  intadd_4_U4/S (SAEDRVT14_ADDF_V1_0P5)                  0.059      0.316 f
+  intadd_5_U3/S (SAEDRVT14_ADDF_V1_0P5)                  0.061      0.377 r
+  intadd_0_U7/S (SAEDRVT14_ADDF_V1_0P5)                  0.059      0.436 f
+  U164/X (SAEDRVT14_AN2_MM_0P5)                          0.026      0.461 f
+  intadd_0_U6/CO (SAEDRVT14_ADDF_V1_0P5)                 0.040      0.502 f
+  intadd_0_U5/CO (SAEDRVT14_ADDF_V1_0P5)                 0.042      0.544 f
+  intadd_0_U4/CO (SAEDRVT14_ADDF_V1_0P5)                 0.042      0.586 f
+  intadd_0_U3/CO (SAEDRVT14_ADDF_V1_0P5)                 0.042      0.627 f
+  intadd_0_U2/CO (SAEDRVT14_ADDF_V1_0P5)                 0.043      0.670 f
+  U184/X (SAEDRVT14_ND2_CDC_0P5)                         0.019      0.689 r
+  U185/X (SAEDRVT14_OA21_1)                              0.023      0.713 r
+  O[14] (out)                                            0.004      0.716 r
+  data arrival time                                                 0.716
+
+  clock clk (rise edge)                                  1.065      1.065
+  clock network delay (ideal)                            0.000      1.065
+  clock reconvergence pessimism                          0.000      1.065
+  output external delay                                  0.000      1.065
+  data required time                                                1.065
+  ------------------------------------------------------------------------------
+  data required time                                                1.065
+  data arrival time                                                -0.716
+  ------------------------------------------------------------------------------
+  slack (MET)                                                       0.349
+
+
+1

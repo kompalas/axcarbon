@@ -1,0 +1,30 @@
+ 
+****************************************
+Report : area
+Design : top
+Version: T-2022.03-SP5
+Date   : Tue Feb 25 06:56:21 2025
+****************************************
+
+Library(s) Used:
+
+    saed32rvt_tt0p85v25c (File: /usr/local/eda/synLibs/SAED32_EDK/lib/stdcell_rvt/db_ccs/saed32rvt_tt0p85v25c.db)
+
+Number of ports:                           32
+Number of nets:                           357
+Number of cells:                          340
+Number of combinational cells:            339
+Number of sequential cells:                 0
+Number of macros/black boxes:               0
+Number of buf/inv:                         65
+Number of references:                      35
+
+Combinational area:                823.680714
+Buf/Inv area:                       93.779137
+Noncombinational area:               0.000000
+Macro/Black Box area:                0.000000
+Net Interconnect area:             117.367587
+
+Total cell area:                   823.680714
+Total area:                        941.048301
+1

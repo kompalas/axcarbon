@@ -1,0 +1,62 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Tue Feb 25 06:54:53 2025
+****************************************
+
+
+  Startpoint: B[6] (input port clocked by clk)
+  Endpoint: O[13] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  ---------------------------------------------------------------
+  clock clk (rise edge)                   0.000      0.000
+  clock network delay (ideal)             0.000      0.000
+  input external delay                    0.000      0.000 f
+  B[6] (in)                               0.000      0.000 f
+  U374/Y (AND2X1_RVT)                     0.021      0.021 f
+  U159/Y (INVX1_RVT)                      0.018      0.039 r
+  U447/Y (AND2X1_RVT)                     0.012      0.051 r
+  U131/Y (OR2X1_RVT)                      0.014      0.065 r
+  U402/Y (XOR3X2_RVT)                     0.022      0.087 f
+  U437/Y (NOR2X0_RVT)                     0.016      0.103 r
+  U243/Y (OR2X1_RVT)                      0.016      0.119 r
+  U130/Y (XNOR2X2_RVT)                    0.042      0.161 r
+  U415/Y (OR2X1_RVT)                      0.016      0.177 r
+  U526/Y (INVX1_RVT)                      0.018      0.195 f
+  U314/Y (OR2X1_RVT)                      0.013      0.208 f
+  U313/Y (XOR3X2_RVT)                     0.019      0.227 r
+  U369/Y (AND2X1_RVT)                     0.015      0.242 r
+  U276/Y (OR2X1_RVT)                      0.016      0.258 r
+  U261/Y (OA22X1_RVT)                     0.011      0.268 r
+  U244/Y (INVX1_RVT)                      0.018      0.286 f
+  U260/Y (XOR3X2_RVT)                     0.019      0.305 r
+  U336/Y (OR2X1_RVT)                      0.017      0.323 r
+  U335/Y (NAND2X0_RVT)                    0.010      0.333 f
+  U175/Y (OR2X1_RVT)                      0.017      0.350 f
+  U337/Y (NAND2X0_RVT)                    0.010      0.360 r
+  U555/Y (AO21X1_RVT)                     0.010      0.371 r
+  U557/Y (XNOR2X1_RVT)                    0.024      0.395 r
+  O[13] (out)                             0.000      0.395 r
+  data arrival time                                  0.395
+
+  clock clk (rise edge)                   1.430      1.430
+  clock network delay (ideal)             0.000      1.430
+  clock reconvergence pessimism           0.000      1.430
+  output external delay                   0.000      1.430
+  data required time                                 1.430
+  ---------------------------------------------------------------
+  data required time                                 1.430
+  data arrival time                                 -0.395
+  ---------------------------------------------------------------
+  slack (MET)                                        1.035
+
+
+1

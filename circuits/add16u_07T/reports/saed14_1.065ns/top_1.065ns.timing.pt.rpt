@@ -1,0 +1,45 @@
+****************************************
+Report : timing
+	-path_type full
+	-delay_type max
+	-max_paths 1
+	-sort_by slack
+Design : top
+Version: T-2022.03-SP5
+Date   : Mon Feb 24 21:21:21 2025
+****************************************
+
+
+  Startpoint: A[10] (input port clocked by clk)
+  Endpoint: O[15] (output port clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  ------------------------------------------------------------------------------
+  clock clk (rise edge)                                  0.000      0.000
+  clock network delay (ideal)                            0.000      0.000
+  input external delay                                   0.000      0.000 r
+  A[10] (in)                                             0.000      0.000 r
+  intadd_0_U7/CO (SAEDRVT14_ADDF_V1_1)                   0.044      0.044 r
+  intadd_0_U6/CO (SAEDRVT14_ADDF_V1_1)                   0.043      0.088 r
+  intadd_0_U5/CO (SAEDRVT14_ADDF_V1_1)                   0.043      0.131 r
+  intadd_0_U4/CO (SAEDRVT14_ADDF_V1_1)                   0.043      0.175 r
+  intadd_0_U3/CO (SAEDRVT14_ADDF_V1_1)                   0.042      0.217 r
+  intadd_0_U2/S (SAEDRVT14_ADDF_V1_0P5)                  0.049      0.266 f
+  O[15] (out)                                            0.004      0.270 f
+  data arrival time                                                 0.270
+
+  clock clk (rise edge)                                  1.065      1.065
+  clock network delay (ideal)                            0.000      1.065
+  clock reconvergence pessimism                          0.000      1.065
+  output external delay                                  0.000      1.065
+  data required time                                                1.065
+  ------------------------------------------------------------------------------
+  data required time                                                1.065
+  data arrival time                                                -0.270
+  ------------------------------------------------------------------------------
+  slack (MET)                                                       0.795
+
+
+1
